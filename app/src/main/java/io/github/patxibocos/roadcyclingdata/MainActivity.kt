@@ -9,12 +9,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import io.github.patxibocos.roadcyclingdata.data.db.AppDatabase
 import io.github.patxibocos.roadcyclingdata.ui.theme.RoadCyclingDataTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GlobalScope.launch {
+            AppDatabase.getInstance(applicationContext)
+        }
         setContent {
             RoadCyclingDataTheme {
                 // A surface container using the 'background' color from the theme

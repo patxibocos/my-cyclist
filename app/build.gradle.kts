@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("kotlin-kapt")
+    kotlin("plugin.serialization") version "1.5.10"
 }
 
 android {
@@ -44,6 +46,8 @@ android {
 }
 
 dependencies {
+    kapt("androidx.room:room-compiler:2.3.0")
+
     implementation("androidx.core:core-ktx:1.5.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
     implementation("com.google.android.material:material:1.3.0")
@@ -52,6 +56,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:${libs.versions.compose.get()}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.0-beta02")
+    implementation("androidx.room:room-runtime:2.3.0")
+    implementation("androidx.room:room-ktx:2.3.0")
+    implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     testImplementation("junit:junit:4.13.2")
 
