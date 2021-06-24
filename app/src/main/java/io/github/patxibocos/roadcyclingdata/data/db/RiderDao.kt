@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RiderDao {
 
-    @Query("SELECT * FROM team")
-    fun getTeams(): Flow<List<Rider>>
+    @Query("SELECT * FROM rider")
+    fun getRiders(): Flow<List<Rider>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(riders: List<Rider>)

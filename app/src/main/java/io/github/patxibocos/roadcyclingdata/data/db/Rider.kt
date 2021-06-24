@@ -8,7 +8,25 @@ import androidx.room.PrimaryKey
     tableName = "rider"
 )
 data class Rider(
-    @ColumnInfo(name = "id")
     @PrimaryKey
+    @ColumnInfo(name = "id")
     val id: String,
+    @ColumnInfo(name = "first_name")
+    val firstName: String,
+    @ColumnInfo(name = "last_name")
+    val lastName: String,
+    @ColumnInfo(name = "country")
+    val country: String,
+    @ColumnInfo(name = "website")
+    val website: String?,
+    @ColumnInfo(name = "birth_date")
+    val birthDate: String,
+    @ColumnInfo(name = "birth_place")
+    val birthPlace: String?,
+    @ColumnInfo(name = "weight")
+    val weight: Int?,
+    @ColumnInfo(name = "height")
+    val height: Int?,
+    @ColumnInfo(name = "photo")
+    val photo: String,
 )

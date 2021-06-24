@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -11,6 +12,7 @@ import androidx.work.workDataOf
 import io.github.patxibocos.roadcyclingdata.worker.SeedDatabaseWorker
 
 @Database(entities = [Team::class, Rider::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun teamsDao(): TeamDao
@@ -36,7 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
                             override fun onCreate(db: SupportSQLiteDatabase) {
                                 super.onCreate(db)
                                 val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
-                                .setInputData(workDataOf("dataFile" to "road-cycling-data.json"))
+                                    .setInputData(workDataOf("dataFile" to "road-cycling-data.json"))
                                     .build()
                                 WorkManager.getInstance(context).enqueue(request)
                             }
