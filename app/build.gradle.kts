@@ -19,11 +19,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-//        kapt {
-//            arguments {
-//                arg("room.schemaLocation", "$projectDir/schemas")
-//            }
-//        }
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
     }
 
     buildTypes {
@@ -66,6 +66,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
     implementation("androidx.compose.runtime:runtime-livedata:${libs.versions.compose.get()}")
+    implementation("com.google.accompanist:accompanist-coil:0.12.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 

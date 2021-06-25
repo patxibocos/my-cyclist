@@ -15,4 +15,7 @@ interface RiderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(riders: List<Rider>)
 
+    @Query("SELECT 1 WHERE 1 = 1")
+    fun test(): Int
+
 }

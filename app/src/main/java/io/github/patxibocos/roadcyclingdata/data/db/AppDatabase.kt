@@ -5,14 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import io.github.patxibocos.roadcyclingdata.worker.SeedDatabaseWorker
 
-@Database(entities = [Team::class, Rider::class], version = 1, exportSchema = false)
+@Database(entities = [Team::class, Rider::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -23,34 +17,15 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var instance: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase {
-            return instance ?: synchronized(this) {
+        fun getInstance(context: Context): AppDatabase =
+            instance ?: synchronized(this) {
                 instance ?: buildDatabase(context).also { instance = it }
             }
-        }
 
-        // Create and pre-populate the database. See this article for more details:
-        // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
-        private fun buildDatabase(context: Context): AppDatabase {
-            val appDatabase =
-                Room.databaseBuilder(context, AppDatabase::class.java, "road-cycling-data-db")
-                    .addCallback(
-                        object : RoomDatabase.Callback() {
-                            override fun onCreate(db: SupportSQLiteDatabase) {
-                                super.onCreate(db)
-                                val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
-                                    .setInputData(workDataOf("dataFile" to "road-cycling-data.json"))
-                                    .build()
-                                WorkManager.getInstance(context)
-                                    .enqueueUniqueWork("workName", ExistingWorkPolicy.KEEP, request)
-                            }
-                        }
-                    )
-                    .build()
-            // Trick to force the onCreate callback be called without waiting for any DAO operation to be done
-            appDatabase.runInTransaction {}
-            return appDatabase
-        }
+        private fun buildDatabase(context: Context): AppDatabase =
+            Room.databaseBuilder(context, AppDatabase::class.java, "road-cycling-data-db")
+                .createFromAsset("2021.db")
+                .build()
     }
 
 }

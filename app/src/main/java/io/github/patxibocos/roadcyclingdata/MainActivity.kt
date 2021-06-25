@@ -4,25 +4,30 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.patxibocos.roadcyclingdata.data.db.AppDatabase
+import io.github.patxibocos.roadcyclingdata.data.db.Team
 import io.github.patxibocos.roadcyclingdata.ui.theme.RoadCyclingDataTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -30,13 +35,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch {
-            AppDatabase.getInstance(applicationContext)
+            AppDatabase.getInstance(applicationContext).ridersDao().test()
         }
         setContent {
             RoadCyclingDataTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    CountryEmoji(Country("es"))
+                Surface(
+                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    TeamsScreen()
                 }
             }
         }
@@ -54,56 +62,48 @@ value class Country(private val code: String) {
     }
 }
 
-class WhateverViewModel(application: Application) : AndroidViewModel(application) {
+class TeamsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val progressWorkInfoItems: LiveData<List<WorkInfo>>
-    private val workManager: WorkManager = WorkManager.getInstance(application)
-    private val _workState: MutableLiveData<Boolean> = MutableLiveData(false)
-    val workState: LiveData<Boolean> = _workState
-
-    init {
-        progressWorkInfoItems = workManager.getWorkInfosForUniqueWorkLiveData("workName")
+    fun getTeams(): Flow<List<Team>> {
+        return AppDatabase.getInstance(getApplication()).teamsDao().getTeams()
     }
 
-    private val observer =
-        Observer<List<WorkInfo>> { workInfos ->
-            val workersDone = workInfos.all { it.state.isFinished }
-            _workState.value = workersDone
+}
+
+@Composable
+fun TeamsScreen(teamsViewModel: TeamsViewModel = viewModel()) {
+    TeamsList(teamsViewModel.getTeams().collectAsState(initial = emptyList()).value)
+}
+
+@Composable
+fun TeamsList(teams: List<Team>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(teams) { team ->
+            TeamRow(team)
         }
-
-    fun whatever() {
-        progressWorkInfoItems.observeForever(observer)
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        progressWorkInfoItems.removeObserver(observer)
-    }
-
 }
 
 @Composable
-fun CountryEmoji(country: Country, whateverViewModel: WhateverViewModel = viewModel()) {
-    whateverViewModel.whatever()
-    Column {
+fun TeamRow(team: Team) {
+    Row {
+        Box {
+            Text(
+                modifier = Modifier.padding(start = 75.dp),
+                text = getEmoji(Country(team.country)),
+                style = MaterialTheme.typography.h3,
+            )
+            Image(
+                modifier = Modifier.size(100.dp),
+                painter = rememberCoilPainter(team.jersey),
+                contentDescription = null,
+            )
+        }
         Text(
-            text = "Hello ${getEmoji(country)}!",
-            fontSize = 30.sp,
+            text = team.name,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
-        WorkState(whateverViewModel.workState.observeAsState(false).value)
-    }
-}
-
-@Composable
-fun WorkState(workState: Boolean) {
-    Text("Work state is done? $workState")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    RoadCyclingDataTheme {
-        CountryEmoji(Country("es"))
     }
 }
 
