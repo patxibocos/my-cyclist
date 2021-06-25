@@ -19,6 +19,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+//        kapt {
+//            arguments {
+//                arg("room.schemaLocation", "$projectDir/schemas")
+//            }
+//        }
     }
 
     buildTypes {
@@ -59,6 +64,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
     implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+    implementation("androidx.compose.runtime:runtime-livedata:${libs.versions.compose.get()}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 

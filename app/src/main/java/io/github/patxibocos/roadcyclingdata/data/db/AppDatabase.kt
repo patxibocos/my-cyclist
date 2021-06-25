@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -40,7 +41,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
                                     .setInputData(workDataOf("dataFile" to "road-cycling-data.json"))
                                     .build()
-                                WorkManager.getInstance(context).enqueue(request)
+                                WorkManager.getInstance(context)
+                                    .enqueueUniqueWork("workName", ExistingWorkPolicy.KEEP, request)
                             }
                         }
                     )
