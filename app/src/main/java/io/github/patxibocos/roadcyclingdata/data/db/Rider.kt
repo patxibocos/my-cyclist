@@ -3,6 +3,7 @@ package io.github.patxibocos.roadcyclingdata.data.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 
 @Entity(
     tableName = "rider"
@@ -20,7 +21,7 @@ data class Rider(
     @ColumnInfo(name = "website")
     val website: String?,
     @ColumnInfo(name = "birth_date")
-    val birthDate: String,
+    val birthDate: LocalDate,
     @ColumnInfo(name = "birth_place")
     val birthPlace: String?,
     @ColumnInfo(name = "weight")
