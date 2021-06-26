@@ -21,22 +21,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
+import io.github.patxibocos.roadcyclingdata.data.RiderDataSource
 import io.github.patxibocos.roadcyclingdata.data.db.AppDatabase
+import io.github.patxibocos.roadcyclingdata.data.db.Rider
 import io.github.patxibocos.roadcyclingdata.data.db.Team
 import io.github.patxibocos.roadcyclingdata.ui.theme.RoadCyclingDataTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        CoroutineScope(Dispatchers.IO).launch {
-            AppDatabase.getInstance(applicationContext).ridersDao().test()
-        }
         setContent {
             RoadCyclingDataTheme {
                 // A surface container using the 'background' color from the theme
@@ -44,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    TeamsScreen()
+//                    TeamsScreen()
+                    RidersScreen()
                 }
             }
         }
@@ -70,9 +73,44 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
 
 }
 
+class RidersViewModel(application: Application) : AndroidViewModel(application) {
+
+    val riders: Flow<PagingData<Rider>> = Pager(PagingConfig(pageSize = 20)) {
+        RiderDataSource(AppDatabase.getInstance(getApplication()).ridersDao())
+    }.flow
+
+}
+
 @Composable
 fun TeamsScreen(teamsViewModel: TeamsViewModel = viewModel()) {
     TeamsList(teamsViewModel.getTeams().collectAsState(initial = emptyList()).value)
+}
+
+@Composable
+fun RidersScreen(ridersViewModel: RidersViewModel = viewModel()) {
+    val riders: LazyPagingItems<Rider> = ridersViewModel.riders.collectAsLazyPagingItems()
+    RidersList(riders)
+}
+
+@Composable
+fun RidersList(riders: LazyPagingItems<Rider>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(riders) { rider ->
+            if (rider != null) {
+                RiderRow(rider)
+            }
+        }
+    }
+}
+
+@Composable
+fun RiderRow(rider: Rider) {
+    Row {
+        Text(
+            text = "${rider.firstName} ${rider.lastName}",
+            style = MaterialTheme.typography.body1,
+        )
+    }
 }
 
 @Composable
