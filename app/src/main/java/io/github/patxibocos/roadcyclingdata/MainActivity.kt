@@ -4,19 +4,30 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
@@ -28,7 +39,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
-import io.github.patxibocos.roadcyclingdata.data.RiderDataSource
+import io.github.patxibocos.roadcyclingdata.data.RiderSource
 import io.github.patxibocos.roadcyclingdata.data.db.AppDatabase
 import io.github.patxibocos.roadcyclingdata.data.db.Rider
 import io.github.patxibocos.roadcyclingdata.data.db.Team
@@ -75,9 +86,21 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
 
 class RidersViewModel(application: Application) : AndroidViewModel(application) {
 
-    val riders: Flow<PagingData<Rider>> = Pager(PagingConfig(pageSize = 20)) {
-        RiderDataSource(AppDatabase.getInstance(getApplication()).ridersDao())
-    }.flow
+    lateinit var riders: Flow<PagingData<Rider>>
+
+    init {
+        reloadRiders()
+    }
+
+    private fun reloadRiders(query: String = "") {
+        this.riders = Pager(PagingConfig(pageSize = 20)) {
+            RiderSource(AppDatabase.getInstance(getApplication()).ridersDao(), query)
+        }.flow
+    }
+
+    fun onSearched(query: String) {
+        reloadRiders(query)
+    }
 
 }
 
@@ -89,7 +112,16 @@ fun TeamsScreen(teamsViewModel: TeamsViewModel = viewModel()) {
 @Composable
 fun RidersScreen(ridersViewModel: RidersViewModel = viewModel()) {
     val riders: LazyPagingItems<Rider> = ridersViewModel.riders.collectAsLazyPagingItems()
-    RidersList(riders)
+    Column {
+        var searchQuery by remember { mutableStateOf("") }
+        TextField(modifier = Modifier.fillMaxWidth(), value = searchQuery, onValueChange = {
+            searchQuery = it
+            ridersViewModel.onSearched(it)
+        }, label = {
+            Text("Search")
+        })
+        RidersList(riders)
+    }
 }
 
 @Composable
@@ -105,7 +137,14 @@ fun RidersList(riders: LazyPagingItems<Rider>) {
 
 @Composable
 fun RiderRow(rider: Rider) {
-    Row {
+    Card(
+        shape = RoundedCornerShape(3.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colors.primary),
+        elevation = 10.dp,
+        modifier = Modifier
+            .height(100.dp)
+            .fillMaxWidth(),
+    ) {
         Text(
             text = "${rider.firstName} ${rider.lastName}",
             style = MaterialTheme.typography.body1,

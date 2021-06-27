@@ -5,14 +5,16 @@ import androidx.paging.PagingState
 import io.github.patxibocos.roadcyclingdata.data.db.Rider
 import io.github.patxibocos.roadcyclingdata.data.db.RiderDao
 
-class RiderDataSource(
+class RiderSource(
     private val ridersDao: RiderDao,
+    private val query: String,
 ) : PagingSource<Int, Rider>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Rider> {
         val nextPage = params.key ?: 0
         val offset = nextPage * params.loadSize
-        val riders = ridersDao.getRiders(limit = params.loadSize, offset = offset)
+
+        val riders = ridersDao.findRiders(query = query, limit = params.loadSize, offset = offset)
 
         return LoadResult.Page(
             data = riders,
