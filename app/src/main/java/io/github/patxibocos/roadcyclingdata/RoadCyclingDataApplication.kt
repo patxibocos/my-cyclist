@@ -11,7 +11,8 @@ class RoadCyclingDataApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         CoroutineScope(Dispatchers.IO).launch {
-            AppDatabase.getInstance(applicationContext).ridersDao().test()
+            AppDatabase.getInstance(applicationContext).ridersDao().init()
         }
     }
+
 }

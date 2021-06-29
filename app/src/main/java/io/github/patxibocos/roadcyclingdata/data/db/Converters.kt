@@ -16,18 +16,15 @@ class Converters {
         Json.decodeFromString(listOfStringSerializer, value)
 
     @TypeConverter
-    fun listToString(list: List<String>): String {
-        return Json.encodeToString(listOfStringSerializer, list)
-    }
+    fun listToString(list: List<String>): String =
+        Json.encodeToString(listOfStringSerializer, list)
 
     @TypeConverter
-    fun stringToLocalDate(value: String): LocalDate {
-        return LocalDate.parse(value)
-    }
+    fun stringToLocalDate(value: String): LocalDate =
+        LocalDate.parse(value)
 
     @TypeConverter
-    fun localDateToString(localDate: LocalDate): String {
-        return localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-    }
+    fun localDateToString(localDate: LocalDate): String =
+        localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 }

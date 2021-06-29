@@ -99,7 +99,7 @@ class RidersViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun onSearched(query: String) {
-        reloadRiders(query)
+        reloadRiders(query.trim())
     }
 
 }

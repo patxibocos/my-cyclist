@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "team",
+    tableName = "team"
 )
 data class Team(
     @PrimaryKey
