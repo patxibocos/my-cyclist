@@ -1,6 +1,5 @@
 package io.github.patxibocos.roadcyclingdata
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -39,14 +38,19 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.roadcyclingdata.data.RiderSource
-import io.github.patxibocos.roadcyclingdata.data.db.AppDatabase
 import io.github.patxibocos.roadcyclingdata.data.db.Rider
+import io.github.patxibocos.roadcyclingdata.data.db.RiderDao
 import io.github.patxibocos.roadcyclingdata.data.db.Team
+import io.github.patxibocos.roadcyclingdata.data.db.TeamDao
 import io.github.patxibocos.roadcyclingdata.ui.theme.RoadCyclingDataTheme
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,15 +80,17 @@ value class Country(private val code: String) {
     }
 }
 
-class TeamsViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class TeamsViewModel @Inject constructor(private val teamDao: TeamDao) : ViewModel() {
 
     fun getTeams(): Flow<List<Team>> {
-        return AppDatabase.getInstance(getApplication()).teamsDao().getTeams()
+        return teamDao.getTeams()
     }
 
 }
 
-class RidersViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class RidersViewModel @Inject constructor(private val riderDao: RiderDao) : ViewModel() {
 
     lateinit var riders: Flow<PagingData<Rider>>
 
@@ -94,7 +100,7 @@ class RidersViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun reloadRiders(query: String = "") {
         this.riders = Pager(PagingConfig(pageSize = 20)) {
-            RiderSource(AppDatabase.getInstance(getApplication()).ridersDao(), query)
+            RiderSource(riderDao, query)
         }.flow
     }
 

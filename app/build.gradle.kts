@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
+    kotlin("kapt")
+    kotlin("plugin.serialization") version "1.5.10"
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -47,6 +49,7 @@ android {
 
 dependencies {
     kapt("androidx.room:room-compiler:${libs.versions.room.get()}")
+    kapt("com.google.dagger:hilt-android-compiler:2.37")
 
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
@@ -63,6 +66,8 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.0.0")
     implementation("androidx.paging:paging-compose:1.0.0-alpha10")
     implementation("com.google.accompanist:accompanist-coil:0.12.0")
+    implementation("com.google.dagger:hilt-android:2.37")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
