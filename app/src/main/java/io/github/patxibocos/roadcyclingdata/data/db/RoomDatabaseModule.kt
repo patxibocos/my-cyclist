@@ -23,15 +23,11 @@ class RoomDatabaseModule {
             .build()
     }
 
-}
-
-@InstallIn(SingletonComponent::class)
-@Module
-object DatabaseDaoModule {
-
+    @Singleton
     @Provides
     fun provideRiderDao(db: AppDatabase) = db.ridersDao()
 
+    @Singleton
     @Provides
     fun provideTeamDao(db: AppDatabase) = db.teamsDao()
 
