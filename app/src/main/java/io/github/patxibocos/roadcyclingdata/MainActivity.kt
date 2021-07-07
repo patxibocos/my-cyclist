@@ -8,7 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
+import io.github.patxibocos.roadcyclingdata.ui.home.Home
 import io.github.patxibocos.roadcyclingdata.ui.theme.RoadCyclingDataTheme
 import java.util.Locale
 
@@ -23,8 +23,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    TeamsScreen()
-//                    RidersScreen()
+                    Home()
                 }
             }
         }

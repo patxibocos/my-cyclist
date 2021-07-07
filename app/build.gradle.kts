@@ -66,6 +66,7 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.0.0")
     implementation("androidx.paging:paging-compose:1.0.0-alpha11")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
     implementation("com.google.accompanist:accompanist-coil:0.12.0")
     implementation("com.google.dagger:hilt-android:2.37")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
