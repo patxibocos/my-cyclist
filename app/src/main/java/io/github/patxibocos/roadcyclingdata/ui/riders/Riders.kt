@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,9 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import io.github.patxibocos.roadcyclingdata.data.db.Rider
 
 @Composable
@@ -35,7 +34,6 @@ fun RidersScreen() {
 internal fun Riders(
     viewModel: RidersViewModel
 ) {
-    val riders: LazyPagingItems<Rider> = viewModel.riders.collectAsLazyPagingItems()
     Column {
         var searchQuery by remember { mutableStateOf("") }
         TextField(modifier = Modifier.fillMaxWidth(), value = searchQuery, onValueChange = {
@@ -44,17 +42,16 @@ internal fun Riders(
         }, label = {
             Text("Search")
         })
+        val riders by viewModel.riders.collectAsState()
         RidersList(riders)
     }
 }
 
 @Composable
-internal fun RidersList(riders: LazyPagingItems<Rider>) {
+internal fun RidersList(riders: List<Rider>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(riders) { rider ->
-            if (rider != null) {
-                RiderRow(rider)
-            }
+            RiderRow(rider)
         }
     }
 }
