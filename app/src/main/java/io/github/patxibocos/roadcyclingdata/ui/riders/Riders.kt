@@ -67,7 +67,7 @@ internal fun RiderRow(rider: Rider) {
             .fillMaxWidth(),
     ) {
         Text(
-            text = "${rider.firstName} ${rider.lastName}",
+            text = "${rider.lastName.uppercase()} ${rider.firstName}",
             style = MaterialTheme.typography.body1,
         )
     }

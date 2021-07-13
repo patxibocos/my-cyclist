@@ -8,5 +8,3 @@ data class TeamsAndRiders(
     val teams: List<Team>,
     val riders: List<Rider>,
 )
-
-val Empty = TeamsAndRiders(0, emptyList(), emptyList())
