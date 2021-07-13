@@ -48,23 +48,18 @@ android {
 }
 
 dependencies {
-    kapt("androidx.room:room-compiler:${libs.versions.room.get()}")
     kapt("com.google.dagger:hilt-android-compiler:2.37")
 
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.compose.ui:ui:${libs.versions.compose.get()}")
     implementation("androidx.compose.material:material:${libs.versions.compose.get()}")
     implementation("androidx.compose.ui:ui-tooling:${libs.versions.compose.get()}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.0-rc01")
-    implementation("androidx.room:room-runtime:${libs.versions.room.get()}")
-    implementation("androidx.room:room-ktx:${libs.versions.room.get()}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
     implementation("androidx.compose.runtime:runtime-livedata:${libs.versions.compose.get()}")
-    implementation("androidx.paging:paging-runtime-ktx:3.0.0")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha11")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
     implementation("com.google.accompanist:accompanist-coil:0.12.0")

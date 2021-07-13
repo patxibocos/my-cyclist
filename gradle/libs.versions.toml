@@ -1,5 +1,4 @@
 [versions]
 compose = "1.0.0-rc01"
-room = "2.3.0"
 
 [libraries]

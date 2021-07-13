@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.coil.rememberCoilPainter
 import io.github.patxibocos.roadcyclingdata.Country
-import io.github.patxibocos.roadcyclingdata.data.db.Team
+import io.github.patxibocos.roadcyclingdata.data.json.Team
 import io.github.patxibocos.roadcyclingdata.getEmoji
 
 @Composable
