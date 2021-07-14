@@ -35,7 +35,7 @@ class RidersViewModel @Inject constructor(teamsAndRidersRepository: TeamsAndRide
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Default) {
             teamsAndRidersRepository.riders().combine(_search) { riders, query ->
                 riders.filter(query)
             }.collect { filteredRiders ->
