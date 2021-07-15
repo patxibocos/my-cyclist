@@ -1,4 +1,4 @@
 [versions]
-compose = "1.0.0-rc01"
+compose = "1.0.0-rc02"
 
 [libraries]

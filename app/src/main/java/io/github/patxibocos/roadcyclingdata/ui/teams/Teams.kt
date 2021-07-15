@@ -15,7 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import io.github.patxibocos.roadcyclingdata.Country
 import io.github.patxibocos.roadcyclingdata.data.json.Team
 import io.github.patxibocos.roadcyclingdata.getEmoji
@@ -52,7 +52,7 @@ internal fun TeamRow(team: Team) {
             )
             Image(
                 modifier = Modifier.size(100.dp),
-                painter = rememberCoilPainter(team.jersey),
+                painter = rememberImagePainter(team.jersey),
                 contentDescription = null,
             )
         }
