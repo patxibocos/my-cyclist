@@ -1,8 +1,5 @@
-package io.github.patxibocos.roadcyclingdata.data.json
+package io.github.patxibocos.roadcyclingdata.data
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Team(
     val id: String,
     val name: String,
@@ -13,5 +10,5 @@ data class Team(
     val jersey: String,
     val website: String?,
     val year: Int,
-    val riders: List<String>,
+    val riders: MutableList<Rider> = mutableListOf(),
 )

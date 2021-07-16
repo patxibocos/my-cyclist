@@ -1,8 +1,5 @@
-package io.github.patxibocos.roadcyclingdata.data.json
+package io.github.patxibocos.roadcyclingdata.data
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Rider(
     val id: String,
     val firstName: String,
@@ -14,6 +11,7 @@ data class Rider(
     val weight: Int?,
     val height: Int?,
     val photo: String,
+    val team: Team,
 ) {
     companion object {
         val Preview by lazy {
@@ -28,6 +26,17 @@ data class Rider(
                 weight = 70,
                 height = 185,
                 photo = "https://avatars.githubusercontent.com/u/4415614",
+                team = Team(
+                    id = "movistar-team-2021",
+                    name = "Movistar Team",
+                    status = "WT",
+                    abbreviation = "MOV",
+                    country = "ES",
+                    bike = "Canyon",
+                    jersey = "https://www.procyclingstats.com/images/shirts/bx/eb/movistar-team-2021-n3.png",
+                    website = "https://movistarteam.com/",
+                    year = 2021,
+                )
             )
         }
     }

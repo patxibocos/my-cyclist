@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,7 +38,7 @@ import coil.compose.rememberImagePainter
 import coil.size.Size
 import coil.transform.Transformation
 import io.github.patxibocos.roadcyclingdata.Country
-import io.github.patxibocos.roadcyclingdata.data.json.Rider
+import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.getEmoji
 import kotlin.math.min
 
@@ -59,6 +61,7 @@ internal fun Riders(
         }, label = {
             Text("Search")
         })
+        Spacer(modifier = Modifier.height(10.dp))
         val riders by viewModel.riders.collectAsState()
         RidersList(riders)
     }
@@ -125,8 +128,8 @@ internal fun RiderRow(rider: Rider = Rider.Preview) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
             modifier = Modifier
-                .padding(start = 5.dp, end = 5.dp)
-                .size(100.dp, 100.dp),
+                .padding(start = 10.dp, end = 5.dp)
+                .size(75.dp, 75.dp),
             painter = rememberImagePainter(data = rider.photo, builder = {
                 transformations(CustomCircleCropTransformation())
                 crossfade(true)
@@ -135,6 +138,7 @@ internal fun RiderRow(rider: Rider = Rider.Preview) {
         )
         Box(
             modifier = Modifier
+                .padding(end = 10.dp)
                 .fillMaxWidth()
                 .align(Alignment.CenterVertically),
         ) {
