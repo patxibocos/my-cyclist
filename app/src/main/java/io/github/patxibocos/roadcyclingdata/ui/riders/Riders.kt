@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -63,18 +64,19 @@ internal fun Riders(
         })
         Spacer(modifier = Modifier.height(10.dp))
         val riders by viewModel.riders.collectAsState()
-        RidersList(riders)
+        val selectedRider by viewModel.selectedRiderIndex.collectAsState()
+        RidersList(riders, selectedRider, viewModel::onRiderSelected)
     }
 }
 
 @Composable
-internal fun RidersList(riders: List<Rider>) {
+internal fun RidersList(riders: List<Rider>, selectedRider: Int, onRiderSelected: (Rider) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(5.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        items(riders) { rider ->
-            RiderRow(rider)
+        itemsIndexed(riders) { index, rider ->
+            RiderRow(rider, selectedRider == index, onRiderSelected)
         }
     }
 }
@@ -124,8 +126,14 @@ private class CustomCircleCropTransformation : Transformation {
 
 @Composable
 @Preview
-internal fun RiderRow(rider: Rider = Rider.Preview) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+internal fun RiderRow(
+    rider: Rider = Rider.Preview,
+    selected: Boolean = true,
+    onRiderSelected: (Rider) -> Unit = {}
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onRiderSelected(rider) }) {
         Image(
             modifier = Modifier
                 .padding(start = 10.dp, end = 5.dp)
