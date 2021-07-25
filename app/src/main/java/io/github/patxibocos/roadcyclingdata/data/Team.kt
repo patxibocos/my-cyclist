@@ -11,4 +11,21 @@ data class Team(
     val website: String?,
     val year: Int,
     val riders: MutableList<Rider> = mutableListOf(),
-)
+) {
+    companion object {
+        val Preview by lazy {
+            Team(
+                id = "cycling-team",
+                name = "Cycling Team",
+                status = "WT",
+                abbreviation = "CT",
+                country = "ES",
+                bike = "Canyon",
+                jersey = "",
+                website = "https://github.com/patxibocos/",
+                year = 2021,
+                riders = mutableListOf(),
+            )
+        }
+    }
+}
