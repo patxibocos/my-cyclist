@@ -17,7 +17,7 @@ class DataModule {
     @Provides
     fun provideTeamsWithRidersRepository(
         @ApplicationContext context: Context
-    ): TeamsWithRidersRepository {
+    ): TeamsAndRidersRepository {
         return JsonTeamsWithRidersRepository(context)
     }
 

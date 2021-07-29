@@ -5,12 +5,6 @@ import io.github.patxibocos.roadcyclingdata.data.Team
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class JsonTeamsWithRiders(
-    val season: Int,
-    val teams: List<JsonTeam>,
-)
-
-@Serializable
 internal data class JsonTeam(
     val id: String,
     val name: String,
@@ -21,7 +15,7 @@ internal data class JsonTeam(
     val jersey: String,
     val website: String?,
     val year: Int,
-    val riders: List<JsonRider>,
+    val riders: List<String>,
 ) {
     fun toTeam(): Team = Team(
         id = id,
