@@ -57,5 +57,4 @@ internal class JsonTeamsWithRidersRepository(private val context: Context) :
 
     override fun teams(): Flow<List<Team>> = _teams
     override fun riders(): Flow<List<Rider>> = _riders
-
 }

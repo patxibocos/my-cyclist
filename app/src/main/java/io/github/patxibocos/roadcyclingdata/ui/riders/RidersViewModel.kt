@@ -66,5 +66,4 @@ class RidersViewModel @Inject constructor(teamsAndRidersRepository: TeamsAndRide
             }
         }
     }
-
 }

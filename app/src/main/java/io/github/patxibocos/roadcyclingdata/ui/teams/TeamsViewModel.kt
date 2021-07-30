@@ -12,5 +12,4 @@ class TeamsViewModel @Inject constructor(private val teamsAndRidersRepository: T
     ViewModel() {
 
     fun getTeams(): Flow<List<Team>> = teamsAndRidersRepository.teams()
-
 }

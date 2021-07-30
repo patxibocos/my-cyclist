@@ -34,7 +34,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -51,23 +50,16 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.android.material)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material.material)
-    implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.ui)
+    implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.hilt.library)
     implementation(libs.kotlin.serialization)
-
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
-    coreLibraryDesugaring(libs.android.tools.desugar)
 
     testImplementation(libs.junit)
 

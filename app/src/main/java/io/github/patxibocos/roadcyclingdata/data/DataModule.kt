@@ -20,5 +20,4 @@ class DataModule {
     ): TeamsAndRidersRepository {
         return JsonTeamsWithRidersRepository(context)
     }
-
 }

@@ -131,9 +131,11 @@ internal fun RiderRow(
     selected: Boolean = true,
     onRiderSelected: (Rider) -> Unit = {}
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onRiderSelected(rider) }) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onRiderSelected(rider) }
+    ) {
         Image(
             modifier = Modifier
                 .padding(start = 10.dp, end = 5.dp)
