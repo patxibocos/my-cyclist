@@ -36,9 +36,9 @@ internal fun Teams(viewModel: TeamsViewModel) {
 @Composable
 internal fun TeamsList(teams: List<Team>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(teams) { team ->
-            TeamRow(team)
-        }
+        items(teams, key = { it.id }) { team ->
+        TeamRow(team)
+    }
     }
 }
 

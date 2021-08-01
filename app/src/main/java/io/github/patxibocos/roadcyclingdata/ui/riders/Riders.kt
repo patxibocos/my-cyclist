@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -75,9 +78,9 @@ internal fun RidersList(riders: List<Rider>, selectedRider: Int, onRiderSelected
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        itemsIndexed(riders) { index, rider ->
+        itemsIndexed(items = riders, key = { _, rider -> rider.id }, itemContent = { index, rider ->
             RiderRow(rider, selectedRider == index, onRiderSelected)
-        }
+        })
     }
 }
 
@@ -131,32 +134,44 @@ internal fun RiderRow(
     selected: Boolean = true,
     onRiderSelected: (Rider) -> Unit = {}
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onRiderSelected(rider) }
-    ) {
-        Image(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 5.dp)
-                .size(75.dp, 75.dp),
-            painter = rememberImagePainter(data = rider.photo, builder = {
-                transformations(CustomCircleCropTransformation())
-                crossfade(true)
-            }),
-            contentDescription = null,
-        )
-        Box(
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically),
-        ) {
-            Text(
-                text = "${rider.lastName.uppercase()} ${rider.firstName}",
-                style = MaterialTheme.typography.body1,
+    Column(
+        modifier = Modifier.animateContentSize(
+            animationSpec = tween(
+                durationMillis = 300,
+                easing = LinearOutSlowInEasing
             )
-            Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onRiderSelected(rider) }
+        ) {
+            Image(
+                modifier = Modifier
+                    .padding(start = 10.dp, end = 5.dp)
+                    .size(75.dp, 75.dp),
+                painter = rememberImagePainter(data = rider.photo, builder = {
+                    transformations(CustomCircleCropTransformation())
+                    crossfade(true)
+                }),
+                contentDescription = null,
+            )
+            Box(
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
+            ) {
+                Text(
+                    text = "${rider.lastName.uppercase()} ${rider.firstName}",
+                    style = MaterialTheme.typography.body1,
+                )
+                Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
+            }
+        }
+        if (selected) {
+            
         }
     }
 }
