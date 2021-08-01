@@ -16,12 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import io.github.patxibocos.roadcyclingdata.ui.races.RacesScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
 
 internal sealed class Screen(val route: String) {
     object Teams : Screen("teams")
     object Riders : Screen("riders")
+    object Races : Screen("races")
 }
 
 @Composable
@@ -32,7 +34,7 @@ fun Home() {
             BottomNavigation {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-                val items = listOf(Screen.Teams, Screen.Riders)
+                val items = listOf(Screen.Teams, Screen.Riders, Screen.Races)
                 items.forEach { screen ->
                     BottomNavigationItem(
                         icon = { Icon(Icons.Filled.Face, contentDescription = null) },
@@ -55,6 +57,7 @@ fun Home() {
         ) {
             composable(Screen.Teams.route) { TeamsScreen() }
             composable(Screen.Riders.route) { RidersScreen() }
+            composable(Screen.Races.route) { RacesScreen() }
         }
     }
 }
