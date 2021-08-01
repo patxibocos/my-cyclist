@@ -3,8 +3,8 @@ package io.github.patxibocos.roadcyclingdata.ui.riders
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Rider
-import io.github.patxibocos.roadcyclingdata.data.TeamsAndRidersRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RidersViewModel @Inject constructor(teamsAndRidersRepository: TeamsAndRidersRepository) :
+class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
     private val _riders: MutableStateFlow<List<Rider>> = MutableStateFlow(emptyList())
@@ -39,7 +39,7 @@ class RidersViewModel @Inject constructor(teamsAndRidersRepository: TeamsAndRide
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
-            val ridersFlow = teamsAndRidersRepository.riders()
+            val ridersFlow = dataRepository.riders()
             combine(ridersFlow, _search, _selectedRider) { riders, query, selectedRider ->
                 val filteredRiders = riders.filter(query)
                 val selectedRiderIndex = filteredRiders.indexOf(selectedRider)

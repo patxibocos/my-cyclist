@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.github.patxibocos.roadcyclingdata.data.json.JsonTeamsWithRidersRepository
+import io.github.patxibocos.roadcyclingdata.data.json.JsonDataRepository
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -15,9 +15,9 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideTeamsWithRidersRepository(
+    fun provideDataRepository(
         @ApplicationContext context: Context
-    ): TeamsAndRidersRepository {
-        return JsonTeamsWithRidersRepository(context)
+    ): DataRepository {
+        return JsonDataRepository(context)
     }
 }

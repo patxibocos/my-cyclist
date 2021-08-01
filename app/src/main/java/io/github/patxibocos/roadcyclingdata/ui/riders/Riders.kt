@@ -171,7 +171,6 @@ internal fun RiderRow(
             }
         }
         if (selected) {
-            
         }
     }
 }

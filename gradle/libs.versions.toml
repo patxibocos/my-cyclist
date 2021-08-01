@@ -4,6 +4,7 @@ hilt = "2.38.1"
 ktlint = "0.42.0"
 
 [libraries]
+android-desugar-jdk = "com.android.tools:desugar_jdk_libs:1.1.5"
 android-material = "com.google.android.material:material:1.4.0"
 androidx-compose-material-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }

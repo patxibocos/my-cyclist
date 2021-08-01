@@ -2,14 +2,14 @@ package io.github.patxibocos.roadcyclingdata.ui.teams
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Team
-import io.github.patxibocos.roadcyclingdata.data.TeamsAndRidersRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class TeamsViewModel @Inject constructor(private val teamsAndRidersRepository: TeamsAndRidersRepository) :
+class TeamsViewModel @Inject constructor(private val dataRepository: DataRepository) :
     ViewModel() {
 
-    fun getTeams(): Flow<List<Team>> = teamsAndRidersRepository.teams()
+    fun getTeams(): Flow<List<Team>> = dataRepository.teams()
 }
