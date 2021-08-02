@@ -8,10 +8,10 @@ import io.github.patxibocos.roadcyclingdata.data.Team
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.text.Collator
@@ -31,22 +31,26 @@ internal class JsonDataRepository(private val context: Context) :
         return teams.flatMap(Team::riders).distinctBy { it.id }.sortedWith(ridersComparator)
     }
 
+    private suspend inline fun <T> readJson(fileName: String): List<T> {
+        val teamsJson = withContext(Dispatchers.IO) {
+            context.assets.open(fileName).bufferedReader().use { it.readText() }
+        }
+        return withContext(Dispatchers.Default) {
+            Json.decodeFromString(teamsJson)
+        }
+    }
+
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            val (teamsJson, ridersJson, racesJson) = listOf(
-                async(Dispatchers.IO) {
-                    context.assets.open("teams.json").bufferedReader().use { it.readText() }
-                },
-                async(Dispatchers.IO) {
-                    context.assets.open("riders.json").bufferedReader().use { it.readText() }
-                },
-                async(Dispatchers.IO) {
-                    context.assets.open("races.json").bufferedReader().use { it.readText() }
-                }
-            ).awaitAll()
-            val jsonTeams: List<JsonTeam> = Json.decodeFromString(teamsJson)
-            val jsonRidersById: Map<String, JsonRider> =
-                Json.decodeFromString<List<JsonRider>>(ridersJson).associateBy({ it.id }, { it })
+            val jsonTeamsDeferred = async { readJson<JsonTeam>("teams.json") }
+            val jsonRidersDeferred = async { readJson<JsonRider>("rides.json") }
+            val jsonRacesDeferred = async { readJson<JsonRace>("races.json") }
+
+            val jsonTeams = jsonTeamsDeferred.await()
+            val jsonRiders = jsonRidersDeferred.await()
+            val jsonRaces = jsonRacesDeferred.await()
+
+            val jsonRidersById: Map<String, JsonRider> = jsonRiders.associateBy({ it.id }, { it })
             val teams = jsonTeams.map { jsonTeam ->
                 jsonTeam.toTeam().also { team ->
                     val teamRiders: List<Rider> =
@@ -55,8 +59,8 @@ internal class JsonDataRepository(private val context: Context) :
                 }
             }
             val riders = getSortedRiders(teams)
-            val races: List<Race> =
-                Json.decodeFromString<List<JsonRace>>(racesJson).map(JsonRace::toRace)
+            val races: List<Race> = jsonRaces.map(JsonRace::toRace)
+
             _teams.emit(teams)
             _riders.emit(riders)
             _races.emit(races)

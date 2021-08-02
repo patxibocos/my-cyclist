@@ -12,6 +12,7 @@ internal data class JsonRace(
     val startDate: String,
     val endDate: String,
     val website: String?,
+    val stages: List<JsonStage>,
 ) {
     fun toRace(): Race = Race(
         id = id,
@@ -19,5 +20,6 @@ internal data class JsonRace(
         startDate = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE),
         endDate = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE),
         website = website,
+        stages = stages.map(JsonStage::toStage)
     )
 }
