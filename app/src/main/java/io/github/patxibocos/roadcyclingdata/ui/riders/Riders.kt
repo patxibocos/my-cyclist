@@ -135,18 +135,16 @@ internal fun RiderRow(
     onRiderSelected: (Rider) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.animateContentSize(
-            animationSpec = tween(
-                durationMillis = 300,
-                easing = LinearOutSlowInEasing
+        modifier = Modifier
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
             )
-        )
+            .clickable { onRiderSelected(rider) }
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onRiderSelected(rider) }
-        ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 5.dp)

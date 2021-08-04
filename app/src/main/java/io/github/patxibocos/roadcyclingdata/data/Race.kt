@@ -1,7 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.data
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 data class Race(
     val id: String,
@@ -16,21 +15,26 @@ data class Race(
             Race(
                 id = "vuelta-a-espana",
                 name = "La Vuelta ciclista a España",
-                startDate = LocalDate.parse("2021-08-14", DateTimeFormatter.ISO_LOCAL_DATE),
-                endDate = LocalDate.parse("2021-09-05", DateTimeFormatter.ISO_LOCAL_DATE),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now(),
                 website = "https://www.lavuelta.es/",
                 stages = listOf(
                     Stage(
                         id = "stage-1",
-                        startDate = LocalDate.parse("2021-08-14", DateTimeFormatter.ISO_LOCAL_DATE),
+                        startDate = LocalDate.now(),
+                        distance = 123F,
+                        departure = "Bilbao",
+                        arrival = "Barcelona",
+                    ),
+                    Stage(
+                        id = "stage-1",
+                        startDate = LocalDate.now(),
+                        distance = 200F,
+                        departure = "Barcelona",
+                        arrival = "Madrid",
                     )
                 ),
             )
         }
     }
 }
-
-data class Stage(
-    val id: String,
-    val startDate: LocalDate,
-)

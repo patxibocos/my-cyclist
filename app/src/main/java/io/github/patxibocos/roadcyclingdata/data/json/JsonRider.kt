@@ -2,9 +2,9 @@ package io.github.patxibocos.roadcyclingdata.data.json
 
 import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.data.Team
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Serializable
 internal data class JsonRider(
@@ -13,7 +13,7 @@ internal data class JsonRider(
     val lastName: String,
     val country: String,
     val website: String?,
-    val birthDate: String,
+    @Contextual val birthDate: LocalDate,
     val birthPlace: String?,
     val weight: Int?,
     val height: Int?,
@@ -25,7 +25,7 @@ internal data class JsonRider(
         lastName = lastName,
         country = country,
         website = website,
-        birthDate = LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE),
+        birthDate = birthDate,
         birthPlace = birthPlace,
         weight = weight,
         height = height,

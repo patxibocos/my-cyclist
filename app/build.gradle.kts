@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.5.10"
+    kotlin("plugin.serialization") version "1.5.21"
     id("dagger.hilt.android.plugin")
 }
 

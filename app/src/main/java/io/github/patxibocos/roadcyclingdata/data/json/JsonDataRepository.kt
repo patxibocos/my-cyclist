@@ -12,9 +12,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import java.text.Collator
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 internal class JsonDataRepository(private val context: Context) :
@@ -24,6 +34,23 @@ internal class JsonDataRepository(private val context: Context) :
     private val _riders = MutableSharedFlow<List<Rider>>(replay = 1)
     private val _races = MutableSharedFlow<List<Race>>(replay = 1)
 
+    private val json: Json = Json {
+        serializersModule = SerializersModule {
+            contextual(LocalDateSerializer)
+        }
+    }
+
+    private object LocalDateSerializer : KSerializer<LocalDate> {
+        override val descriptor: SerialDescriptor =
+            PrimitiveSerialDescriptor("java.time.LocalDate", PrimitiveKind.STRING)
+
+        override fun serialize(encoder: Encoder, value: LocalDate) =
+            encoder.encodeString(value.format(DateTimeFormatter.ISO_LOCAL_DATE))
+
+        override fun deserialize(decoder: Decoder): LocalDate =
+            LocalDate.parse(decoder.decodeString(), DateTimeFormatter.ISO_LOCAL_DATE)
+    }
+
     private fun getSortedRiders(teams: List<Team>): List<Rider> {
         val usCollator = Collator.getInstance(Locale.US)
         val ridersComparator =
@@ -31,19 +58,19 @@ internal class JsonDataRepository(private val context: Context) :
         return teams.flatMap(Team::riders).distinctBy { it.id }.sortedWith(ridersComparator)
     }
 
-    private suspend inline fun <T> readJson(fileName: String): List<T> {
+    private suspend inline fun <reified T> readJson(fileName: String): List<T> {
         val teamsJson = withContext(Dispatchers.IO) {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         }
         return withContext(Dispatchers.Default) {
-            Json.decodeFromString(teamsJson)
+            json.decodeFromString(teamsJson)
         }
     }
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
             val jsonTeamsDeferred = async { readJson<JsonTeam>("teams.json") }
-            val jsonRidersDeferred = async { readJson<JsonRider>("rides.json") }
+            val jsonRidersDeferred = async { readJson<JsonRider>("riders.json") }
             val jsonRacesDeferred = async { readJson<JsonRace>("races.json") }
 
             val jsonTeams = jsonTeamsDeferred.await()

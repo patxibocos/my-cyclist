@@ -1,7 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.data
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 data class Rider(
     val id: String,
@@ -24,7 +23,7 @@ data class Rider(
                 lastName = "Bocos",
                 country = "ES",
                 website = "https://github.com/patxibocos/",
-                birthDate = LocalDate.parse("1986-10-04", DateTimeFormatter.ISO_LOCAL_DATE),
+                birthDate = LocalDate.MIN,
                 birthPlace = "Barakaldo",
                 weight = 70,
                 height = 185,
