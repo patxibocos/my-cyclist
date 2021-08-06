@@ -24,7 +24,9 @@ data class Team(
                 jersey = "",
                 website = "https://github.com/patxibocos/",
                 year = 2021,
-                riders = mutableListOf(),
+                riders = mutableListOf(
+                    Rider.Preview
+                ),
             )
         }
     }

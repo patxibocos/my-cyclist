@@ -10,8 +10,8 @@ internal data class JsonStage(
     val id: String,
     @Contextual val startDate: LocalDate,
     val distance: Float,
-    val departure: String,
-    val arrival: String,
+    val departure: String?,
+    val arrival: String?,
 ) {
     fun toStage(): Stage = Stage(
         id = id,

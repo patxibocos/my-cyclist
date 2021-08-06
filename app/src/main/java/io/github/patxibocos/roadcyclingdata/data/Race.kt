@@ -9,6 +9,7 @@ data class Race(
     val endDate: LocalDate,
     val website: String?,
     val stages: List<Stage>,
+    val startList: MutableList<TeamParticipation> = mutableListOf(),
 ) {
     companion object {
         val Preview by lazy {
@@ -34,6 +35,14 @@ data class Race(
                         arrival = "Madrid",
                     )
                 ),
+                startList = mutableListOf(
+                    TeamParticipation(
+                        team = Team.Preview,
+                        riders = listOf(
+                            Rider.Preview
+                        ),
+                    )
+                )
             )
         }
     }

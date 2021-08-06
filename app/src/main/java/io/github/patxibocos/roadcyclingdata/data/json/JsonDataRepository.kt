@@ -5,6 +5,7 @@ import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.data.Team
+import io.github.patxibocos.roadcyclingdata.data.TeamParticipation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -67,6 +68,47 @@ internal class JsonDataRepository(private val context: Context) :
         }
     }
 
+    data class TeamsRacesRiders(
+        val teams: List<Team>,
+        val riders: List<Rider>,
+        val races: List<Race>,
+    )
+
+    private fun buildTeamsRacesAndRiders(
+        jsonTeams: List<JsonTeam>,
+        jsonRiders: List<JsonRider>,
+        jsonRaces: List<JsonRace>
+    ): TeamsRacesRiders {
+        val jsonRidersById: Map<String, JsonRider> = jsonRiders.associateBy({ it.id }, { it })
+        val teams = jsonTeams.map { jsonTeam ->
+            jsonTeam.toTeam().also { team ->
+                val teamRiders: List<Rider> =
+                    jsonTeam.riders.map(jsonRidersById::getValue).map { it.toRider(team) }
+                team.riders.addAll(teamRiders)
+            }
+        }
+        val riders = getSortedRiders(teams)
+        val races: List<Race> = jsonRaces.map(JsonRace::toRace)
+        val teamsById: Map<String, Team> = teams.associateBy({ it.id }, { it })
+        val ridersById: Map<String, Rider> = riders.associateBy({ it.id }, { it })
+        val racesById: Map<String, Race> = races.associateBy({ it.id }, { it })
+        jsonRaces.forEach { jsonRace ->
+            racesById[jsonRace.id]!!.startList.addAll(
+                jsonRace.startList.mapNotNull { jsonTeamParticipation ->
+                    teamsById[jsonTeamParticipation.team]?.let { team ->
+                        TeamParticipation(
+                            team = team,
+                            riders = jsonTeamParticipation.riders.map {
+                                ridersById[it]!!
+                            }
+                        )
+                    }
+                }
+            )
+        }
+        return TeamsRacesRiders(teams, riders, races)
+    }
+
     init {
         CoroutineScope(Dispatchers.Default).launch {
             val jsonTeamsDeferred = async { readJson<JsonTeam>("teams.json") }
@@ -77,16 +119,7 @@ internal class JsonDataRepository(private val context: Context) :
             val jsonRiders = jsonRidersDeferred.await()
             val jsonRaces = jsonRacesDeferred.await()
 
-            val jsonRidersById: Map<String, JsonRider> = jsonRiders.associateBy({ it.id }, { it })
-            val teams = jsonTeams.map { jsonTeam ->
-                jsonTeam.toTeam().also { team ->
-                    val teamRiders: List<Rider> =
-                        jsonTeam.riders.map(jsonRidersById::getValue).map { it.toRider(team) }
-                    team.riders.addAll(teamRiders)
-                }
-            }
-            val riders = getSortedRiders(teams)
-            val races: List<Race> = jsonRaces.map(JsonRace::toRace)
+            val (teams, riders, races) = buildTeamsRacesAndRiders(jsonTeams, jsonRiders, jsonRaces)
 
             _teams.emit(teams)
             _riders.emit(riders)
