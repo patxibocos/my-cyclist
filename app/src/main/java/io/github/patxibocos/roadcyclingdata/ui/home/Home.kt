@@ -11,11 +11,11 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import io.github.patxibocos.roadcyclingdata.ui.races.RacesScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
@@ -26,25 +26,34 @@ internal sealed class Screen(val route: String) {
     object Races : Screen("races")
 }
 
+private const val HOME_ROUTE = "home"
+
 @Composable
 fun Home() {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
             BottomNavigation {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                val items = listOf(Screen.Teams, Screen.Riders, Screen.Races)
-                items.forEach { screen ->
+                val screens = listOf(Screen.Teams, Screen.Riders, Screen.Races)
+                screens.forEach { screen ->
                     BottomNavigationItem(
                         icon = { Icon(Icons.Filled.Face, contentDescription = null) },
                         label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        selected = currentRoute == screen.route,
                         onClick = {
-                            navController.navigate(screen.route) {
-                                launchSingleTop = true
+                            if (currentRoute != screen.route) {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }
+                        },
+                        alwaysShowLabel = false,
                     )
                 }
             }
@@ -52,12 +61,17 @@ fun Home() {
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination = Screen.Teams.route,
+            startDestination = HOME_ROUTE,
             Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Teams.route) { TeamsScreen() }
-            composable(Screen.Riders.route) { RidersScreen() }
-            composable(Screen.Races.route) { RacesScreen() }
+            navigation(
+                route = HOME_ROUTE,
+                startDestination = Screen.Teams.route
+            ) {
+                composable(Screen.Teams.route) { TeamsScreen() }
+                composable(Screen.Riders.route) { RidersScreen() }
+                composable(Screen.Races.route) { RacesScreen() }
+            }
         }
     }
 }
