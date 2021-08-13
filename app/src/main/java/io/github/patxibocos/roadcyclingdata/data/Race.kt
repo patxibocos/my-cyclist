@@ -24,6 +24,7 @@ data class Race(
                         id = "stage-1",
                         startDate = LocalDate.now(),
                         distance = 123F,
+                        type = Stage.Type.FLAT,
                         departure = "Bilbao",
                         arrival = "Barcelona",
                     ),
@@ -31,6 +32,7 @@ data class Race(
                         id = "stage-1",
                         startDate = LocalDate.now(),
                         distance = 200F,
+                        type = Stage.Type.HILLS_FLAT_FINISH,
                         departure = "Barcelona",
                         arrival = "Madrid",
                     )

@@ -10,6 +10,7 @@ internal data class JsonStage(
     val id: String,
     @Contextual val startDate: LocalDate,
     val distance: Float,
+    val type: String?,
     val departure: String?,
     val arrival: String?,
 ) {
@@ -17,6 +18,7 @@ internal data class JsonStage(
         id = id,
         startDate = startDate,
         distance = distance,
+        type = type?.let { Stage.Type.valueOf(it) },
         departure = departure,
         arrival = arrival,
     )
