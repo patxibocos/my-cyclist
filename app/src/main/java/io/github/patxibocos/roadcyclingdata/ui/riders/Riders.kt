@@ -41,9 +41,8 @@ import coil.bitmap.BitmapPool
 import coil.compose.rememberImagePainter
 import coil.size.Size
 import coil.transform.Transformation
-import io.github.patxibocos.roadcyclingdata.Country
 import io.github.patxibocos.roadcyclingdata.data.Rider
-import io.github.patxibocos.roadcyclingdata.getEmoji
+import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 import kotlin.math.min
 
 @Composable
@@ -177,7 +176,7 @@ internal fun RiderRow(
 internal fun Country(countryCode: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
-        text = "${getEmoji(Country(countryCode))} $countryCode",
+        text = "${getCountryEmoji(countryCode)} $countryCode",
         style = MaterialTheme.typography.body1,
     )
 }

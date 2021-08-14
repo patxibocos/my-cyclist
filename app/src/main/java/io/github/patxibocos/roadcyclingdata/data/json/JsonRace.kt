@@ -9,6 +9,7 @@ import java.time.LocalDate
 internal data class JsonRace(
     val id: String,
     val name: String,
+    val country: String,
     @Contextual val startDate: LocalDate,
     @Contextual val endDate: LocalDate,
     val website: String?,
@@ -18,6 +19,7 @@ internal data class JsonRace(
     fun toRace(): Race = Race(
         id = id,
         name = name,
+        country = country,
         startDate = startDate,
         endDate = endDate,
         website = website,

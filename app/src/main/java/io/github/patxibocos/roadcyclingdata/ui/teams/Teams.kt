@@ -17,9 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.roadcyclingdata.Country
 import io.github.patxibocos.roadcyclingdata.data.Team
-import io.github.patxibocos.roadcyclingdata.getEmoji
+import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
 @Composable
 fun TeamsScreen() {
@@ -47,7 +46,7 @@ internal fun TeamRow(team: Team = Team.Preview) {
         Box {
             Text(
                 modifier = Modifier.padding(start = 75.dp),
-                text = getEmoji(Country(team.country)),
+                text = getCountryEmoji(team.country),
                 style = MaterialTheme.typography.h3,
             )
             Image(
