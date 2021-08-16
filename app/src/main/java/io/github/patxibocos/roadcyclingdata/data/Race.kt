@@ -47,7 +47,10 @@ data class Race(
                     TeamParticipation(
                         team = Team.Preview,
                         riders = listOf(
-                            Rider.Preview
+                            RiderParticipation(
+                                rider = Rider.Preview,
+                                number = 1,
+                            )
                         ),
                     )
                 )

@@ -4,6 +4,7 @@ import android.content.Context
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.Rider
+import io.github.patxibocos.roadcyclingdata.data.RiderParticipation
 import io.github.patxibocos.roadcyclingdata.data.Team
 import io.github.patxibocos.roadcyclingdata.data.TeamParticipation
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +100,10 @@ internal class JsonDataRepository(private val context: Context) :
                         TeamParticipation(
                             team = team,
                             riders = jsonTeamParticipation.riders.map {
-                                ridersById[it]!!
+                                RiderParticipation(
+                                    ridersById[it.rider]!!,
+                                    it.number
+                                )
                             }
                         )
                     }
