@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,27 +23,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.roadcyclingdata.data.Race
-import io.github.patxibocos.roadcyclingdata.data.Stage
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun RacesScreen() {
-    Races(viewModel = hiltViewModel())
+fun RacesScreen(onRaceSelected: (Race) -> Unit) {
+    Races(
+        viewModel = hiltViewModel(),
+        onRaceSelected = onRaceSelected,
+    )
 }
 
 @Composable
-internal fun Races(viewModel: RacesViewModel) {
+internal fun Races(
+    viewModel: RacesViewModel,
+    onRaceSelected: (Race) -> Unit
+) {
     val races by viewModel.races.collectAsState()
-    val selectedRace by viewModel.selectedRiderIndex.collectAsState()
-    RacesList(races, selectedRace, viewModel::onRaceSelected)
+    RacesList(races, onRaceSelected)
 }
 
 @Composable
-internal fun RacesList(races: List<Race>, selectedRace: Int, onRaceSelected: (Race) -> Unit) {
+internal fun RacesList(races: List<Race>, onRaceSelected: (Race) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        itemsIndexed(items = races, key = { _, race -> race.id }, itemContent = { index, race ->
-            RaceRow(race, selectedRace == index, onRaceSelected)
+        items(items = races, key = Race::id, itemContent = { race ->
+            RaceRow(race, onRaceSelected)
         })
     }
 }
@@ -52,7 +56,6 @@ internal fun RacesList(races: List<Race>, selectedRace: Int, onRaceSelected: (Ra
 @Preview
 internal fun RaceRow(
     race: Race = Race.Preview,
-    selected: Boolean = true,
     onRaceSelected: (Race) -> Unit = {}
 ) {
     Column(
@@ -85,17 +88,6 @@ internal fun RaceRow(
             Text(
                 text = if (race.isSingleDay()) "Single day race" else "${race.stages.size} stages"
             )
-        }
-    }
-}
-
-@Composable
-internal fun RaceStages(stages: List<Stage>) {
-    stages.forEachIndexed { index, stage ->
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Stage ${index + 1}", modifier = Modifier.padding(end = 10.dp))
-            Text(text = "${stage.distance} km", modifier = Modifier.padding(end = 10.dp))
-            Text(text = "${stage.departure} - ${stage.arrival}")
         }
     }
 }

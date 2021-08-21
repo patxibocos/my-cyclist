@@ -19,10 +19,7 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
 
     private val _riders: MutableStateFlow<List<Rider>> = MutableStateFlow(emptyList())
     private val _search = MutableStateFlow("")
-    private val _selectedRider: MutableStateFlow<Rider?> = MutableStateFlow(null)
-    private val _selectedRiderIndex: MutableStateFlow<Int> = MutableStateFlow(-1)
     val riders: StateFlow<List<Rider>> = _riders
-    val selectedRiderIndex: StateFlow<Int> = _selectedRiderIndex
 
     private fun List<Rider>.filter(query: String): List<Rider> {
         val querySplits = query.trim().split(" ").map { it.trim() }
@@ -40,13 +37,10 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
     init {
         viewModelScope.launch(Dispatchers.Default) {
             val ridersFlow = dataRepository.riders()
-            combine(ridersFlow, _search, _selectedRider) { riders, query, selectedRider ->
-                val filteredRiders = riders.filter(query)
-                val selectedRiderIndex = filteredRiders.indexOf(selectedRider)
-                filteredRiders to selectedRiderIndex
-            }.collect { (filteredRiders, selectedRiderIndex) ->
+            combine(ridersFlow, _search) { riders, query ->
+                riders.filter(query)
+            }.collect { filteredRiders ->
                 _riders.emit(filteredRiders)
-                _selectedRiderIndex.emit(selectedRiderIndex)
             }
         }
     }
@@ -54,16 +48,6 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
     fun onSearched(query: String) {
         viewModelScope.launch {
             _search.emit(query)
-        }
-    }
-
-    fun onRiderSelected(rider: Rider) {
-        viewModelScope.launch {
-            if (_selectedRider.value == rider) {
-                _selectedRider.emit(null)
-            } else {
-                _selectedRider.emit(rider)
-            }
         }
     }
 }

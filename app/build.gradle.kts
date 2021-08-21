@@ -24,7 +24,8 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -52,6 +53,7 @@ dependencies {
 
     implementation(libs.android.material)
     implementation(libs.androidx.compose.material.material)
+    implementation(libs.androidx.compose.material.material.icons.extended)
     implementation(libs.androidx.compose.ui.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.core)
