@@ -1,6 +1,8 @@
 package io.github.patxibocos.roadcyclingdata.data.json
 
-import android.content.Context
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.Rider
@@ -13,6 +15,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
@@ -29,8 +32,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-internal class JsonDataRepository(private val context: Context) :
-    DataRepository {
+internal class JsonDataRepository : DataRepository {
 
     private val _teams = MutableSharedFlow<List<Team>>(replay = 1)
     private val _riders = MutableSharedFlow<List<Rider>>(replay = 1)
@@ -60,14 +62,8 @@ internal class JsonDataRepository(private val context: Context) :
         return teams.flatMap(Team::riders).distinctBy { it.id }.sortedWith(ridersComparator)
     }
 
-    private suspend inline fun <reified T> readJson(fileName: String): List<T> {
-        val teamsJson = withContext(Dispatchers.IO) {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        }
-        return withContext(Dispatchers.Default) {
-            json.decodeFromString(teamsJson)
-        }
-    }
+    private suspend inline fun <reified T> readJson(jsonContent: String): List<T> =
+        withContext(Dispatchers.Default) { json.decodeFromString(jsonContent) }
 
     data class TeamsRacesRiders(
         val teams: List<Team>,
@@ -115,9 +111,16 @@ internal class JsonDataRepository(private val context: Context) :
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            val jsonTeamsDeferred = async { readJson<JsonTeam>("teams.json") }
-            val jsonRidersDeferred = async { readJson<JsonRider>("riders.json") }
-            val jsonRacesDeferred = async { readJson<JsonRace>("races.json") }
+            val remoteConfig = Firebase.remoteConfig
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600 * 24
+            }
+            remoteConfig.setConfigSettingsAsync(configSettings)
+            remoteConfig.fetchAndActivate().await()
+
+            val jsonTeamsDeferred = async { readJson<JsonTeam>(remoteConfig.getString("teams")) }
+            val jsonRidersDeferred = async { readJson<JsonRider>(remoteConfig.getString("riders")) }
+            val jsonRacesDeferred = async { readJson<JsonRace>(remoteConfig.getString("races")) }
 
             val jsonTeams = jsonTeamsDeferred.await()
             val jsonRiders = jsonRidersDeferred.await()

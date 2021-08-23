@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization") version "1.5.21"
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -61,7 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
+    implementation(libs.firebase.config)
     implementation(libs.hilt.library)
+    implementation(libs.kotlin.coroutines.play.services)
     implementation(libs.kotlin.serialization)
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
