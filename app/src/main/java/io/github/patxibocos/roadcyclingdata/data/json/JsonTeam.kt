@@ -19,7 +19,7 @@ internal data class JsonTeam(
     fun toTeam(): Team = Team(
         id = id,
         name = name,
-        status = status,
+        status = Team.Status.valueOf(status),
         abbreviation = abbreviation,
         country = country,
         bike = bike,

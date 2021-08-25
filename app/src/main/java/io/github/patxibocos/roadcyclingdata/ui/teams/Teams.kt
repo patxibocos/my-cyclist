@@ -48,8 +48,13 @@ internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        items(items = teams, key = Team::id) { team ->
-            TeamRow(team, onTeamSelected)
+        teams.groupBy { it.status }.forEach { (status, teams) ->
+            item {
+                Text(text = status.statusName)
+            }
+            items(items = teams, key = Team::id) { team ->
+                TeamRow(team, onTeamSelected)
+            }
         }
     }
 }

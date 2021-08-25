@@ -3,7 +3,7 @@ package io.github.patxibocos.roadcyclingdata.data
 data class Team(
     val id: String,
     val name: String,
-    val status: String,
+    val status: Status,
     val abbreviation: String,
     val country: String,
     val bike: String,
@@ -12,12 +12,17 @@ data class Team(
     val year: Int,
     val riders: MutableList<Rider> = mutableListOf(),
 ) {
+    enum class Status(val statusName: String) {
+        WT("WorldTeams"),
+        PRT("ProTeams"),
+    }
+
     companion object {
         val Preview by lazy {
             Team(
                 id = "cycling-team",
                 name = "Cycling Team",
-                status = "WT",
+                status = Status.WT,
                 abbreviation = "CT",
                 country = "ES",
                 bike = "Canyon",

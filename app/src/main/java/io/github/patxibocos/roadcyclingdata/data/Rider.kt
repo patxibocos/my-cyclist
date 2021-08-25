@@ -31,7 +31,7 @@ data class Rider(
                 team = Team(
                     id = "movistar-team-2021",
                     name = "Movistar Team",
-                    status = "WT",
+                    status = Team.Status.WT,
                     abbreviation = "MOV",
                     country = "ES",
                     bike = "Canyon",

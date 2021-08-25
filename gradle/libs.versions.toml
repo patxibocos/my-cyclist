@@ -26,7 +26,7 @@ androidx-test-junit = "androidx.test.ext:junit:1.1.3"
 androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.4.0"
 junit = "junit:junit:4.13.2"
 
-android-plugin-gradle = "com.android.tools.build:gradle:7.1.0-alpha09"
+android-plugin-gradle = "com.android.tools.build:gradle:7.1.0-alpha10"
 google-services = "com.google.gms:google-services:4.3.10"
 kotlin-plugin-gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
 hilt-plugin-gradle = "com.google.dagger:hilt-android-gradle-plugin:2.38.1"
