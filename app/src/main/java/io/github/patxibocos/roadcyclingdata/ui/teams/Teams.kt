@@ -78,10 +78,10 @@ internal fun TeamRow(
             )
             Image(
                 modifier = Modifier.size(75.dp),
-                painter = rememberImagePainter(data = team.jersey, builder = {
-                    transformations(CustomCircleCropTransformation())
-                    crossfade(true)
-                }),
+                painter = rememberImagePainter(
+                    data = team.jersey,
+                    builder = { transformations(CustomCircleCropTransformation()) }
+                ),
                 contentDescription = null,
             )
         }

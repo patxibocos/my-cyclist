@@ -82,10 +82,10 @@ internal fun RiderRow(
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
             modifier = Modifier.size(75.dp),
-            painter = rememberImagePainter(data = rider.photo, builder = {
-                transformations(CustomCircleCropTransformation())
-                crossfade(true)
-            }),
+            painter = rememberImagePainter(
+                data = rider.photo,
+                builder = { transformations(CustomCircleCropTransformation()) }
+            ),
             contentDescription = null,
         )
         Box(
