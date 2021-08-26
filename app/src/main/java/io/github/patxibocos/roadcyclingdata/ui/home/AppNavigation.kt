@@ -15,6 +15,7 @@ import io.github.patxibocos.roadcyclingdata.ui.races.RaceScreen
 import io.github.patxibocos.roadcyclingdata.ui.races.RacesScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RiderScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
+import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
 
@@ -48,6 +49,12 @@ private sealed class LeafScreen(
     object Race : LeafScreen("race/{raceId}") {
         fun createRoute(root: Screen, raceId: String): String {
             return "${root.route}/race/$raceId"
+        }
+    }
+
+    object Stage : LeafScreen("race/{raceId}/stage/{stageId}") {
+        fun createRoute(root: Screen, raceId: String, stageId: String): String {
+            return "${root.route}/race/$raceId/stage/$stageId"
         }
     }
 }
@@ -106,7 +113,25 @@ internal fun AppNavigation(
             composable(LeafScreen.Race.createRoute(Screen.Races)) {
                 val raceId = it.arguments?.getString("raceId")
                 if (raceId != null) {
-                    RaceScreen(raceId)
+                    RaceScreen(
+                        raceId,
+                        onStageSelected = { stage ->
+                            navController.navigate(
+                                LeafScreen.Stage.createRoute(
+                                    Screen.Races,
+                                    raceId,
+                                    stageId = stage.id,
+                                )
+                            )
+                        }
+                    )
+                }
+            }
+            composable(LeafScreen.Stage.createRoute(Screen.Races)) {
+                val raceId = it.arguments?.getString("raceId")
+                val stageId = it.arguments?.getString("stageId")
+                if (raceId != null && stageId != null) {
+                    StageScreen(raceId, stageId)
                 }
             }
         }

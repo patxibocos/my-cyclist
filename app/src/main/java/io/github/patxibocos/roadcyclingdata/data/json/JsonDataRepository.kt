@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -62,6 +63,7 @@ internal class JsonDataRepository : DataRepository {
         return teams.flatMap(Team::riders).distinctBy { it.id }.sortedWith(ridersComparator)
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend inline fun <reified T> readJson(jsonContent: String): List<T> =
         withContext(Dispatchers.Default) { json.decodeFromString(jsonContent) }
 
@@ -113,7 +115,7 @@ internal class JsonDataRepository : DataRepository {
         CoroutineScope(Dispatchers.Default).launch {
             val remoteConfig = Firebase.remoteConfig
             val configSettings = remoteConfigSettings {
-                minimumFetchIntervalInSeconds = 3600 * 24
+                minimumFetchIntervalInSeconds = (3600 * 24).toLong()
             }
             remoteConfig.setConfigSettingsAsync(configSettings)
             remoteConfig.fetchAndActivate().await()

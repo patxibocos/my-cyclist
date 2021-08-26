@@ -6,7 +6,7 @@
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 
-    <style name="Theme.RoadCyclingData" parent="Base.Theme.RoadCyclingData"></style>
+    <style name="Theme.RoadCyclingData" parent="Base.Theme.RoadCyclingData" />
 
     <style name="Theme.RoadCyclingData.NoActionBar">
         <item name="android:windowActionBar">false</item>
@@ -20,10 +20,6 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">
             @bool/use_light_nav_bar
         </item>
-    </style>
-
-    <style name="Theme.RoadCyclingData.Home" parent="Theme.RoadCyclingData.Immerse">
-        <item name="android:windowLightStatusBar">@bool/use_light_status_bar</item>
     </style>
 
 </resources>
