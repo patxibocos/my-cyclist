@@ -7,6 +7,8 @@ import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.data.RiderParticipation
+import io.github.patxibocos.roadcyclingdata.data.RiderResult
+import io.github.patxibocos.roadcyclingdata.data.Stage
 import io.github.patxibocos.roadcyclingdata.data.Team
 import io.github.patxibocos.roadcyclingdata.data.TeamParticipation
 import kotlinx.coroutines.CoroutineScope
@@ -91,6 +93,8 @@ internal class JsonDataRepository : DataRepository {
         val teamsById: Map<String, Team> = teams.associateBy({ it.id }, { it })
         val ridersById: Map<String, Rider> = riders.associateBy({ it.id }, { it })
         val racesById: Map<String, Race> = races.associateBy({ it.id }, { it })
+        val stagesById: Map<String, Stage> =
+            races.flatMap(Race::stages).associateBy({ it.id }, { it })
         jsonRaces.forEach { jsonRace ->
             racesById[jsonRace.id]!!.startList.addAll(
                 jsonRace.startList.mapNotNull { jsonTeamParticipation ->
@@ -107,6 +111,19 @@ internal class JsonDataRepository : DataRepository {
                     }
                 }
             )
+            jsonRace.stages.forEach { jsonStage ->
+                stagesById[jsonStage.id]!!.result.addAll(
+                    jsonStage.result.mapNotNull { jsonRiderResult ->
+                        ridersById[jsonRiderResult.rider]?.let { rider ->
+                            RiderResult(
+                                position = jsonRiderResult.position,
+                                rider = rider,
+                                time = jsonRiderResult.time,
+                            )
+                        }
+                    }
+                )
+            }
         }
         return TeamsRacesRiders(teams, riders, races)
     }

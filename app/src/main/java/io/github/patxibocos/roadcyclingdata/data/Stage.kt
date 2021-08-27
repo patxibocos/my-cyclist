@@ -9,6 +9,7 @@ data class Stage(
     val type: Type?,
     val departure: String?,
     val arrival: String?,
+    val result: MutableList<RiderResult> = mutableListOf(),
 ) {
     enum class Type {
         FLAT,

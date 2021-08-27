@@ -13,6 +13,7 @@ internal data class JsonStage(
     val type: String?,
     val departure: String?,
     val arrival: String?,
+    val result: List<JsonRiderResult>,
 ) {
     fun toStage(): Stage = Stage(
         id = id,
