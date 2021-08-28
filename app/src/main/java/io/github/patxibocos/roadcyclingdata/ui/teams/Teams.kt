@@ -39,7 +39,7 @@ internal fun Teams(
     viewModel: TeamsViewModel,
     onTeamSelected: (Team) -> Unit
 ) {
-    val teams by viewModel.getTeams().collectAsState(initial = emptyList())
+    val teams by viewModel.teams.collectAsState()
     TeamsList(teams, onTeamSelected)
 }
 
