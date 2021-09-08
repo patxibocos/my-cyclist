@@ -25,10 +25,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayInputStream
 import java.text.Collator
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Locale
+import java.util.zip.GZIPInputStream
 
 internal class ProtobufDataRepository : DataRepository {
 
@@ -155,6 +157,14 @@ internal class ProtobufDataRepository : DataRepository {
         return TeamsRacesRiders(teams, riders, races)
     }
 
+    private fun decodeBase64ThenUnzip(gzipBase64: String) =
+        ByteArrayInputStream(
+            Base64.decode(
+                gzipBase64,
+                Base64.DEFAULT
+            )
+        ).use { inputStream -> GZIPInputStream(inputStream).use { it.readBytes() } }
+
     init {
         CoroutineScope(Dispatchers.Default).launch {
             val remoteConfig = Firebase.remoteConfig
@@ -165,19 +175,16 @@ internal class ProtobufDataRepository : DataRepository {
             remoteConfig.fetchAndActivate().await()
 
             val jsonTeamsDeferred = async {
-                TeamsOuterClass.Teams.parseFrom(
-                    Base64.decode(remoteConfig.getString("teams"), Base64.DEFAULT)
-                )
+                val teamsBase64 = remoteConfig.getString("teams")
+                TeamsOuterClass.Teams.parseFrom(decodeBase64ThenUnzip(teamsBase64))
             }
             val jsonRidersDeferred = async {
-                RidersOuterClass.Riders.parseFrom(
-                    Base64.decode(remoteConfig.getString("riders"), Base64.DEFAULT)
-                )
+                val ridersBase64 = remoteConfig.getString("riders")
+                RidersOuterClass.Riders.parseFrom(decodeBase64ThenUnzip(ridersBase64))
             }
             val jsonRacesDeferred = async {
-                RacesOuterClass.Races.parseFrom(
-                    Base64.decode(remoteConfig.getString("races"), Base64.DEFAULT)
-                )
+                val racesBase64 = remoteConfig.getString("races")
+                RacesOuterClass.Races.parseFrom(decodeBase64ThenUnzip(racesBase64))
             }
 
             val teamsMessage = jsonTeamsDeferred.await()
