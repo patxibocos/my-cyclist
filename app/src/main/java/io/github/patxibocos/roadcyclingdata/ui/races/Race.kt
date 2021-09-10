@@ -11,7 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.github.patxibocos.roadcyclingdata.data.Stage
+import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
+import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
 
 @Composable
 fun RaceScreen(raceId: String, onStageSelected: (Stage) -> Unit) {
@@ -28,7 +29,7 @@ internal fun Race(viewModel: RaceViewModel, raceId: String, onStageSelected: (St
     if (race != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(text = race.name)
-            StagesList(race.stages, onStageSelected)
+            StagesList(race.stagesList, onStageSelected)
         }
     }
 }
@@ -36,7 +37,7 @@ internal fun Race(viewModel: RaceViewModel, raceId: String, onStageSelected: (St
 @Composable
 internal fun StagesList(stages: List<Stage>, onStageSelected: (Stage) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = stages, key = Stage::id, itemContent = { stage ->
+        items(items = stages, key = Stage::getId, itemContent = { stage ->
             StageRow(stage, onStageSelected)
         })
     }
@@ -48,6 +49,6 @@ internal fun StageRow(stage: Stage, onStageSelected: (Stage) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onStageSelected(stage) },
-        text = stage.startDate.toString()
+        text = isoDateFormat(stage.startDate)
     )
 }

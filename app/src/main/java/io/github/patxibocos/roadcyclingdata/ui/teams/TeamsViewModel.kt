@@ -3,8 +3,8 @@ package io.github.patxibocos.roadcyclingdata.ui.teams
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
-import io.github.patxibocos.roadcyclingdata.data.Team
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

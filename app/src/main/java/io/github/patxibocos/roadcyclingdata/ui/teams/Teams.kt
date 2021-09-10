@@ -17,12 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.roadcyclingdata.data.Team
+import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -51,9 +50,9 @@ internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
     ) {
         teams.groupBy { it.status }.forEach { (status, teams) ->
             item {
-                Text(text = status.statusName)
+                Text(text = status.name)
             }
-            items(items = teams, key = Team::id) { team ->
+            items(items = teams, key = Team::getId) { team ->
                 TeamRow(team, onTeamSelected)
             }
         }
@@ -62,9 +61,8 @@ internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-@Preview
 internal fun TeamRow(
-    team: Team = Team.Preview,
+    team: Team,
     onTeamSelected: (Team) -> Unit = {}
 ) {
     Row(

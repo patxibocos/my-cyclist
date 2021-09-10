@@ -19,12 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
+import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun RacesScreen(onRaceSelected: (Race) -> Unit) {
@@ -46,16 +45,15 @@ internal fun Races(
 @Composable
 internal fun RacesList(races: List<Race>, onRaceSelected: (Race) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = races, key = Race::id, itemContent = { race ->
+        items(items = races, key = Race::getId, itemContent = { race ->
             RaceRow(race, onRaceSelected)
         })
     }
 }
 
 @Composable
-@Preview
 internal fun RaceRow(
-    race: Race = Race.Preview,
+    race: Race,
     onRaceSelected: (Race) -> Unit = {}
 ) {
     Column(
@@ -70,7 +68,7 @@ internal fun RaceRow(
         )
         Row {
             Card(border = BorderStroke(2.dp, Color.White)) {
-                val (day, month) = race.startDate.format(DateTimeFormatter.ofPattern("dd MMM"))
+                val (day, month) = ddMMMFormat(race.startDate)
                     .uppercase()
                     .split(" ")
                 Column(modifier = Modifier.padding(horizontal = 5.dp)) {
@@ -86,7 +84,7 @@ internal fun RaceRow(
                 }
             }
             Text(
-                text = if (race.isSingleDay()) "Single day race" else "${race.stages.size} stages"
+                text = if (race.stagesCount == 0) "Single day race" else "${race.stagesCount} stages"
             )
         }
     }
