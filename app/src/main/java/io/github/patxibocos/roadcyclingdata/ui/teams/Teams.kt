@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
+import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -61,8 +63,9 @@ internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
+@Preview
 internal fun TeamRow(
-    team: Team,
+    team: Team = teamPreview,
     onTeamSelected: (Team) -> Unit = {}
 ) {
     Row(

@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
+import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -52,8 +54,9 @@ internal fun RacesList(races: List<Race>, onRaceSelected: (Race) -> Unit) {
 }
 
 @Composable
+@Preview
 internal fun RaceRow(
-    race: Race,
+    race: Race = racePreview,
     onRaceSelected: (Race) -> Unit = {}
 ) {
     Column(

@@ -25,10 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
+import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -71,9 +74,11 @@ internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
+@Preview
 internal fun RiderRow(
-    rider: Rider,
+    rider: Rider = riderPreview,
     onRiderSelected: (Rider) -> Unit = {}
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
