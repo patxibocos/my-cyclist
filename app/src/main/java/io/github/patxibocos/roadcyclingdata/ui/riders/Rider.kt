@@ -1,5 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.riders
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,8 +16,11 @@ fun RiderScreen(riderId: String) {
 
 @Composable
 internal fun Rider(viewModel: RiderViewModel, riderId: String) {
-    val rider = viewModel.getRider(riderId).collectAsState(null).value
-    if (rider != null) {
-        Text(text = rider.lastName)
+    val riderOfTeam = viewModel.getRiderOfTeam(riderId).collectAsState(null).value
+    if (riderOfTeam != null) {
+        Column {
+            Text(text = riderOfTeam.rider.lastName)
+            Text(text = riderOfTeam.team.name)
+        }
     }
 }
