@@ -4,11 +4,11 @@ import android.util.Base64
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
 import io.github.patxibocos.pcsscraper.protobuf.race.RacesOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
 import io.github.patxibocos.pcsscraper.protobuf.rider.RidersOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
 import io.github.patxibocos.pcsscraper.protobuf.team.TeamsOuterClass
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import kotlinx.coroutines.CoroutineScope
@@ -22,9 +22,9 @@ import java.util.zip.GZIPInputStream
 
 internal class ProtobufDataRepository : DataRepository {
 
-    private val _teams = MutableSharedFlow<List<TeamOuterClass.Team>>(replay = 1)
-    private val _riders = MutableSharedFlow<List<RiderOuterClass.Rider>>(replay = 1)
-    private val _races = MutableSharedFlow<List<RaceOuterClass.Race>>(replay = 1)
+    private val _teams = MutableSharedFlow<List<Team>>(replay = 1)
+    private val _riders = MutableSharedFlow<List<Rider>>(replay = 1)
+    private val _races = MutableSharedFlow<List<Race>>(replay = 1)
 
     private fun decodeBase64ThenUnzip(gzipBase64: String) =
         ByteArrayInputStream(
@@ -55,7 +55,7 @@ internal class ProtobufDataRepository : DataRepository {
         }
     }
 
-    override fun teams(): Flow<List<TeamOuterClass.Team>> = _teams
-    override fun riders(): Flow<List<RiderOuterClass.Rider>> = _riders
-    override fun races(): Flow<List<RaceOuterClass.Race>> = _races
+    override fun teams(): Flow<List<Team>> = _teams
+    override fun riders(): Flow<List<Rider>> = _riders
+    override fun races(): Flow<List<Race>> = _races
 }
