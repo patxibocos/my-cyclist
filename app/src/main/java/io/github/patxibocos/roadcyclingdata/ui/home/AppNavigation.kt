@@ -81,7 +81,9 @@ internal fun AppNavigation(
             composable(LeafScreen.Team.createRoute(Screen.Teams)) {
                 val teamId = it.arguments?.getString("teamId")
                 if (teamId != null) {
-                    TeamScreen(teamId)
+                    TeamScreen(teamId, onRiderSelected = {
+                        navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
+                    })
                 }
             }
         }
@@ -97,7 +99,9 @@ internal fun AppNavigation(
             composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
                 val riderId = it.arguments?.getString("riderId")
                 if (riderId != null) {
-                    RiderScreen(riderId)
+                    RiderScreen(riderId, onTeamSelected = {
+                        navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
+                    })
                 }
             }
         }

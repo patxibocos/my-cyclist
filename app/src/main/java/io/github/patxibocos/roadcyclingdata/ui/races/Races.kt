@@ -87,7 +87,7 @@ internal fun RaceRow(
                 }
             }
             Text(
-                text = if (race.stagesCount == 0) "Single day race" else "${race.stagesCount} stages"
+                text = if (race.stagesCount == 1) "Single day race" else "${race.stagesCount} stages"
             )
         }
     }

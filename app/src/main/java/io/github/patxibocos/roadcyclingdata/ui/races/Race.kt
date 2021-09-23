@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
+import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
 
 @Composable
@@ -29,7 +30,11 @@ internal fun Race(viewModel: RaceViewModel, raceId: String, onStageSelected: (St
     if (race != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(text = race.name)
-            StagesList(race.stagesList, onStageSelected)
+            if (race.stagesCount == 1) {
+                StageScreen(raceId = raceId, stageId = race.stagesList.first().id)
+            } else {
+                StagesList(race.stagesList, onStageSelected)
+            }
         }
     }
 }
