@@ -5,19 +5,29 @@ import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import io.github.patxibocos.roadcyclingdata.ui.races.RaceScreen
+import io.github.patxibocos.roadcyclingdata.ui.races.RaceViewModel
 import io.github.patxibocos.roadcyclingdata.ui.races.RacesScreen
+import io.github.patxibocos.roadcyclingdata.ui.races.RacesViewModel
 import io.github.patxibocos.roadcyclingdata.ui.riders.RiderScreen
+import io.github.patxibocos.roadcyclingdata.ui.riders.RiderViewModel
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
+import io.github.patxibocos.roadcyclingdata.ui.riders.RidersViewModel
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
+import io.github.patxibocos.roadcyclingdata.ui.stages.StageViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamScreen
+import io.github.patxibocos.roadcyclingdata.ui.teams.TeamViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
+import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsViewModel
 
 internal sealed class Screen(val route: String, val icon: ImageVector) {
     object Teams : Screen("teams", Icons.Outlined.Group)
@@ -74,16 +84,30 @@ internal fun AppNavigation(
             route = Screen.Teams.route
         ) {
             composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
-                TeamsScreen(onTeamSelected = {
-                    navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
-                })
+                val viewModel = hiltViewModel<TeamsViewModel>()
+                val teams by viewModel.teams.collectAsState()
+                TeamsScreen(
+                    teams = teams,
+                    onTeamSelected = {
+                        navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
+                    }
+                )
             }
             composable(LeafScreen.Team.createRoute(Screen.Teams)) {
-                val teamId = it.arguments?.getString("teamId")
-                if (teamId != null) {
-                    TeamScreen(teamId, onRiderSelected = {
-                        navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
-                    })
+                it.arguments?.getString("teamId")?.let { teamId ->
+                    val viewModel = hiltViewModel<TeamViewModel>()
+                    val teamOfRiders by viewModel.getTeamOfRiders(teamId).collectAsState(null)
+                    TeamScreen(
+                        teamOfRiders = teamOfRiders,
+                        onRiderSelected = {
+                            navController.navigate(
+                                LeafScreen.Rider.createRoute(
+                                    Screen.Riders,
+                                    it.id
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -92,16 +116,36 @@ internal fun AppNavigation(
             route = Screen.Riders.route
         ) {
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
-                RidersScreen(onRiderSelected = {
-                    navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
-                })
+                val viewModel = hiltViewModel<RidersViewModel>()
+                val riders by viewModel.riders.collectAsState()
+                RidersScreen(
+                    riders = riders,
+                    onRiderSearched = viewModel::onSearched,
+                    onRiderSelected = {
+                        navController.navigate(
+                            LeafScreen.Rider.createRoute(
+                                Screen.Riders,
+                                it.id
+                            )
+                        )
+                    }
+                )
             }
             composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
-                val riderId = it.arguments?.getString("riderId")
-                if (riderId != null) {
-                    RiderScreen(riderId, onTeamSelected = {
-                        navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
-                    })
+                it.arguments?.getString("riderId")?.let { riderId ->
+                    val viewModel = hiltViewModel<RiderViewModel>()
+                    val riderOfTeam by viewModel.getRiderOfTeam(riderId).collectAsState(null)
+                    RiderScreen(
+                        riderOfTeam = riderOfTeam,
+                        onTeamSelected = {
+                            navController.navigate(
+                                LeafScreen.Team.createRoute(
+                                    Screen.Teams,
+                                    it.id
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -110,15 +154,21 @@ internal fun AppNavigation(
             route = Screen.Races.route
         ) {
             composable(LeafScreen.Races.createRoute(Screen.Races)) {
-                RacesScreen(onRaceSelected = {
-                    navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
-                })
+                val viewModel = hiltViewModel<RacesViewModel>()
+                val races by viewModel.races.collectAsState()
+                RacesScreen(
+                    races = races,
+                    onRaceSelected = {
+                        navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
+                    }
+                )
             }
             composable(LeafScreen.Race.createRoute(Screen.Races)) {
-                val raceId = it.arguments?.getString("raceId")
-                if (raceId != null) {
+                it.arguments?.getString("raceId")?.let { raceId ->
+                    val viewModel = hiltViewModel<RaceViewModel>()
+                    val race by viewModel.getRace(raceId).collectAsState(null)
                     RaceScreen(
-                        raceId,
+                        race = race,
                         onStageSelected = { stage ->
                             navController.navigate(
                                 LeafScreen.Stage.createRoute(
@@ -135,7 +185,9 @@ internal fun AppNavigation(
                 val raceId = it.arguments?.getString("raceId")
                 val stageId = it.arguments?.getString("stageId")
                 if (raceId != null && stageId != null) {
-                    StageScreen(raceId, stageId)
+                    val viewModel = hiltViewModel<StageViewModel>()
+                    val stage by viewModel.getStage(raceId, stageId).collectAsState(null)
+                    StageScreen(stage)
                 }
             }
         }

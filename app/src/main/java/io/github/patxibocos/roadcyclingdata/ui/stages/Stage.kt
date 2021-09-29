@@ -2,21 +2,13 @@ package io.github.patxibocos.roadcyclingdata.ui.stages
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
+import io.github.patxibocos.roadcyclingdata.ui.preview.stagePreview
 
+@Preview
 @Composable
-fun StageScreen(raceId: String, stageId: String) {
-    Stage(
-        viewModel = hiltViewModel(),
-        raceId = raceId,
-        stageId = stageId,
-    )
-}
-
-@Composable
-internal fun Stage(viewModel: StageViewModel, raceId: String, stageId: String) {
-    val stage = viewModel.getStage(raceId, stageId).collectAsState(null).value
+fun StageScreen(stage: Stage? = stagePreview) {
     if (stage != null) {
         Text(text = stage.distance.toString())
     }

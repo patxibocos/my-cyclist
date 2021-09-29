@@ -13,39 +13,20 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
+@Preview
 @Composable
-fun RacesScreen(onRaceSelected: (Race) -> Unit) {
-    Races(
-        viewModel = hiltViewModel(),
-        onRaceSelected = onRaceSelected,
-    )
-}
-
-@Composable
-internal fun Races(
-    viewModel: RacesViewModel,
-    onRaceSelected: (Race) -> Unit
-) {
-    val races by viewModel.races.collectAsState()
-    RacesList(races, onRaceSelected)
-}
-
-@Composable
-internal fun RacesList(races: List<Race>, onRaceSelected: (Race) -> Unit) {
+fun RacesScreen(races: List<Race> = listOf(racePreview), onRaceSelected: (Race) -> Unit = {}) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(items = races, key = Race::getId, itemContent = { race ->
             RaceRow(race, onRaceSelected)
@@ -54,10 +35,9 @@ internal fun RacesList(races: List<Race>, onRaceSelected: (Race) -> Unit) {
 }
 
 @Composable
-@Preview
 internal fun RaceRow(
-    race: Race = racePreview,
-    onRaceSelected: (Race) -> Unit = {}
+    race: Race,
+    onRaceSelected: (Race) -> Unit
 ) {
     Column(
         modifier = Modifier

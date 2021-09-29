@@ -37,6 +37,17 @@ val riderPreview: Rider by lazy {
         .build()
 }
 
+val stagePreview: Stage by lazy {
+    Stage.newBuilder()
+        .setId("stage-1")
+        .setStartDate(Timestamp.getDefaultInstance())
+        .setDistance(123F)
+        .setType(Stage.Type.TYPE_FLAT)
+        .setDeparture("Bilbao")
+        .setArrival("Barcelona")
+        .build()
+}
+
 val racePreview: Race by lazy {
     Race.newBuilder()
         .setId("vuelta-a-espana")
@@ -46,24 +57,7 @@ val racePreview: Race by lazy {
         .setEndDate(Timestamp.getDefaultInstance())
         .setWebsite("https://www.lavuelta.es/")
         .addAllStages(
-            listOf(
-                Stage.newBuilder()
-                    .setId("stage-1")
-                    .setStartDate(Timestamp.getDefaultInstance())
-                    .setDistance(123F)
-                    .setType(Stage.Type.TYPE_FLAT)
-                    .setDeparture("Bilbao")
-                    .setArrival("Barcelona")
-                    .build(),
-                Stage.newBuilder()
-                    .setId("stage-2")
-                    .setStartDate(Timestamp.getDefaultInstance())
-                    .setDistance(456F)
-                    .setType(Stage.Type.TYPE_MOUNTAINS_UPHILL_FINISH)
-                    .setDeparture("Barcelona")
-                    .setArrival("Madrid")
-                    .build()
-            )
+            listOf(stagePreview)
         )
         .addAllTeams(
             listOf(

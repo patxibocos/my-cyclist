@@ -14,12 +14,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
@@ -27,25 +24,9 @@ import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
+@Preview
 @Composable
-fun TeamsScreen(onTeamSelected: (Team) -> Unit) {
-    Teams(
-        viewModel = hiltViewModel(),
-        onTeamSelected = onTeamSelected,
-    )
-}
-
-@Composable
-internal fun Teams(
-    viewModel: TeamsViewModel,
-    onTeamSelected: (Team) -> Unit
-) {
-    val teams by viewModel.teams.collectAsState()
-    TeamsList(teams, onTeamSelected)
-}
-
-@Composable
-internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
+fun TeamsScreen(teams: List<Team> = listOf(teamPreview), onTeamSelected: (Team) -> Unit = {}) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -63,10 +44,9 @@ internal fun TeamsList(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-@Preview
 internal fun TeamRow(
-    team: Team = teamPreview,
-    onTeamSelected: (Team) -> Unit = {}
+    team: Team,
+    onTeamSelected: (Team) -> Unit
 ) {
     Row(
         modifier = Modifier

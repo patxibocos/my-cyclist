@@ -18,7 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
@@ -35,29 +33,22 @@ import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
+@Preview
 @Composable
-fun RidersScreen(onRiderSelected: (Rider) -> Unit) {
-    Riders(
-        viewModel = hiltViewModel(),
-        onRiderSelected = onRiderSelected,
-    )
-}
-
-@Composable
-internal fun Riders(
-    viewModel: RidersViewModel,
-    onRiderSelected: (Rider) -> Unit
+fun RidersScreen(
+    riders: List<Rider> = listOf(riderPreview),
+    onRiderSearched: (String) -> Unit = {},
+    onRiderSelected: (Rider) -> Unit = {}
 ) {
     Column {
         var searchQuery by remember { mutableStateOf("") }
         TextField(modifier = Modifier.fillMaxWidth(), value = searchQuery, onValueChange = {
             searchQuery = it
-            viewModel.onSearched(it)
+            onRiderSearched(it)
         }, label = {
             Text("Search")
         })
         Spacer(modifier = Modifier.height(10.dp))
-        val riders by viewModel.riders.collectAsState()
         RidersList(riders, onRiderSelected)
     }
 }
@@ -76,10 +67,9 @@ internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-@Preview
 internal fun RiderRow(
-    rider: Rider = riderPreview,
-    onRiderSelected: (Rider) -> Unit = {}
+    rider: Rider,
+    onRiderSelected: (Rider) -> Unit
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
     Row(modifier = Modifier.fillMaxWidth()) {

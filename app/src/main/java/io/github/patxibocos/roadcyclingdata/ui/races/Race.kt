@@ -8,30 +8,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
+import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
 
+@Preview
 @Composable
-fun RaceScreen(raceId: String, onStageSelected: (Stage) -> Unit) {
-    Race(
-        viewModel = hiltViewModel(),
-        raceId = raceId,
-        onStageSelected = onStageSelected,
-    )
-}
-
-@Composable
-internal fun Race(viewModel: RaceViewModel, raceId: String, onStageSelected: (Stage) -> Unit) {
-    val race = viewModel.getRace(raceId).collectAsState(null).value
+internal fun RaceScreen(race: Race? = racePreview, onStageSelected: (Stage) -> Unit = {}) {
     if (race != null) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(text = race.name)
             if (race.stagesCount == 1) {
-                StageScreen(raceId = raceId, stageId = race.stagesList.first().id)
+                StageScreen(race.stagesList.first())
             } else {
                 StagesList(race.stagesList, onStageSelected)
             }
