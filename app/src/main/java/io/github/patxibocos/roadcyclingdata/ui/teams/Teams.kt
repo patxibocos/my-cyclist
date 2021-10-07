@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,10 +25,17 @@ import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
+import kotlinx.coroutines.flow.Flow
+
+@Composable
+internal fun TeamsScreen(teamsFlow: Flow<List<Team>>, onTeamSelected: (Team) -> Unit) {
+    val teams by teamsFlow.collectAsState(initial = emptyList())
+    Teams(teams, onTeamSelected)
+}
 
 @Preview
 @Composable
-fun TeamsScreen(teams: List<Team> = listOf(teamPreview), onTeamSelected: (Team) -> Unit = {}) {
+private fun Teams(teams: List<Team> = listOf(teamPreview), onTeamSelected: (Team) -> Unit = {}) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),

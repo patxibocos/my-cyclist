@@ -21,6 +21,6 @@ class TeamViewModel @Inject constructor(private val dataRepository: DataReposito
             .flatMapLatest { team ->
                 dataRepository.riders()
                     .map { riders -> riders.filter { team.riderIdsList.contains(it.id) } }
-                    .map { riders -> TeamOfRiders(team, riders) }
+                    .map { teamRiders -> TeamOfRiders(team, teamRiders) }
             }
 }

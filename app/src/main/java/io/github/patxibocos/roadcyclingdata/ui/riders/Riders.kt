@@ -18,6 +18,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +33,21 @@ import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
+import kotlinx.coroutines.flow.Flow
+
+@Composable
+internal fun RidersScreen(
+    ridersFlow: Flow<List<Rider>>,
+    onRiderSearched: (String) -> Unit,
+    onRiderSelected: (Rider) -> Unit
+) {
+    val riders by ridersFlow.collectAsState(initial = emptyList())
+    Riders(riders, onRiderSearched, onRiderSelected)
+}
 
 @Preview
 @Composable
-fun RidersScreen(
+private fun Riders(
     riders: List<Rider> = listOf(riderPreview),
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {}

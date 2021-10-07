@@ -85,9 +85,9 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
                 val viewModel = hiltViewModel<TeamsViewModel>()
-                val teams by viewModel.teams.collectAsState()
+                val teamsFlow = viewModel.teams()
                 TeamsScreen(
-                    teams = teams,
+                    teamsFlow = teamsFlow,
                     onTeamSelected = {
                         navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                     }
@@ -96,14 +96,14 @@ internal fun AppNavigation(
             composable(LeafScreen.Team.createRoute(Screen.Teams)) {
                 it.arguments?.getString("teamId")?.let { teamId ->
                     val viewModel = hiltViewModel<TeamViewModel>()
-                    val teamOfRiders by viewModel.getTeamOfRiders(teamId).collectAsState(null)
+                    val teamOfRidersFlow = viewModel.getTeamOfRiders(teamId)
                     TeamScreen(
-                        teamOfRiders = teamOfRiders,
-                        onRiderSelected = {
+                        teamOfRidersFlow = teamOfRidersFlow,
+                        onRiderSelected = { rider ->
                             navController.navigate(
                                 LeafScreen.Rider.createRoute(
                                     Screen.Riders,
-                                    it.id
+                                    rider.id
                                 )
                             )
                         }
@@ -117,31 +117,26 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
                 val viewModel = hiltViewModel<RidersViewModel>()
-                val riders by viewModel.riders.collectAsState()
+                val ridersFlow = viewModel.riders
                 RidersScreen(
-                    riders = riders,
+                    ridersFlow = ridersFlow,
                     onRiderSearched = viewModel::onSearched,
                     onRiderSelected = {
-                        navController.navigate(
-                            LeafScreen.Rider.createRoute(
-                                Screen.Riders,
-                                it.id
-                            )
-                        )
+                        navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
                     }
                 )
             }
             composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
                 it.arguments?.getString("riderId")?.let { riderId ->
                     val viewModel = hiltViewModel<RiderViewModel>()
-                    val riderOfTeam by viewModel.getRiderOfTeam(riderId).collectAsState(null)
+                    val riderOfTeamFlow = viewModel.getRiderOfTeam(riderId)
                     RiderScreen(
-                        riderOfTeam = riderOfTeam,
-                        onTeamSelected = {
+                        riderOfTeamFlow = riderOfTeamFlow,
+                        onTeamSelected = { team ->
                             navController.navigate(
                                 LeafScreen.Team.createRoute(
                                     Screen.Teams,
-                                    it.id
+                                    team.id
                                 )
                             )
                         }
@@ -155,9 +150,9 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Races.createRoute(Screen.Races)) {
                 val viewModel = hiltViewModel<RacesViewModel>()
-                val races by viewModel.races.collectAsState()
+                val racesFlow = viewModel.races()
                 RacesScreen(
-                    races = races,
+                    racesFlow = racesFlow,
                     onRaceSelected = {
                         navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                     }
@@ -166,9 +161,9 @@ internal fun AppNavigation(
             composable(LeafScreen.Race.createRoute(Screen.Races)) {
                 it.arguments?.getString("raceId")?.let { raceId ->
                     val viewModel = hiltViewModel<RaceViewModel>()
-                    val race by viewModel.getRace(raceId).collectAsState(null)
+                    val raceFlow = viewModel.getRace(raceId)
                     RaceScreen(
-                        race = race,
+                        raceFlow = raceFlow,
                         onStageSelected = { stage ->
                             navController.navigate(
                                 LeafScreen.Stage.createRoute(
