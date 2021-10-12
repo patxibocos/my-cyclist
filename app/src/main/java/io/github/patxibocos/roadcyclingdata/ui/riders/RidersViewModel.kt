@@ -1,13 +1,12 @@
 package io.github.patxibocos.roadcyclingdata.ui.riders
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -17,9 +16,7 @@ import javax.inject.Inject
 class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
-    private val _riders: MutableStateFlow<List<Rider>> = MutableStateFlow(emptyList())
     private val _search = MutableStateFlow("")
-    val riders: StateFlow<List<Rider>> = _riders
 
     private fun List<Rider>.filter(query: String): List<Rider> {
         val querySplits = query.trim().split(" ").map { it.trim() }
@@ -34,14 +31,11 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
         }
     }
 
-    init {
-        viewModelScope.launch(Dispatchers.Default) {
-            val ridersFlow = dataRepository.riders()
-            combine(ridersFlow, _search) { riders, query ->
-                riders.filter(query)
-            }.collect { filteredRiders ->
-                _riders.emit(filteredRiders)
-            }
+    val riders = liveData {
+        combine(dataRepository.riders(), _search) { riders, query ->
+            riders.filter(query)
+        }.collect {
+            emit(it)
         }
     }
 

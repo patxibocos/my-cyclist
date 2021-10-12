@@ -14,22 +14,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
-import kotlinx.coroutines.flow.Flow
 
 @Composable
-internal fun TeamsScreen(teamsFlow: Flow<List<Team>>, onTeamSelected: (Team) -> Unit) {
-    val teams by teamsFlow.collectAsState(initial = emptyList())
+internal fun TeamsScreen(teamsLiveData: LiveData<List<Team>>, onTeamSelected: (Team) -> Unit) {
+    val teams by teamsLiveData.observeAsState(emptyList())
     Teams(teams, onTeamSelected)
 }
 

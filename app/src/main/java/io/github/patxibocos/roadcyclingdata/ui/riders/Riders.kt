@@ -18,8 +18,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,21 +27,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 internal fun RidersScreen(
-    ridersFlow: Flow<List<Rider>>,
+    ridersLiveData: LiveData<List<Rider>>,
     onRiderSearched: (String) -> Unit,
     onRiderSelected: (Rider) -> Unit
 ) {
-    val riders by ridersFlow.collectAsState(initial = emptyList())
+    val riders by ridersLiveData.observeAsState(emptyList())
     Riders(riders, onRiderSearched, onRiderSelected)
 }
 
@@ -84,29 +84,29 @@ internal fun RiderRow(
     onRiderSelected: (Rider) -> Unit
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Image(
-            modifier = Modifier.size(75.dp),
-            painter = rememberImagePainter(
-                data = rider.photo,
-                builder = { transformations(CustomCircleCropTransformation()) }
-            ),
-            contentDescription = null,
-        )
-        Box(
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically),
-        ) {
-            Text(
-                text = "${rider.lastName.uppercase()} ${rider.firstName}",
-                style = MaterialTheme.typography.body1,
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                modifier = Modifier.size(75.dp),
+                painter = rememberImagePainter(
+                    data = rider.photo,
+                    builder = { transformations(CustomCircleCropTransformation()) }
+                ),
+                contentDescription = null,
             )
-            Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
+            Box(
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
+            ) {
+                Text(
+                    text = "${rider.lastName.uppercase()} ${rider.firstName}",
+                    style = MaterialTheme.typography.body1,
+                )
+                Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
+            }
         }
     }
-}
 }
 
 @Composable

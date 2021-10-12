@@ -13,23 +13,23 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
-import kotlinx.coroutines.flow.Flow
 
 @Composable
-internal fun RacesScreen(racesFlow: Flow<List<Race>>, onRaceSelected: (Race) -> Unit) {
-    val races by racesFlow.collectAsState(initial = emptyList())
+internal fun RacesScreen(racesLiveData: LiveData<List<Race>>, onRaceSelected: (Race) -> Unit) {
+    val races by racesLiveData.observeAsState(initial = emptyList())
     Races(races, onRaceSelected)
 }
 

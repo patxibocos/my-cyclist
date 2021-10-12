@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
@@ -17,19 +15,10 @@ import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
-import kotlinx.coroutines.flow.Flow
-
-@Composable
-internal fun RaceScreen(raceFlow: Flow<Race>, onStageSelected: (Stage) -> Unit) {
-    val race by raceFlow.collectAsState(initial = null)
-    race?.let {
-        Race(it, onStageSelected)
-    }
-}
 
 @Preview
 @Composable
-private fun Race(race: Race = racePreview, onStageSelected: (Stage) -> Unit = {}) {
+internal fun RaceScreen(race: Race = racePreview, onStageSelected: (Stage) -> Unit = {}) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = race.name)
         if (race.stagesCount == 1) {
