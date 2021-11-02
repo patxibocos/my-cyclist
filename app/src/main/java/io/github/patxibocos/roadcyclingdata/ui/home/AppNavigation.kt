@@ -36,7 +36,7 @@ internal sealed class Screen(val route: String, val icon: ImageVector) {
     object Races : Screen("races", Icons.Outlined.Flag)
 }
 
-private sealed class LeafScreen(
+internal sealed class LeafScreen(
     private val route: String
 ) {
     fun createRoute(root: Screen) = "${root.route}/$route"
