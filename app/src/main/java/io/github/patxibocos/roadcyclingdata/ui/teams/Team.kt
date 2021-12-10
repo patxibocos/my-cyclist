@@ -9,7 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.ui.data.TeamOfRiders
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview

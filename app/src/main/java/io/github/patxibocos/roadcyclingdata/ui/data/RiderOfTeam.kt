@@ -1,6 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.data
 
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
-import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
 
 class RiderOfTeam(val rider: Rider, val team: Team)

@@ -1,12 +1,12 @@
 package io.github.patxibocos.roadcyclingdata.ui.preview
 
 import com.google.protobuf.Timestamp
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.RiderParticipation
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.TeamParticipation
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
-import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.RiderParticipation
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Stage
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.TeamParticipation
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
 
 val teamPreview: Team by lazy {
     Team.newBuilder()

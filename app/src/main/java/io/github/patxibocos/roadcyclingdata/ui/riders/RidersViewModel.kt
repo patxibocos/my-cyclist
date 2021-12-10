@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect

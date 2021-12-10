@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass.Rider
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji

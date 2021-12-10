@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass.Team
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji

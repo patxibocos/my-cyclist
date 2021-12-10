@@ -10,8 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass.Stage
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Stage
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat

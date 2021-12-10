@@ -1,8 +1,8 @@
 package io.github.patxibocos.roadcyclingdata.data
 
-import io.github.patxibocos.pcsscraper.protobuf.race.RaceOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.rider.RiderOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.team.TeamOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
