@@ -13,29 +13,23 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
 import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
-@Composable
-internal fun RacesScreen(racesLiveData: LiveData<List<Race>>, onRaceSelected: (Race) -> Unit) {
-    val races by racesLiveData.observeAsState(initial = emptyList())
-    Races(races, onRaceSelected)
-}
-
 @Preview
 @Composable
-private fun Races(races: List<Race> = listOf(racePreview), onRaceSelected: (Race) -> Unit = {}) {
+internal fun RacesScreen(
+    races: List<Race> = listOf(racePreview),
+    onRaceSelected: (Race) -> Unit = {}
+) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(items = races, key = Race::getId, itemContent = { race ->
             RaceRow(race, onRaceSelected)

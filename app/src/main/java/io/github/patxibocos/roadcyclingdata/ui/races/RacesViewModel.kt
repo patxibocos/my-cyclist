@@ -1,19 +1,23 @@
 package io.github.patxibocos.roadcyclingdata.ui.races
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class RacesViewModel @Inject constructor(private val dataRepository: DataRepository) :
+class RacesViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
-    val races = liveData {
-        dataRepository.races().collect {
-            emit(it)
-        }
-    }
+    val races: StateFlow<List<Race>> =
+        dataRepository.races().stateIn(
+            scope = viewModelScope,
+            started = Eagerly,
+            initialValue = emptyList(),
+        )
 }

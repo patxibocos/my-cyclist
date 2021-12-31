@@ -19,7 +19,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
@@ -35,19 +33,9 @@ import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
-@Composable
-internal fun RidersScreen(
-    ridersLiveData: LiveData<List<Rider>>,
-    onRiderSearched: (String) -> Unit,
-    onRiderSelected: (Rider) -> Unit
-) {
-    val riders by ridersLiveData.observeAsState(emptyList())
-    Riders(riders, onRiderSearched, onRiderSelected)
-}
-
 @Preview
 @Composable
-private fun Riders(
+internal fun RidersScreen(
     riders: List<Rider> = listOf(riderPreview),
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {}

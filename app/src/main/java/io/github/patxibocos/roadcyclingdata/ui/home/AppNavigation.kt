@@ -7,7 +7,6 @@ import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,9 +85,9 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
                 val viewModel = hiltViewModel<TeamsViewModel>()
-                val teamsLiveData = viewModel.teams
+                val teams by viewModel.teams.collectAsState()
                 TeamsScreen(
-                    teamsLiveData = teamsLiveData,
+                    teams = teams,
                     onTeamSelected = {
                         navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                     }
@@ -98,7 +97,7 @@ internal fun AppNavigation(
                 it.arguments?.getString("teamId")?.let { teamId ->
                     val viewModel = hiltViewModel<TeamViewModel>()
                     viewModel.loadTeam(teamId)
-                    val teamOfRiders by viewModel.teamOfRiders.observeAsState()
+                    val teamOfRiders by viewModel.teamOfRiders.collectAsState()
                     teamOfRiders?.let {
                         TeamScreen(
                             teamOfRiders = it,
@@ -121,9 +120,9 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
                 val viewModel = hiltViewModel<RidersViewModel>()
-                val ridersLiveData = viewModel.riders
+                val riders by viewModel.riders.collectAsState()
                 RidersScreen(
-                    ridersLiveData = ridersLiveData,
+                    riders = riders,
                     onRiderSearched = viewModel::onSearched,
                     onRiderSelected = {
                         navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
@@ -134,7 +133,7 @@ internal fun AppNavigation(
                 it.arguments?.getString("riderId")?.let { riderId ->
                     val viewModel = hiltViewModel<RiderViewModel>()
                     viewModel.loadRider(riderId)
-                    val riderOfTeam by viewModel.riderOfTeam.observeAsState()
+                    val riderOfTeam by viewModel.riderOfTeam.collectAsState()
                     riderOfTeam?.let {
                         RiderScreen(
                             riderOfTeam = it,
@@ -157,9 +156,9 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Races.createRoute(Screen.Races)) {
                 val viewModel = hiltViewModel<RacesViewModel>()
-                val racesLiveData = viewModel.races
+                val races by viewModel.races.collectAsState()
                 RacesScreen(
-                    racesLiveData = racesLiveData,
+                    races = races,
                     onRaceSelected = {
                         navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                     }
@@ -169,7 +168,7 @@ internal fun AppNavigation(
                 it.arguments?.getString("raceId")?.let { raceId ->
                     val viewModel = hiltViewModel<RaceViewModel>()
                     viewModel.loadRace(raceId)
-                    val race by viewModel.race.observeAsState()
+                    val race by viewModel.race.collectAsState()
                     race?.let {
                         RaceScreen(
                             race = it,
