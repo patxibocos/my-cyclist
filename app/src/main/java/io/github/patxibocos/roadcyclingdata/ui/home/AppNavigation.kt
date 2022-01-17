@@ -121,8 +121,10 @@ internal fun AppNavigation(
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
                 val viewModel = hiltViewModel<RidersViewModel>()
                 val riders by viewModel.riders.collectAsState()
+                val query by viewModel.search.collectAsState()
                 RidersScreen(
                     riders = riders,
+                    searchQuery = query,
                     onRiderSearched = viewModel::onSearched,
                     onRiderSelected = {
                         navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))

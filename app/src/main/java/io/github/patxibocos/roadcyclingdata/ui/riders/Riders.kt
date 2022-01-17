@@ -18,10 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,17 +33,19 @@ import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 @Composable
 internal fun RidersScreen(
     riders: List<Rider> = listOf(riderPreview),
+    searchQuery: String = "",
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {}
 ) {
     Column {
-        var searchQuery by remember { mutableStateOf("") }
-        TextField(modifier = Modifier.fillMaxWidth(), value = searchQuery, onValueChange = {
-            searchQuery = it
-            onRiderSearched(it)
-        }, label = {
-            Text("Search")
-        })
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = searchQuery,
+            onValueChange = onRiderSearched,
+            label = {
+                Text("Search")
+            }
+        )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(riders, onRiderSelected)
     }

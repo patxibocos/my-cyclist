@@ -7,6 +7,7 @@ import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
     private val _search = MutableStateFlow("")
+    val search: StateFlow<String> = _search
 
     val riders = combine(dataRepository.riders(), _search) { riders, query ->
         riders.filter(query)
