@@ -34,7 +34,7 @@ class RiderViewModel @Inject constructor(dataRepository: DataRepository) :
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 

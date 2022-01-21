@@ -23,7 +23,7 @@ class RaceViewModel @Inject constructor(dataRepository: DataRepository) :
         races.find { it.id == raceId }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(),
         initialValue = null,
     )
 

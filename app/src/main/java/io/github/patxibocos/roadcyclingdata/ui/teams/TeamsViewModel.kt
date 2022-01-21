@@ -17,7 +17,7 @@ class TeamsViewModel @Inject constructor(dataRepository: DataRepository) :
     val teams: StateFlow<List<Team>> =
         dataRepository.teams().stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList(),
         )
 }

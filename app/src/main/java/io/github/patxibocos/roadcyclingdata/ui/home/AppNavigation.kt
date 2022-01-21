@@ -22,12 +22,14 @@ import io.github.patxibocos.roadcyclingdata.ui.riders.RiderScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RiderViewModel
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersViewModel
+import io.github.patxibocos.roadcyclingdata.ui.riders.State
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsViewModel
+import io.github.patxibocos.roadcyclingdata.ui.util.rememberFlowWithLifecycle
 
 internal sealed class Screen(val route: String, val icon: ImageVector) {
     object Teams : Screen("teams", Icons.Outlined.Group)
@@ -120,11 +122,10 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
                 val viewModel = hiltViewModel<RidersViewModel>()
-                val riders by viewModel.riders.collectAsState()
-                val query by viewModel.search.collectAsState()
+                val uiState by rememberFlowWithLifecycle(viewModel.state).collectAsState(State.Empty)
                 RidersScreen(
-                    riders = riders,
-                    searchQuery = query,
+                    riders = uiState.riders,
+                    searchQuery = uiState.search,
                     onRiderSearched = viewModel::onSearched,
                     onRiderSelected = {
                         navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
