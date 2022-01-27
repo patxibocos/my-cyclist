@@ -55,7 +55,7 @@ internal class ProtobufDataRepository : DataRepository {
         }
     }
 
-    override fun teams(): Flow<List<Team>> = _teams
-    override fun riders(): Flow<List<Rider>> = _riders
-    override fun races(): Flow<List<Race>> = _races
+    override val teams: Flow<List<Team>> = _teams
+    override val riders: Flow<List<Rider>> = _riders
+    override val races: Flow<List<Race>> = _races
 }

@@ -22,14 +22,12 @@ import io.github.patxibocos.roadcyclingdata.ui.riders.RiderScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RiderViewModel
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersScreen
 import io.github.patxibocos.roadcyclingdata.ui.riders.RidersViewModel
-import io.github.patxibocos.roadcyclingdata.ui.riders.State
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamViewModel
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsScreen
 import io.github.patxibocos.roadcyclingdata.ui.teams.TeamsViewModel
-import io.github.patxibocos.roadcyclingdata.ui.util.rememberFlowWithLifecycle
 
 internal sealed class Screen(val route: String, val icon: ImageVector) {
     object Teams : Screen("teams", Icons.Outlined.Group)
@@ -122,7 +120,7 @@ internal fun AppNavigation(
         ) {
             composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
                 val viewModel = hiltViewModel<RidersViewModel>()
-                val uiState by rememberFlowWithLifecycle(viewModel.state).collectAsState(State.Empty)
+                val uiState by viewModel.state.collectAsState()
                 RidersScreen(
                     riders = uiState.riders,
                     searchQuery = uiState.search,
@@ -193,8 +191,11 @@ internal fun AppNavigation(
                 val stageId = it.arguments?.getString("stageId")
                 if (raceId != null && stageId != null) {
                     val viewModel = hiltViewModel<StageViewModel>()
-                    val stage by viewModel.getStage(raceId, stageId).collectAsState(null)
-                    StageScreen(stage)
+                    viewModel.loadStage(stageId, raceId)
+                    val stage by viewModel.stage.collectAsState()
+                    stage?.let {
+                        StageScreen(it)
+                    }
                 }
             }
         }

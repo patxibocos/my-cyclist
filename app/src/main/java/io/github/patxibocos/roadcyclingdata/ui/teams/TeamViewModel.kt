@@ -20,14 +20,14 @@ class TeamViewModel @Inject constructor(dataRepository: DataRepository) :
     private val _teamId = MutableSharedFlow<String>()
 
     val teamOfRiders: StateFlow<TeamOfRiders?> =
-        combine(_teamId, dataRepository.teams(), dataRepository.riders()) { teamId, teams, riders ->
+        combine(_teamId, dataRepository.teams, dataRepository.riders) { teamId, teams, riders ->
             teams.find { it.id == teamId }?.let { team ->
                 val teamRiders = riders.filter { team.riderIdsList.contains(it.id) }
                 TeamOfRiders(team, teamRiders)
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.Eagerly,
             initialValue = null,
         )
 

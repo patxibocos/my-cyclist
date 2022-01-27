@@ -8,8 +8,6 @@ import io.github.patxibocos.roadcyclingdata.ui.preview.stagePreview
 
 @Preview
 @Composable
-fun StageScreen(stage: Stage? = stagePreview) {
-    if (stage != null) {
-        Text(text = stage.distance.toString())
-    }
+fun StageScreen(stage: Stage = stagePreview) {
+    Text(text = stage.distance.toString())
 }

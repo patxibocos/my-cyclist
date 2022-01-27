@@ -14,19 +14,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
-import io.github.patxibocos.roadcyclingdata.ui.util.CustomCircleCropTransformation
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
 @Preview
@@ -63,7 +64,6 @@ internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal fun RiderRow(
     rider: Rider,
@@ -72,11 +72,14 @@ internal fun RiderRow(
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Image(
-                modifier = Modifier.size(75.dp),
+                modifier = Modifier
+                    .size(75.dp)
+                    .clip(RoundedCornerShape(100)),
                 painter = rememberImagePainter(
                     data = rider.photo,
-                    builder = { transformations(CustomCircleCropTransformation()) }
                 ),
+                alignment = Alignment.TopCenter,
+                contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
             Box(

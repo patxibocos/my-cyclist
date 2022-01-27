@@ -24,7 +24,7 @@ class RidersRepository @Inject constructor(private val dataRepository: DataRepos
     }
 
     suspend fun filterRiders(query: String) {
-        dataRepository.riders().collect {
+        dataRepository.riders.collect {
             _riders.emit(it.filter(query))
         }
     }

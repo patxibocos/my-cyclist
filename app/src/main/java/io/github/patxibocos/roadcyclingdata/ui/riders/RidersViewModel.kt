@@ -28,7 +28,7 @@ class RidersViewModel @Inject constructor(private val ridersRepository: RidersRe
         State(riders, query)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Eagerly,
         initialValue = State.Empty,
     )
 

@@ -22,8 +22,8 @@ class RiderViewModel @Inject constructor(dataRepository: DataRepository) :
     val riderOfTeam: StateFlow<RiderOfTeam?> =
         combine(
             _riderId,
-            dataRepository.teams(),
-            dataRepository.riders()
+            dataRepository.teams,
+            dataRepository.riders
         ) { riderId, teams, riders ->
             val rider = riders.find { it.id == riderId }
             val team = teams.find { it.riderIdsList.contains(riderId) }
@@ -34,7 +34,7 @@ class RiderViewModel @Inject constructor(dataRepository: DataRepository) :
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.Eagerly,
             initialValue = null,
         )
 

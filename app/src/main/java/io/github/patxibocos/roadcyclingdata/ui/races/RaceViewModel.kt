@@ -19,11 +19,11 @@ class RaceViewModel @Inject constructor(dataRepository: DataRepository) :
 
     private val _raceId = MutableSharedFlow<String>()
 
-    val race: StateFlow<Race?> = combine(_raceId, dataRepository.races()) { raceId, races ->
+    val race: StateFlow<Race?> = combine(_raceId, dataRepository.races) { raceId, races ->
         races.find { it.id == raceId }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Eagerly,
         initialValue = null,
     )
 
