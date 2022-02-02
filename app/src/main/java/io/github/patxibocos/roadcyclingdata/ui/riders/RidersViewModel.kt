@@ -4,11 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,13 +22,8 @@ class RidersViewModel @Inject constructor(private val ridersRepository: RidersRe
         }
     }
 
-    val state: StateFlow<State> = combine(ridersRepository.riders, search) { riders, query ->
-        State(riders, query)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = State.Empty,
-    )
+    val state: Flow<UiState> =
+        combine(ridersRepository.riders, search) { riders, query -> UiState(riders, query) }
 
     fun onSearched(query: String) {
         viewModelScope.launch {
@@ -40,8 +33,8 @@ class RidersViewModel @Inject constructor(private val ridersRepository: RidersRe
     }
 }
 
-data class State(val riders: List<Rider>, val search: String) {
+data class UiState(val riders: List<Rider>, val search: String) {
     companion object {
-        val Empty = State(emptyList(), "")
+        val Empty = UiState(emptyList(), "")
     }
 }
