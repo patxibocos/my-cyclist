@@ -191,7 +191,7 @@ internal fun AppNavigation(
                 val stageId = it.arguments?.getString("stageId")
                 if (raceId != null && stageId != null) {
                     val viewModel = hiltViewModel<StageViewModel>()
-                    viewModel.loadStage(stageId, raceId)
+                    viewModel.loadStage(raceId, stageId)
                     val stage by viewModel.stage.collectAsState()
                     stage?.let {
                         StageScreen(it)

@@ -65,11 +65,13 @@ tasks.withType<KotlinCompile> {
 dependencies {
     kapt(libs.hilt.compiler)
 
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
     implementation(libs.android.material)
     implementation(libs.androidx.compose.material.material)
     implementation(libs.androidx.compose.material.material.icons.extended)
     implementation(libs.androidx.compose.ui.ui)
-    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.navigation.compose)

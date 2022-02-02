@@ -5,15 +5,14 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.RacesOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RacesOuterClass.Races
 import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
-import io.github.patxibocos.pcsscraper.protobuf.RidersOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RidersOuterClass.Riders
 import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
-import io.github.patxibocos.pcsscraper.protobuf.TeamsOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.TeamsOuterClass.Teams
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -44,18 +43,18 @@ internal class ProtobufDataRepository : DataRepository {
             remoteConfig.fetchAndActivate().await()
 
             val teamsBase64 = remoteConfig.getString("teams")
-            val teams = TeamsOuterClass.Teams.parseFrom(decodeBase64ThenUnzip(teamsBase64))
+            val teams = Teams.parseFrom(decodeBase64ThenUnzip(teamsBase64))
             _teams.emit(teams.teamsList)
             val ridersBase64 = remoteConfig.getString("riders")
-            val riders = RidersOuterClass.Riders.parseFrom(decodeBase64ThenUnzip(ridersBase64))
+            val riders = Riders.parseFrom(decodeBase64ThenUnzip(ridersBase64))
             _riders.emit(riders.ridersList)
             val racesBase64 = remoteConfig.getString("races")
-            val races = RacesOuterClass.Races.parseFrom(decodeBase64ThenUnzip(racesBase64))
+            val races = Races.parseFrom(decodeBase64ThenUnzip(racesBase64))
             _races.emit(races.racesList)
         }
     }
 
-    override val teams: Flow<List<Team>> = _teams
-    override val riders: Flow<List<Rider>> = _riders
-    override val races: Flow<List<Race>> = _races
+    override val teams = _teams
+    override val riders = _riders
+    override val races = _races
 }
