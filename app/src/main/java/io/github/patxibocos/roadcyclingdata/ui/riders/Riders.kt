@@ -49,6 +49,7 @@ internal fun RidersScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(riders, onRiderSelected)
+        Spacer(modifier = Modifier.height(56.dp))
     }
 }
 
