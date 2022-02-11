@@ -7,7 +7,6 @@ import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -73,14 +72,10 @@ internal sealed class LeafScreen(
 }
 
 @Composable
-internal fun AppNavigation(
-    navController: NavHostController,
-    modifier: Modifier = Modifier,
-) {
+internal fun AppNavigation(navController: NavHostController) {
     NavHost(
         navController,
-        startDestination = Screen.Teams.route,
-        modifier = modifier,
+        startDestination = Screen.Riders.route,
     ) {
         navigation(
             startDestination = LeafScreen.Teams.createRoute(Screen.Teams),

@@ -1,11 +1,8 @@
 package io.github.patxibocos.roadcyclingdata.ui.home
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -19,8 +16,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -28,43 +23,45 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun Home() {
     val navController = rememberNavController()
-    val currentScreen by navController.currentScreenAsState()
-    val screenReselected: MutableState<Screen> = remember { mutableStateOf(Screen.Teams) }
     Scaffold(
         bottomBar = {
-            val offset by animateDpAsState(
-                if (currentScreen != null) 0.dp else 56.dp,
-                animationSpec = tween(200, 0, LinearEasing)
-            )
-            BottomNavigation(modifier = Modifier.offset(y = offset)) {
-                val screens = listOf(Screen.Teams, Screen.Riders, Screen.Races)
-                screens.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(screen.icon, contentDescription = null) },
-                        label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
-                        selected = currentScreen == screen,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+            BottomBar(navController)
+        }
+    ) {
+        AppNavigation(navController = navController)
+    }
+}
+
+@Composable
+fun BottomBar(navController: NavController) {
+    val currentScreen by navController.currentScreenAsState()
+    val screenReselected: MutableState<Screen> = remember { mutableStateOf(Screen.Teams) }
+    AnimatedVisibility(
+        visible = currentScreen != null,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        BottomNavigation {
+            val screens = listOf(Screen.Teams, Screen.Riders, Screen.Races)
+            screens.forEach { screen ->
+                BottomNavigationItem(
+                    icon = { Icon(screen.icon, contentDescription = null) },
+                    label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
+                    selected = currentScreen == screen,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
                             }
-                            screenReselected.value = screen
-                        },
-                        alwaysShowLabel = false,
-                    )
-                }
+                        }
+                        screenReselected.value = screen
+                    },
+                    alwaysShowLabel = true,
+                )
             }
         }
-    ) { innerPadding ->
-        AppNavigation(
-            navController = navController,
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(innerPadding)
-        )
     }
 }
 
