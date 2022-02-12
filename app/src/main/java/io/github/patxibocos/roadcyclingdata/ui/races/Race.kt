@@ -10,8 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Stage
+import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.roadcyclingdata.data.Stage
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
 import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
@@ -21,10 +21,10 @@ import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
 internal fun RaceScreen(race: Race = racePreview, onStageSelected: (Stage) -> Unit = {}) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = race.name)
-        if (race.stagesCount == 1) {
-            StageScreen(race.stagesList.first())
+        if (race.stages.size == 1) {
+            StageScreen(race.stages.first())
         } else {
-            StagesList(race.stagesList, onStageSelected)
+            StagesList(race.stages, onStageSelected)
         }
     }
 }
@@ -32,7 +32,7 @@ internal fun RaceScreen(race: Race = racePreview, onStageSelected: (Stage) -> Un
 @Composable
 private fun StagesList(stages: List<Stage>, onStageSelected: (Stage) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = stages, key = Stage::getId, itemContent = { stage ->
+        items(items = stages, key = Stage::id, itemContent = { stage ->
             StageRow(stage, onStageSelected)
         })
     }

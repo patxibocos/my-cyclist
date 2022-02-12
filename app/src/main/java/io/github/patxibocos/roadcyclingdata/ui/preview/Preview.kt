@@ -1,78 +1,38 @@
 package io.github.patxibocos.roadcyclingdata.ui.preview
 
-import com.google.protobuf.Timestamp
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.RiderParticipation
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Stage
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.TeamParticipation
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
-import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
+import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.roadcyclingdata.data.Rider
+import io.github.patxibocos.roadcyclingdata.data.Stage
+import io.github.patxibocos.roadcyclingdata.data.Status
+import io.github.patxibocos.roadcyclingdata.data.Team
+import java.time.LocalDate
 
 val teamPreview: Team by lazy {
-    Team.newBuilder()
-        .setId("cycling-team")
-        .setName("Cycling Team")
-        .setStatus(Team.Status.STATUS_WORLD_TEAM)
-        .setAbbreviation("CT")
-        .setCountry("ES")
-        .setBike("Canyon")
-        .setJersey("")
-        .setWebsite("https://github.com/patxibocos/")
-        .setYear(2021)
-        .build()
+    Team(
+        id = "cycling-team",
+        name = "Cycling Team",
+        status = Status.WORLD_TEAM,
+        abbreviation = "CT",
+        jersey = "",
+        bike = "",
+        riderIds = emptyList()
+    )
 }
 
 val riderPreview: Rider by lazy {
-    Rider.newBuilder()
-        .setId("patxi-bocos")
-        .setFirstName("Patxi")
-        .setLastName("Bocos")
-        .setCountry("ES")
-        .setWebsite("https://github.com/patxibocos/")
-        .setBirthDate(Timestamp.getDefaultInstance())
-        .setBirthPlace("Barakaldo")
-        .setWeight(70)
-        .setHeight(185)
-        .setPhoto("https://avatars.githubusercontent.com/u/4415614")
-        .build()
+    Rider(id = "patxi-bocos", firstName = "", lastName = "", photo = "", country = "")
 }
 
 val stagePreview: Stage by lazy {
-    Stage.newBuilder()
-        .setId("stage-1")
-        .setStartDate(Timestamp.getDefaultInstance())
-        .setDistance(123F)
-        .setType(Stage.Type.TYPE_FLAT)
-        .setDeparture("Bilbao")
-        .setArrival("Barcelona")
-        .build()
+    Stage(id = "stage-1", distance = 0f, startDate = LocalDate.now())
 }
 
 val racePreview: Race by lazy {
-    Race.newBuilder()
-        .setId("vuelta-a-espana")
-        .setName("La Vuelta ciclista a España")
-        .setCountry("ES")
-        .setStartDate(Timestamp.getDefaultInstance())
-        .setEndDate(Timestamp.getDefaultInstance())
-        .setWebsite("https://www.lavuelta.es/")
-        .addAllStages(
-            listOf(stagePreview)
-        )
-        .addAllTeams(
-            listOf(
-                TeamParticipation.newBuilder()
-                    .setTeamId(teamPreview.id)
-                    .addAllRiders(
-                        listOf(
-                            RiderParticipation.newBuilder()
-                                .setRiderId(riderPreview.id)
-                                .setNumber(1)
-                                .build()
-                        )
-                    )
-                    .build()
-            )
-        )
-        .build()
+    Race(
+        id = "vuelta-a-espana",
+        name = "",
+        stages = emptyList(),
+        country = "",
+        startDate = LocalDate.now()
+    )
 }

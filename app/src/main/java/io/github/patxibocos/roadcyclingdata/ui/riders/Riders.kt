@@ -26,7 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -59,7 +59,7 @@ internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        items(items = riders, key = Rider::getId) { rider ->
+        items(items = riders, key = Rider::id) { rider ->
             RiderRow(rider, onRiderSelected)
         }
     }
