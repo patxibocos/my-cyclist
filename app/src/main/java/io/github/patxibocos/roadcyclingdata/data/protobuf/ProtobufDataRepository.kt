@@ -13,7 +13,7 @@ import io.github.patxibocos.pcsscraper.protobuf.TeamsOuterClass.Teams
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayInputStream
@@ -21,9 +21,9 @@ import java.util.zip.GZIPInputStream
 
 internal class ProtobufDataRepository : DataRepository {
 
-    private val _teams = MutableStateFlow<List<Team>>(emptyList())
-    private val _riders = MutableStateFlow<List<Rider>>(emptyList())
-    private val _races = MutableStateFlow<List<Race>>(emptyList())
+    private val _teams = MutableSharedFlow<List<Team>>(replay = 1)
+    private val _riders = MutableSharedFlow<List<Rider>>(replay = 1)
+    private val _races = MutableSharedFlow<List<Race>>(replay = 1)
 
     private fun decodeBase64ThenUnzip(gzipBase64: String) =
         ByteArrayInputStream(
