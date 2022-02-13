@@ -1,0 +1,22 @@
+syntax = "proto3";
+package io.github.patxibocos.pcsscraper.protobuf;
+option go_package = "github.com/patxibocos/pcsscraper";
+
+import "google/protobuf/timestamp.proto";
+
+message Riders {
+  repeated Rider riders = 1;
+}
+
+message Rider {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string country = 4;
+  optional google.protobuf.Timestamp birth_date = 5;
+  string photo = 6;
+  optional string website = 7;
+  optional string birth_place = 8;
+  optional uint32 weight = 9;
+  optional uint32 height = 10;
+}

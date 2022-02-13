@@ -22,7 +22,7 @@ firebase-config = "com.google.firebase:firebase-config-ktx:21.0.1"
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0"
-protobuf-kotlin = "com.google.protobuf:protobuf-kotlin:3.19.3"
+protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.19.4"
 
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 androidx-test-junit = "androidx.test.ext:junit:1.1.3"

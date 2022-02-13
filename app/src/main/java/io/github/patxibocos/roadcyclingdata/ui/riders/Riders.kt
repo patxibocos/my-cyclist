@@ -1,5 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.riders
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +54,7 @@ internal fun RidersScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
     LazyColumn(
@@ -60,17 +62,18 @@ internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         items(items = riders, key = Rider::id) { rider ->
-            RiderRow(rider, onRiderSelected)
+            RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
         }
     }
 }
 
 @Composable
 internal fun RiderRow(
+    modifier: Modifier,
     rider: Rider,
-    onRiderSelected: (Rider) -> Unit
+    onRiderSelected: (Rider) -> Unit,
 ) {
-    Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
+    Column(modifier = modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier

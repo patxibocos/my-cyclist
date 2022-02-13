@@ -1,0 +1,13 @@
+syntax = "proto3";
+package io.github.patxibocos.pcsscraper.protobuf;
+option go_package = "github.com/patxibocos/pcsscraper";
+
+import "race.proto";
+import "rider.proto";
+import "team.proto";
+
+message CyclingData {
+  repeated Team teams = 1;
+  repeated Rider riders = 2;
+  repeated Race races = 3;
+}

@@ -8,14 +8,16 @@ import androidx.compose.runtime.Stable
 data class Team(
     val id: String,
     val name: String,
-    val status: Status,
+    val status: TeamStatus,
     val abbreviation: String,
-    val jersey: String,
+    val country: String,
     val bike: String,
+    val jersey: String,
+    val website: String,
     val riderIds: List<String>,
 )
 
-enum class Status {
+enum class TeamStatus {
     WORLD_TEAM,
     PRO_TEAM
 }

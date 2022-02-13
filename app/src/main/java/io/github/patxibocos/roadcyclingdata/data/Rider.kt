@@ -2,6 +2,7 @@ package io.github.patxibocos.roadcyclingdata.data
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import java.time.LocalDate
 
 @Immutable
 @Stable
@@ -10,5 +11,10 @@ data class Rider(
     val firstName: String,
     val lastName: String,
     val photo: String,
-    val country: String
+    val country: String,
+    val website: String,
+    val birthDate: LocalDate,
+    val birthPlace: String,
+    val weight: Int,
+    val height: Int
 )

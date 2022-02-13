@@ -1,0 +1,56 @@
+syntax = "proto3";
+package io.github.patxibocos.pcsscraper.protobuf;
+option go_package = "github.com/patxibocos/pcsscraper";
+
+import "google/protobuf/timestamp.proto";
+
+message Races {
+  repeated Race races = 1;
+}
+
+message Race {
+  string id = 1;
+  string name = 2;
+  string country = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  repeated Stage stages = 6;
+  repeated TeamParticipation teams = 7;
+  optional string website = 8;
+  repeated RiderResult result = 9;
+}
+
+message Stage {
+  string id = 1;
+  google.protobuf.Timestamp start_date = 2;
+  float distance = 3;
+  repeated RiderResult result = 4;
+  Type type = 5;
+  optional string departure = 6;
+  optional string arrival = 7;
+
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_FLAT = 1;
+    TYPE_HILLS_FLAT_FINISH = 2;
+    TYPE_HILLS_UPHILL_FINISH = 3;
+    TYPE_MOUNTAINS_FLAT_FINISH = 4;
+    TYPE_MOUNTAINS_UPHILL_FINISH = 5;
+  }
+}
+
+message TeamParticipation {
+  string team_id = 1;
+  repeated RiderParticipation riders = 2;
+}
+
+message RiderResult {
+  uint32 position = 1;
+  string rider_id = 2;
+  int64 time = 3;
+}
+
+message RiderParticipation {
+  string rider_id = 1;
+  optional uint32 number = 2;
+}

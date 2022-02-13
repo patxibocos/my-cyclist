@@ -1,3 +1,8 @@
+import com.google.protobuf.gradle.builtins
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -6,6 +11,23 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+    id("com.google.protobuf") version "0.8.18"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                id("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -58,6 +80,10 @@ android {
     }
 }
 
+protobuf {
+
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
@@ -82,7 +108,7 @@ dependencies {
     implementation(libs.firebase.config)
     implementation(libs.hilt.library)
     implementation(libs.kotlin.coroutines.play.services)
-    implementation(libs.protobuf.kotlin)
+    implementation(libs.protobuf.javalite)
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
