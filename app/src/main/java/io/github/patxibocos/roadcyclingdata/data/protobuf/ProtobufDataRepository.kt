@@ -4,19 +4,25 @@ import android.util.Base64
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
-import io.github.patxibocos.pcsscraper.protobuf.RacesOuterClass.Races
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
-import io.github.patxibocos.pcsscraper.protobuf.RidersOuterClass.Riders
-import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
-import io.github.patxibocos.pcsscraper.protobuf.TeamsOuterClass.Teams
+import io.github.patxibocos.pcsscraper.protobuf.CyclingDataOuterClass.CyclingData
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass
 import io.github.patxibocos.roadcyclingdata.data.DataRepository
+import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.roadcyclingdata.data.Rider
+import io.github.patxibocos.roadcyclingdata.data.Stage
+import io.github.patxibocos.roadcyclingdata.data.StageType
+import io.github.patxibocos.roadcyclingdata.data.Team
+import io.github.patxibocos.roadcyclingdata.data.TeamStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayInputStream
+import java.time.Instant
+import java.time.ZoneId
 import java.util.zip.GZIPInputStream
 
 internal class ProtobufDataRepository : DataRepository {
@@ -42,19 +48,82 @@ internal class ProtobufDataRepository : DataRepository {
             remoteConfig.setConfigSettingsAsync(configSettings)
             remoteConfig.fetchAndActivate().await()
 
-            val teamsBase64 = remoteConfig.getString("teams")
-            val teams = Teams.parseFrom(decodeBase64ThenUnzip(teamsBase64))
-            _teams.emit(teams.teamsList)
-            val ridersBase64 = remoteConfig.getString("riders")
-            val riders = Riders.parseFrom(decodeBase64ThenUnzip(ridersBase64))
-            _riders.emit(riders.ridersList)
-            val racesBase64 = remoteConfig.getString("races")
-            val races = Races.parseFrom(decodeBase64ThenUnzip(racesBase64))
-            _races.emit(races.racesList)
+            val cyclingDataBase64 = remoteConfig.getString("cycling_data")
+            val cyclingData = CyclingData.parseFrom(decodeBase64ThenUnzip(cyclingDataBase64))
+            _teams.emit(cyclingData.teamsList.map(TeamOuterClass.Team::toDomain))
+            _riders.emit(cyclingData.ridersList.map(RiderOuterClass.Rider::toDomain))
+            _races.emit(cyclingData.racesList.map(RaceOuterClass.Race::toDomain))
         }
     }
 
     override val teams = _teams
     override val riders = _riders
     override val races = _races
+}
+
+fun RaceOuterClass.Race.toDomain(): Race {
+    return Race(
+        id = this.id,
+        name = this.name,
+        country = this.country,
+        startDate = Instant.ofEpochSecond(this.startDate.seconds).atZone(ZoneId.systemDefault())
+            .toLocalDate(),
+        endDate = Instant.ofEpochSecond(this.endDate.seconds).atZone(ZoneId.systemDefault())
+            .toLocalDate(),
+        stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
+        website = this.website
+    )
+}
+
+fun RaceOuterClass.Stage.toDomain(): Stage {
+    return Stage(
+        id = this.id,
+        distance = this.distance,
+        startDate = Instant.ofEpochSecond(this.startDate.seconds).atZone(ZoneId.systemDefault())
+            .toLocalDate(),
+        departure = this.departure,
+        arrival = this.arrival,
+        type = when (this.type) {
+            RaceOuterClass.Stage.Type.TYPE_FLAT -> StageType.FLAT
+            RaceOuterClass.Stage.Type.TYPE_HILLS_FLAT_FINISH -> StageType.HILLS_FLAT_FINISH
+            RaceOuterClass.Stage.Type.TYPE_HILLS_UPHILL_FINISH -> StageType.HILLS_UPHILL_FINISH
+            RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_FLAT_FINISH -> StageType.MOUNTAINS_FLAT_FINISH
+            RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_UPHILL_FINISH -> StageType.MOUNTAINS_UPHILL_FINISH
+            else -> null
+        }
+    )
+}
+
+fun RiderOuterClass.Rider.toDomain(): Rider {
+    return Rider(
+        id = this.id,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        photo = this.photo,
+        country = this.country,
+        website = this.website,
+        birthDate = Instant.ofEpochSecond(this.birthDate.seconds).atZone(ZoneId.systemDefault())
+            .toLocalDate(),
+        birthPlace = this.birthPlace,
+        weight = this.weight,
+        height = this.height,
+    )
+}
+
+fun TeamOuterClass.Team.toDomain(): Team {
+    return Team(
+        id = this.id,
+        name = this.name,
+        status = when (this.status) {
+            TeamOuterClass.Team.Status.STATUS_WORLD_TEAM -> TeamStatus.WORLD_TEAM
+            TeamOuterClass.Team.Status.STATUS_PRO_TEAM -> TeamStatus.PRO_TEAM
+            else -> error("Unexpected team status")
+        },
+        abbreviation = this.abbreviation,
+        jersey = this.jersey,
+        bike = this.bike,
+        riderIds = this.riderIdsList,
+        country = this.country,
+        website = this.website
+    )
 }

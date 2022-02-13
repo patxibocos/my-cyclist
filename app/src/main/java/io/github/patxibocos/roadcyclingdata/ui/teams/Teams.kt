@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass.Team
+import io.github.patxibocos.roadcyclingdata.data.Team
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 
 @Preview
@@ -41,7 +41,7 @@ internal fun TeamsScreen(
             item {
                 Text(text = status.name)
             }
-            items(items = teams, key = Team::getId) { team ->
+            items(items = teams, key = Team::id) { team ->
                 TeamRow(team, onTeamSelected)
             }
         }

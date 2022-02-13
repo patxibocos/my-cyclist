@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.ui.data.TeamOfRiders
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
@@ -33,7 +33,7 @@ internal fun TeamScreen(
 @Composable
 private fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit = {}) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = riders, key = Rider::getId, itemContent = { rider ->
+        items(items = riders, key = Rider::id, itemContent = { rider ->
             RiderRow(rider, onRiderSelected)
         })
     }

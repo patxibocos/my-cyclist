@@ -18,7 +18,7 @@ class TeamViewModel @Inject constructor(dataRepository: DataRepository) :
     val teamOfRiders: Flow<TeamOfRiders?> =
         combine(_teamId, dataRepository.teams, dataRepository.riders) { teamId, teams, riders ->
             teams.find { it.id == teamId }?.let { team ->
-                val teamRiders = riders.filter { team.riderIdsList.contains(it.id) }
+                val teamRiders = riders.filter { team.riderIds.contains(it.id) }
                 TeamOfRiders(team, teamRiders)
             }
         }

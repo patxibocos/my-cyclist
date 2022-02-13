@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass.Race
+import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
@@ -33,7 +33,7 @@ internal fun RacesScreen(
     onRaceSelected: (Race) -> Unit = {}
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = races, key = Race::getId, itemContent = { race ->
+        items(items = races, key = Race::id, itemContent = { race ->
             RaceRow(race, onRaceSelected)
         })
         item {
@@ -75,7 +75,7 @@ private fun RaceRow(
                 }
             }
             Text(
-                text = if (race.stagesCount == 1) "Single day race" else "${race.stagesCount} stages"
+                text = if (race.stages.size == 1) "Single day race" else "${race.stages.size} stages"
             )
         }
     }

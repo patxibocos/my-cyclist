@@ -1,5 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.riders
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass.Rider
+import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 
@@ -53,24 +54,26 @@ internal fun RidersScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        items(items = riders, key = Rider::getId) { rider ->
-            RiderRow(rider, onRiderSelected)
+        items(items = riders, key = Rider::id) { rider ->
+            RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
         }
     }
 }
 
 @Composable
 internal fun RiderRow(
+    modifier: Modifier,
     rider: Rider,
-    onRiderSelected: (Rider) -> Unit
+    onRiderSelected: (Rider) -> Unit,
 ) {
-    Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
+    Column(modifier = modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier
