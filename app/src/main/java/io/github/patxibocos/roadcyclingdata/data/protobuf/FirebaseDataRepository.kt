@@ -2,6 +2,7 @@ package io.github.patxibocos.roadcyclingdata.data.protobuf
 
 import android.util.Base64
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.pcsscraper.protobuf.CyclingDataOuterClass.CyclingData
@@ -25,7 +26,11 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.zip.GZIPInputStream
 
-internal class ProtobufDataRepository : DataRepository {
+internal class FirebaseDataRepository : DataRepository {
+
+    companion object {
+        private const val FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY = "cycling_data"
+    }
 
     private val _teams = MutableSharedFlow<List<Team>>(replay = 1)
     private val _riders = MutableSharedFlow<List<Rider>>(replay = 1)
@@ -42,19 +47,30 @@ internal class ProtobufDataRepository : DataRepository {
     init {
         CoroutineScope(Dispatchers.Default).launch {
             val remoteConfig = Firebase.remoteConfig
+            emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
             val configSettings = remoteConfigSettings {
                 minimumFetchIntervalInSeconds = 3_600L
             }
             remoteConfig.setConfigSettingsAsync(configSettings)
-            remoteConfig.fetchAndActivate().await()
+            try {
+                if (remoteConfig.fetchAndActivate().await()) {
+                    emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+                }
+            } catch (e: FirebaseRemoteConfigException) {
+                return@launch
+            }
+        }
+    }
 
-            val cyclingDataBase64 = remoteConfig.getString("cycling_data")
-            val cyclingData = CyclingData.parseFrom(decodeBase64ThenUnzip(cyclingDataBase64))
+    private suspend fun emitData(serializedContent: String) {
+        if (serializedContent.isNotEmpty()) {
+            val cyclingData = CyclingData.parseFrom(decodeBase64ThenUnzip(serializedContent))
             _teams.emit(cyclingData.teamsList.map(TeamOuterClass.Team::toDomain))
             _riders.emit(cyclingData.ridersList.map(RiderOuterClass.Rider::toDomain))
             _races.emit(cyclingData.racesList.map(RaceOuterClass.Race::toDomain))
         }
     }
+
 
     override val teams = _teams
     override val riders = _riders
