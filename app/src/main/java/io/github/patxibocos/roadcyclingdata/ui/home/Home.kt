@@ -1,5 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -16,28 +17,50 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Velocity
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun Home() {
+    val showBottomBar = remember { mutableStateOf(true) }
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                if (available.y > 0) {
+                    showBottomBar.value = true
+                } else if (available.y < 0) {
+                    showBottomBar.value = false
+                }
+                return super.onPreFling(available)
+            }
+        }
+    }
     val navController = rememberNavController()
     Scaffold(
+        modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
-            BottomBar(navController)
+            BottomBar(navController, showBottomBar.value)
         }
     ) {
+        BackHandler {
+            navController.popBackStack()
+            showBottomBar.value = true
+        }
         AppNavigation(navController = navController)
     }
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(navController: NavController, showBottomBar: Boolean) {
     val currentScreen by navController.currentScreenAsState()
     val screenReselected: MutableState<Screen> = remember { mutableStateOf(Screen.Teams) }
     AnimatedVisibility(
-        visible = currentScreen != null,
+        visible = showBottomBar && currentScreen != null,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
