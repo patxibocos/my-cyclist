@@ -4,11 +4,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,12 +32,16 @@ import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 @Composable
 internal fun RacesScreen(
     races: List<Race> = listOf(racePreview),
-    onRaceSelected: (Race) -> Unit = {}
+    onRaceSelected: (Race) -> Unit = {},
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
         items(items = races, key = Race::id, itemContent = { race ->
             RaceRow(race, onRaceSelected)
         })
+        item {
+            Spacer(modifier = Modifier.height(56.dp))
+        }
     }
 }
 

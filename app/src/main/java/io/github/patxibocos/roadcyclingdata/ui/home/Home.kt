@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -11,12 +12,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 
 @Composable
 fun Home() {
@@ -41,24 +43,43 @@ fun Home() {
         }
     }
     val navController = rememberNavController()
+    val teamsLazyListState = rememberLazyListState()
+    val ridersLazyListState = rememberLazyListState()
+    val racesLazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
-            BottomBar(navController, showBottomBar.value)
+            BottomBar(navController, showBottomBar.value) { screen ->
+                val lazyListState = when (screen) {
+                    Screen.Races -> racesLazyListState
+                    Screen.Riders -> ridersLazyListState
+                    Screen.Teams -> teamsLazyListState
+                }
+                coroutineScope.launch { lazyListState.animateScrollToItem(0) }
+            }
         }
     ) {
         BackHandler {
             navController.popBackStack()
             showBottomBar.value = true
         }
-        AppNavigation(navController = navController)
+        AppNavigation(
+            navController = navController,
+            teamsLazyListState = teamsLazyListState,
+            ridersLazyListState = ridersLazyListState,
+            racesLazyListState = racesLazyListState
+        )
     }
 }
 
 @Composable
-fun BottomBar(navController: NavController, showBottomBar: Boolean) {
+private fun BottomBar(
+    navController: NavController,
+    showBottomBar: Boolean,
+    screenReselected: (Screen) -> Unit,
+) {
     val currentScreen by navController.currentScreenAsState()
-    val screenReselected: MutableState<Screen> = remember { mutableStateOf(Screen.Teams) }
     AnimatedVisibility(
         visible = showBottomBar && currentScreen != null,
         enter = slideInVertically(initialOffsetY = { it }),
@@ -72,6 +93,9 @@ fun BottomBar(navController: NavController, showBottomBar: Boolean) {
                     label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
                     selected = currentScreen == screen,
                     onClick = {
+                        if (screen == currentScreen) {
+                            screenReselected(screen)
+                        }
                         navController.navigate(screen.route) {
                             launchSingleTop = true
                             restoreState = true
@@ -79,7 +103,6 @@ fun BottomBar(navController: NavController, showBottomBar: Boolean) {
                                 saveState = true
                             }
                         }
-                        screenReselected.value = screen
                     },
                     alwaysShowLabel = true,
                 )

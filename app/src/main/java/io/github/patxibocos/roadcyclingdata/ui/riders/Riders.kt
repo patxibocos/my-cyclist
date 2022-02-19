@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -37,7 +39,8 @@ internal fun RidersScreen(
     riders: List<Rider> = listOf(riderPreview),
     searchQuery: String = "",
     onRiderSearched: (String) -> Unit = {},
-    onRiderSelected: (Rider) -> Unit = {}
+    onRiderSelected: (Rider) -> Unit = {},
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
     Column {
         TextField(
@@ -49,16 +52,22 @@ internal fun RidersScreen(
             }
         )
         Spacer(modifier = Modifier.height(10.dp))
-        RidersList(riders, onRiderSelected)
+        RidersList(riders, onRiderSelected, lazyListState)
+        Spacer(modifier = Modifier.height(56.dp))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
+internal fun RidersList(
+    riders: List<Rider>,
+    onRiderSelected: (Rider) -> Unit,
+    lazyListState: LazyListState
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
+        state = lazyListState,
     ) {
         items(items = riders, key = Rider::id) { rider ->
             RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)

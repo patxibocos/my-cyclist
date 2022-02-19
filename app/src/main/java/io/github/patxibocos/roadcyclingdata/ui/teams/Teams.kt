@@ -4,12 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -27,13 +31,15 @@ import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
 @Composable
 internal fun TeamsScreen(
     teams: List<Team> = listOf(teamPreview),
-    onTeamSelected: (Team) -> Unit = {}
+    onTeamSelected: (Team) -> Unit = {},
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
+        state = lazyListState,
     ) {
         teams.groupBy { it.status }.forEach { (status, teams) ->
             item {
@@ -42,6 +48,9 @@ internal fun TeamsScreen(
             items(items = teams, key = Team::id) { team ->
                 TeamRow(team, onTeamSelected)
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(56.dp))
         }
     }
 }
