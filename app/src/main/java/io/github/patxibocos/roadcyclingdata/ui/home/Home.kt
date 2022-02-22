@@ -1,6 +1,5 @@
 package io.github.patxibocos.roadcyclingdata.ui.home
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -12,6 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -50,7 +50,7 @@ fun Home() {
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
-            BottomBar(navController, showBottomBar.value) { screen ->
+            BottomBar(navController, showBottomBar) { screen ->
                 val lazyListState = when (screen) {
                     Screen.Races -> racesLazyListState
                     Screen.Riders -> ridersLazyListState
@@ -60,10 +60,6 @@ fun Home() {
             }
         }
     ) {
-        BackHandler {
-            navController.popBackStack()
-            showBottomBar.value = true
-        }
         AppNavigation(
             navController = navController,
             teamsLazyListState = teamsLazyListState,
@@ -76,12 +72,14 @@ fun Home() {
 @Composable
 private fun BottomBar(
     navController: NavController,
-    showBottomBar: Boolean,
+    showBottomBar: MutableState<Boolean>,
     screenReselected: (Screen) -> Unit,
 ) {
-    val currentScreen by navController.currentScreenAsState()
+    val currentScreen by navController.currentScreenAsState(onNavigatedToRootScreen = {
+        showBottomBar.value = true
+    })
     AnimatedVisibility(
-        visible = showBottomBar && currentScreen != null,
+        visible = showBottomBar.value && currentScreen != null,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
@@ -113,7 +111,7 @@ private fun BottomBar(
 
 @Stable
 @Composable
-private fun NavController.currentScreenAsState(): State<Screen?> {
+private fun NavController.currentScreenAsState(onNavigatedToRootScreen: () -> Unit): State<Screen?> {
     val selectedItem = remember { mutableStateOf<Screen?>(Screen.Teams) }
 
     DisposableEffect(this) {
@@ -123,6 +121,9 @@ private fun NavController.currentScreenAsState(): State<Screen?> {
                 LeafScreen.Riders.createRoute(Screen.Riders) -> Screen.Riders
                 LeafScreen.Races.createRoute(Screen.Races) -> Screen.Races
                 else -> null
+            }
+            if (selectedItem.value != null) {
+                onNavigatedToRootScreen()
             }
         }
         addOnDestinationChangedListener(listener)
