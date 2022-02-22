@@ -2,6 +2,7 @@ package io.github.patxibocos.roadcyclingdata.ui.riders
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -85,8 +86,10 @@ internal fun RiderRow(
         Row(modifier = Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier
+                    .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+                    .padding(2.dp)
                     .size(75.dp)
-                    .clip(RoundedCornerShape(100)),
+                    .clip(CircleShape),
                 painter = rememberImagePainter(
                     data = rider.photo,
                 ),

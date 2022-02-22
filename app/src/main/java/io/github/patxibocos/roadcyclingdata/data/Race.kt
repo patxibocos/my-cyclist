@@ -25,6 +25,7 @@ data class Stage(
     val departure: String,
     val arrival: String,
     val type: StageType?,
+    val timeTrial: Boolean,
 )
 
 enum class StageType {

@@ -106,7 +106,8 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
             RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_FLAT_FINISH -> StageType.MOUNTAINS_FLAT_FINISH
             RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_UPHILL_FINISH -> StageType.MOUNTAINS_UPHILL_FINISH
             else -> null
-        }
+        },
+        timeTrial = this.timeTrial
     )
 }
 
