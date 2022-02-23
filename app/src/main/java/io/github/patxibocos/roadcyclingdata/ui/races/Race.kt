@@ -14,7 +14,7 @@ import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.Stage
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.stages.StageScreen
-import io.github.patxibocos.roadcyclingdata.ui.util.isoDateFormat
+import io.github.patxibocos.roadcyclingdata.ui.util.isoFormat
 
 @Preview
 @Composable
@@ -44,6 +44,6 @@ private fun StageRow(stage: Stage, onStageSelected: (Stage) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onStageSelected(stage) },
-        text = isoDateFormat(stage.startDate)
+        text = isoFormat(stage.startDateTime)
     )
 }

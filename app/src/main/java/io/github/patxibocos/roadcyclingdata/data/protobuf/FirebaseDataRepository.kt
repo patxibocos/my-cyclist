@@ -95,8 +95,8 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
     return Stage(
         id = this.id,
         distance = this.distance,
-        startDate = Instant.ofEpochSecond(this.startDate.seconds).atZone(ZoneId.systemDefault())
-            .toLocalDate(),
+        startDateTime = Instant.ofEpochSecond(this.startDateTime.seconds)
+            .atZone(ZoneId.systemDefault()),
         departure = this.departure,
         arrival = this.arrival,
         type = when (this.type) {

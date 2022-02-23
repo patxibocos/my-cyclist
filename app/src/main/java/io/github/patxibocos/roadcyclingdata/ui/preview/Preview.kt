@@ -7,6 +7,7 @@ import io.github.patxibocos.roadcyclingdata.data.StageType
 import io.github.patxibocos.roadcyclingdata.data.Team
 import io.github.patxibocos.roadcyclingdata.data.TeamStatus
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 val teamPreview: Team by lazy {
     Team(
@@ -41,10 +42,11 @@ val stagePreview: Stage by lazy {
     Stage(
         id = "stage-1",
         distance = 123.4f,
-        startDate = LocalDate.now(),
+        startDateTime = ZonedDateTime.now(),
         type = StageType.FLAT,
         departure = "Bilbao",
-        arrival = "Barcelona"
+        arrival = "Barcelona",
+        timeTrial = false
     )
 }
 

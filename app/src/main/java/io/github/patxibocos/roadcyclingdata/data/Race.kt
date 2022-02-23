@@ -3,6 +3,7 @@ package io.github.patxibocos.roadcyclingdata.data
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Stable
@@ -21,7 +22,7 @@ data class Race(
 data class Stage(
     val id: String,
     val distance: Float,
-    val startDate: LocalDate,
+    val startDateTime: ZonedDateTime,
     val departure: String,
     val arrival: String,
     val type: StageType?,
