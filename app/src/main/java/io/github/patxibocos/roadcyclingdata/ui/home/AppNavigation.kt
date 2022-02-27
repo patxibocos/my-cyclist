@@ -37,15 +37,14 @@ import io.github.patxibocos.roadcyclingdata.ui.util.rememberFlowWithLifecycle
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
-    teamsLazyListState: LazyListState,
     ridersLazyListState: LazyListState,
-    racesLazyListState: LazyListState
+    racesLazyListState: LazyListState,
 ) {
     NavHost(
         navController,
         startDestination = Screen.Riders.route,
     ) {
-        addTeamsNavigation(navController, teamsLazyListState)
+        addTeamsNavigation(navController)
         addRidersNavigation(navController, ridersLazyListState)
         addRacesNavigation(navController, racesLazyListState)
     }
@@ -93,7 +92,6 @@ internal sealed class LeafScreen(
 
 private fun NavGraphBuilder.addTeamsNavigation(
     navController: NavController,
-    lazyListState: LazyListState
 ) {
     navigation(
         startDestination = LeafScreen.Teams.createRoute(Screen.Teams),
@@ -110,7 +108,6 @@ private fun NavGraphBuilder.addTeamsNavigation(
                 onTeamSelected = {
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                 },
-                lazyListState = lazyListState,
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {

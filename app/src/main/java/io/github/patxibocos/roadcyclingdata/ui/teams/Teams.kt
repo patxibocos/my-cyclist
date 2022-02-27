@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,43 +12,88 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.roadcyclingdata.data.Team
+import io.github.patxibocos.roadcyclingdata.data.TeamStatus
 import io.github.patxibocos.roadcyclingdata.ui.preview.teamPreview
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Preview
 @Composable
 internal fun TeamsScreen(
     teams: List<Team> = listOf(teamPreview),
     onTeamSelected: (Team) -> Unit = {},
-    lazyListState: LazyListState = rememberLazyListState(),
+) {
+    Column {
+        val pagerState = rememberPagerState()
+        val coroutineScope = rememberCoroutineScope()
+        TabRow(selectedTabIndex = pagerState.currentPage, indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+            )
+        }) {
+            Tab(
+                selected = pagerState.currentPage == 0,
+                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
+                text = { Text("World Teams") }
+            )
+            Tab(
+                selected = pagerState.currentPage == 1,
+                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
+                text = { Text("Pro Teams") }
+            )
+        }
+        HorizontalPager(
+            count = 2,
+            state = pagerState,
+        ) { page ->
+            if (page == 0) {
+                TeamsList(
+                    teams = teams.filter { it.status == TeamStatus.WORLD_TEAM },
+                    onTeamSelected,
+                )
+            } else {
+                TeamsList(
+                    teams = teams.filter { it.status == TeamStatus.PRO_TEAM },
+                    onTeamSelected,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun TeamsList(
+    teams: List<Team>,
+    onTeamSelected: (Team) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        state = lazyListState,
     ) {
-        teams.groupBy { it.status }.forEach { (status, teams) ->
-            item {
-                Text(text = status.name)
-            }
-            items(items = teams, key = Team::id) { team ->
-                TeamRow(team, onTeamSelected)
-            }
+        items(items = teams, key = Team::id) { team ->
+            TeamRow(team, onTeamSelected)
         }
         item {
             Spacer(modifier = Modifier.height(56.dp))

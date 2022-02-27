@@ -43,7 +43,6 @@ fun Home() {
         }
     }
     val navController = rememberNavController()
-    val teamsLazyListState = rememberLazyListState()
     val ridersLazyListState = rememberLazyListState()
     val racesLazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -54,15 +53,14 @@ fun Home() {
                 val lazyListState = when (screen) {
                     Screen.Races -> racesLazyListState
                     Screen.Riders -> ridersLazyListState
-                    Screen.Teams -> teamsLazyListState
+                    else -> null
                 }
-                coroutineScope.launch { lazyListState.animateScrollToItem(0) }
+                lazyListState?.let { coroutineScope.launch { it.animateScrollToItem(0) } }
             }
         }
     ) {
         AppNavigation(
             navController = navController,
-            teamsLazyListState = teamsLazyListState,
             ridersLazyListState = ridersLazyListState,
             racesLazyListState = racesLazyListState
         )

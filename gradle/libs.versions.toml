@@ -4,6 +4,8 @@ hilt = "2.40.5"
 ktlint = "0.43.2"
 
 [libraries]
+accompanist-pager = "com.google.accompanist:accompanist-pager:0.23.1"
+accompanist-pager-indicators = "com.google.accompanist:accompanist-pager-indicators:0.23.1"
 android-desugar-jdk = "com.android.tools:desugar_jdk_libs:1.1.5"
 android-material = "com.google.android.material:material:1.5.0"
 androidx-compose-material-material = { module = "androidx.compose.material:material", version.ref = "compose" }
