@@ -156,12 +156,13 @@ private fun NavGraphBuilder.addRidersNavigation(
                 UiState.Empty
             )
             RidersScreen(
-                riders = uiState.riders,
+                uiRiders = uiState.riders,
                 searchQuery = uiState.search,
                 onRiderSearched = viewModel::onSearched,
                 onRiderSelected = {
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
                 },
+                onSortingSelected = viewModel::onSorted,
                 lazyListState = lazyListState
             )
         }

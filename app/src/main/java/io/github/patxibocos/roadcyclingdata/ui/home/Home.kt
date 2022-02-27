@@ -84,7 +84,7 @@ private fun BottomBar(
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
         BottomNavigation {
-            val screens = listOf(Screen.Teams, Screen.Riders, Screen.Races)
+            val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
             screens.forEach { screen ->
                 BottomNavigationItem(
                     icon = { Icon(screen.icon, contentDescription = null) },

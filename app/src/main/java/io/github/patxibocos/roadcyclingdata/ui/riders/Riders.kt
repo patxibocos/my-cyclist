@@ -19,10 +19,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,10 +42,17 @@ import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 @Preview
 @Composable
 internal fun RidersScreen(
-    riders: List<Rider> = listOf(riderPreview),
+    uiRiders: UiState.UiRiders = UiState.UiRiders.RidersByLastName(
+        mapOf(
+            riderPreview.lastName.first() to listOf(
+                riderPreview
+            )
+        )
+    ),
     searchQuery: String = "",
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {},
+    onSortingSelected: (Sorting) -> Unit = {},
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
     Column {
@@ -52,8 +64,33 @@ internal fun RidersScreen(
                 Text("Search")
             }
         )
+        val sortingOptionsVisible = remember { mutableStateOf(false) }
+        Box {
+            Button(onClick = { sortingOptionsVisible.value = true }) {
+                Text("Sort")
+            }
+            if (sortingOptionsVisible.value) {
+                DropdownMenu(
+                    expanded = sortingOptionsVisible.value,
+                    onDismissRequest = { sortingOptionsVisible.value = false }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        sortingOptionsVisible.value = false
+                        onSortingSelected(Sorting.LastName)
+                    }, enabled = uiRiders.sorting != Sorting.LastName) { Text("Name") }
+                    DropdownMenuItem(onClick = {
+                        sortingOptionsVisible.value = false
+                        onSortingSelected(Sorting.Team)
+                    }, enabled = uiRiders.sorting != Sorting.Team) { Text("Team") }
+                    DropdownMenuItem(onClick = {
+                        sortingOptionsVisible.value = false
+                        onSortingSelected(Sorting.Country)
+                    }, enabled = uiRiders.sorting != Sorting.Country) { Text("Country") }
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(10.dp))
-        RidersList(riders, onRiderSelected, lazyListState)
+        RidersList(uiRiders, onRiderSelected, lazyListState)
         Spacer(modifier = Modifier.height(56.dp))
     }
 }
@@ -61,7 +98,7 @@ internal fun RidersScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RidersList(
-    riders: List<Rider>,
+    uiRiders: UiState.UiRiders,
     onRiderSelected: (Rider) -> Unit,
     lazyListState: LazyListState
 ) {
@@ -70,8 +107,37 @@ internal fun RidersList(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         state = lazyListState,
     ) {
-        items(items = riders, key = Rider::id) { rider ->
-            RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+        when (uiRiders) {
+            is UiState.UiRiders.RidersByLastName -> {
+                uiRiders.riders.forEach { (letter, riders) ->
+                    stickyHeader {
+                        Text(text = letter.toString())
+                    }
+                    items(riders, key = Rider::id) { rider ->
+                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                    }
+                }
+            }
+            is UiState.UiRiders.RidersByTeam -> {
+                uiRiders.riders.forEach { (team, riders) ->
+                    stickyHeader {
+                        Text(text = team.name)
+                    }
+                    items(riders, key = Rider::id) { rider ->
+                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                    }
+                }
+            }
+            is UiState.UiRiders.RidersByCountry -> {
+                uiRiders.riders.forEach { (country, riders) ->
+                    stickyHeader {
+                        Text(text = country)
+                    }
+                    items(riders, key = Rider::id) { rider ->
+                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                    }
+                }
+            }
         }
     }
 }
