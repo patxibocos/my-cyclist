@@ -1,12 +1,12 @@
 package io.github.patxibocos.roadcyclingdata.ui.home
 
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,16 +37,16 @@ import io.github.patxibocos.roadcyclingdata.ui.util.rememberFlowWithLifecycle
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
-    ridersLazyListState: LazyListState,
-    racesLazyListState: LazyListState,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
 ) {
     NavHost(
         navController,
         startDestination = Screen.Riders.route,
     ) {
-        addTeamsNavigation(navController)
-        addRidersNavigation(navController, ridersLazyListState)
-        addRacesNavigation(navController, racesLazyListState)
+        addTeamsNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
+        addRidersNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
+        addRacesNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
     }
 }
 
@@ -92,6 +92,8 @@ internal sealed class LeafScreen(
 
 private fun NavGraphBuilder.addTeamsNavigation(
     navController: NavController,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Teams.createRoute(Screen.Teams),
@@ -108,6 +110,8 @@ private fun NavGraphBuilder.addTeamsNavigation(
                 onTeamSelected = {
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                 },
+                reselectedScreen = reselectedScreen,
+                onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {
@@ -140,7 +144,8 @@ private fun NavGraphBuilder.addTeamsNavigation(
 
 private fun NavGraphBuilder.addRidersNavigation(
     navController: NavController,
-    lazyListState: LazyListState
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Riders.createRoute(Screen.Riders),
@@ -160,7 +165,8 @@ private fun NavGraphBuilder.addRidersNavigation(
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
                 },
                 onSortingSelected = viewModel::onSorted,
-                lazyListState = lazyListState
+                reselectedScreen = reselectedScreen,
+                onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
@@ -193,7 +199,8 @@ private fun NavGraphBuilder.addRidersNavigation(
 
 private fun NavGraphBuilder.addRacesNavigation(
     navController: NavController,
-    lazyListState: LazyListState
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Races.createRoute(Screen.Races),
@@ -210,7 +217,8 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onRaceSelected = {
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                 },
-                lazyListState = lazyListState
+                reselectedScreen = reselectedScreen,
+                onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
         composable(LeafScreen.Race.createRoute(Screen.Races)) {

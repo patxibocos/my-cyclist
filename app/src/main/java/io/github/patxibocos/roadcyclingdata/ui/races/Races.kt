@@ -10,13 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.roadcyclingdata.ui.home.Screen
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
 import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
@@ -33,8 +36,16 @@ import io.github.patxibocos.roadcyclingdata.ui.util.getCountryEmoji
 internal fun RacesScreen(
     races: List<Race> = listOf(racePreview),
     onRaceSelected: (Race) -> Unit = {},
-    lazyListState: LazyListState = rememberLazyListState(),
+    reselectedScreen: State<Screen?> = mutableStateOf(null),
+    onReselectedScreenConsumed: () -> Unit = {},
 ) {
+    val lazyListState = rememberLazyListState()
+    LaunchedEffect(key1 = reselectedScreen.value) {
+        if (reselectedScreen.value == Screen.Races) {
+            lazyListState.animateScrollToItem(0)
+            onReselectedScreenConsumed()
+        }
+    }
     LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
         items(items = races, key = Race::id, itemContent = { race ->
             RaceRow(race, onRaceSelected)

@@ -3,7 +3,6 @@ package io.github.patxibocos.roadcyclingdata.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -17,7 +16,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.Velocity
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.launch
 
 @Composable
 fun Home() {
@@ -42,27 +40,22 @@ fun Home() {
             }
         }
     }
-    val navController = rememberNavController()
-    val ridersLazyListState = rememberLazyListState()
-    val racesLazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    val navController by rememberUpdatedState(newValue = rememberNavController())
+    val reselectedScreen: MutableState<Screen?> = remember { mutableStateOf(null) }
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
             BottomBar(navController, showBottomBar) { screen ->
-                val lazyListState = when (screen) {
-                    Screen.Races -> racesLazyListState
-                    Screen.Riders -> ridersLazyListState
-                    else -> null
-                }
-                lazyListState?.let { coroutineScope.launch { it.animateScrollToItem(0) } }
+                reselectedScreen.value = screen
             }
         }
     ) {
         AppNavigation(
             navController = navController,
-            ridersLazyListState = ridersLazyListState,
-            racesLazyListState = racesLazyListState
+            reselectedScreen = reselectedScreen,
+            onReselectedScreenConsumed = {
+                reselectedScreen.value = null
+            }
         )
     }
 }
