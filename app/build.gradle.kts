@@ -95,6 +95,7 @@ dependencies {
 
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.android.material)
     implementation(libs.androidx.compose.material.material)
     implementation(libs.androidx.compose.material.material.icons.extended)

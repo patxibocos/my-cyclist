@@ -6,9 +6,11 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
@@ -45,8 +47,10 @@ fun Home() {
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
-            BottomBar(navController, showBottomBar) { screen ->
-                reselectedScreen.value = screen
+            CompositionLocalProvider(LocalElevationOverlay provides null) {
+                BottomBar(navController, showBottomBar) { screen ->
+                    reselectedScreen.value = screen
+                }
             }
         }
     ) {
