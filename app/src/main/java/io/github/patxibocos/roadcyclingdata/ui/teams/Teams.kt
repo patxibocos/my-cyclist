@@ -1,21 +1,26 @@
 package io.github.patxibocos.roadcyclingdata.ui.teams
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
@@ -31,7 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -103,20 +108,23 @@ internal fun TeamsScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun TeamsList(
     teams: List<Team>,
     onTeamSelected: (Team) -> Unit,
     lazyListState: LazyListState,
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
         state = lazyListState,
     ) {
-        items(items = teams, key = Team::id) { team ->
+        items(teams) { team ->
             TeamRow(team, onTeamSelected)
         }
         item {
@@ -130,60 +138,71 @@ internal fun TeamRow(
     team: Team,
     onTeamSelected: (Team) -> Unit
 ) {
-    ConstraintLayout(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
+            .aspectRatio(1f)
             .clickable { onTeamSelected(team) }
     ) {
-        val (jerseyImage, abbreviation, name, bike) = createRefs()
-        Text(
-            text = team.abbreviation,
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.constrainAs(abbreviation) {
-                start.linkTo(jerseyImage.start)
-                end.linkTo(jerseyImage.end)
-                top.linkTo(jerseyImage.top)
-                bottom.linkTo(jerseyImage.bottom)
-            }
-        )
-        Image(
-            modifier = Modifier
-                .constrainAs(jerseyImage) {
-                    start.linkTo(parent.start)
-                }
-                .padding(horizontal = 16.dp)
-                .size(75.dp)
-                .clip(CutCornerShape(topStart = 10.dp, topEnd = 10.dp))
-                .border(
-                    2.dp,
-                    MaterialTheme.colors.secondary,
-                    CutCornerShape(topStart = 10.dp, topEnd = 10.dp)
-                )
-                .padding(horizontal = 2.dp),
-            painter = rememberImagePainter(
-                data = team.jersey,
-            ),
-            contentDescription = null,
-        )
-        Text(
-            text = team.name,
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier
-                .constrainAs(name) {
-                    start.linkTo(jerseyImage.end)
+        ConstraintLayout {
+            val (jerseyImage, abbreviation, name, bike, background) = createRefs()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+                    .background(MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+                    .constrainAs(background) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+            )
+            Text(
+                text = team.abbreviation,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.constrainAs(abbreviation) {
+                    start.linkTo(jerseyImage.start)
+                    end.linkTo(jerseyImage.end)
                     top.linkTo(jerseyImage.top)
-                }
-                .padding(top = 10.dp)
-        )
-        Text(
-            text = "\uD83D\uDEB4 ${team.bike}",
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier
-                .constrainAs(bike) {
-                    start.linkTo(jerseyImage.end)
                     bottom.linkTo(jerseyImage.bottom)
                 }
-                .padding(bottom = 10.dp)
-        )
+            )
+            AsyncImage(
+                model = team.jersey,
+                modifier = Modifier
+                    .constrainAs(jerseyImage) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(all = 16.dp)
+                    .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+                    .padding(2.dp)
+                    .size(75.dp)
+                    .clip(CircleShape),
+                contentDescription = null,
+            )
+            Text(
+                text = team.name,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier
+                    .constrainAs(name) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(jerseyImage.bottom)
+                    }
+                    .padding(bottom = 10.dp)
+            )
+            Text(
+                text = "\uD83D\uDEB4 ${team.bike}",
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier
+                    .constrainAs(bike) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(name.bottom)
+                    }
+            )
+        }
     }
 }

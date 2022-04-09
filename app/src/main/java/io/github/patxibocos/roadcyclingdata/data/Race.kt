@@ -3,6 +3,7 @@ package io.github.patxibocos.roadcyclingdata.data
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Immutable
@@ -16,6 +17,24 @@ data class Race(
     val endDate: LocalDate,
     val website: String,
 )
+
+fun Race.isSingleDay(): Boolean =
+    startDate == endDate
+
+fun Race.getMoment(): RaceMoment {
+    val today = LocalDate.now(ZoneId.systemDefault())
+    return when {
+        today.isAfter(endDate) -> RaceMoment.Past
+        today.isBefore(startDate) -> RaceMoment.Future
+        else -> RaceMoment.Active
+    }
+}
+
+enum class RaceMoment {
+    Past,
+    Active,
+    Future
+}
 
 @Immutable
 @Stable

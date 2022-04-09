@@ -2,6 +2,7 @@ package io.github.patxibocos.roadcyclingdata.ui.races
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,11 +22,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.patxibocos.roadcyclingdata.data.Race
+import io.github.patxibocos.roadcyclingdata.data.RaceMoment
+import io.github.patxibocos.roadcyclingdata.data.getMoment
 import io.github.patxibocos.roadcyclingdata.ui.home.Screen
 import io.github.patxibocos.roadcyclingdata.ui.preview.racePreview
 import io.github.patxibocos.roadcyclingdata.ui.util.ddMMMFormat
@@ -46,7 +50,11 @@ internal fun RacesScreen(
             onReselectedScreenConsumed()
         }
     }
-    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = lazyListState,
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+    ) {
         items(items = races, key = Race::id, itemContent = { race ->
             RaceRow(race, onRaceSelected)
         })
@@ -65,14 +73,19 @@ private fun RaceRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .clickable { onRaceSelected(race) }
+            .clickable { onRaceSelected(race) }.run {
+                if (race.getMoment() == RaceMoment.Past) alpha(.7f) else this
+            }
     ) {
         Text(
             text = "${getCountryEmoji(race.country)} ${race.name}",
             style = MaterialTheme.typography.h6,
         )
         Row {
-            Card(border = BorderStroke(2.dp, Color.White)) {
+            Card(
+                border = BorderStroke(2.dp, Color.White),
+                modifier = Modifier.padding(end = 10.dp)
+            ) {
                 val (day, month) = ddMMMFormat(race.startDate)
                     .uppercase()
                     .split(" ")

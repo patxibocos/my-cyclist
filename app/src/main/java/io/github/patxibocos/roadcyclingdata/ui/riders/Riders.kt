@@ -1,7 +1,6 @@
 package io.github.patxibocos.roadcyclingdata.ui.riders
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.ui.home.Screen
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
@@ -161,15 +160,13 @@ internal fun RiderRow(
 ) {
     Column(modifier = modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Image(
+            AsyncImage(
+                model = rider.photo,
                 modifier = Modifier
                     .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                     .padding(2.dp)
                     .size(75.dp)
                     .clip(CircleShape),
-                painter = rememberImagePainter(
-                    data = rider.photo,
-                ),
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
