@@ -32,9 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.github.patxibocos.roadcyclingdata.R
 import io.github.patxibocos.roadcyclingdata.data.Rider
 import io.github.patxibocos.roadcyclingdata.ui.home.Screen
 import io.github.patxibocos.roadcyclingdata.ui.preview.riderPreview
@@ -63,31 +65,40 @@ internal fun RidersScreen(
             value = searchQuery,
             onValueChange = onRiderSearched,
             label = {
-                Text("Search")
+                Text(stringResource(R.string.riders_search))
             }
         )
         val sortingOptionsVisible = remember { mutableStateOf(false) }
         Box {
             Button(onClick = { sortingOptionsVisible.value = true }) {
-                Text("Sort")
+                Text(stringResource(R.string.riders_sort))
             }
             if (sortingOptionsVisible.value) {
                 DropdownMenu(
                     expanded = sortingOptionsVisible.value,
                     onDismissRequest = { sortingOptionsVisible.value = false }
                 ) {
-                    DropdownMenuItem(onClick = {
-                        sortingOptionsVisible.value = false
-                        onSortingSelected(Sorting.LastName)
-                    }, enabled = uiRiders.sorting != Sorting.LastName) { Text("Name") }
-                    DropdownMenuItem(onClick = {
-                        sortingOptionsVisible.value = false
-                        onSortingSelected(Sorting.Team)
-                    }, enabled = uiRiders.sorting != Sorting.Team) { Text("Team") }
-                    DropdownMenuItem(onClick = {
-                        sortingOptionsVisible.value = false
-                        onSortingSelected(Sorting.Country)
-                    }, enabled = uiRiders.sorting != Sorting.Country) { Text("Country") }
+                    DropdownMenuItem(
+                        onClick = {
+                            sortingOptionsVisible.value = false
+                            onSortingSelected(Sorting.LastName)
+                        },
+                        enabled = uiRiders.sorting != Sorting.LastName
+                    ) { Text(stringResource(R.string.riders_sort_name)) }
+                    DropdownMenuItem(
+                        onClick = {
+                            sortingOptionsVisible.value = false
+                            onSortingSelected(Sorting.Team)
+                        },
+                        enabled = uiRiders.sorting != Sorting.Team
+                    ) { Text(stringResource(R.string.riders_sort_team)) }
+                    DropdownMenuItem(
+                        onClick = {
+                            sortingOptionsVisible.value = false
+                            onSortingSelected(Sorting.Country)
+                        },
+                        enabled = uiRiders.sorting != Sorting.Country
+                    ) { Text(stringResource(R.string.riders_sort_country)) }
                 }
             }
         }

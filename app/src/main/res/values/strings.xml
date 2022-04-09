@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Road Cycling Data</string>
+
+    <string name="riders_search">Search</string>
+    <string name="riders_sort">Sort</string>
+    <string name="riders_sort_name">Name</string>
+    <string name="riders_sort_team">Team</string>
+    <string name="riders_sort_country">Country</string>
+
+    <string name="teams_world">World Teams</string>
+    <string name="teams_pro">Pro Teams</string>
+
+    <plurals name="races_stages">
+        <item quantity="one">Single day race</item>
+        <item quantity="other">%1$d stages</item>
+    </plurals>
 </resources>

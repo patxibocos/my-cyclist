@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -41,6 +42,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import io.github.patxibocos.roadcyclingdata.R
 import io.github.patxibocos.roadcyclingdata.data.Team
 import io.github.patxibocos.roadcyclingdata.data.TeamStatus
 import io.github.patxibocos.roadcyclingdata.ui.home.Screen
@@ -79,12 +81,12 @@ internal fun TeamsScreen(
             Tab(
                 selected = pagerState.currentPage == 0,
                 onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
-                text = { Text("World Teams") }
+                text = { Text(stringResource(R.string.teams_world)) }
             )
             Tab(
                 selected = pagerState.currentPage == 1,
                 onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
-                text = { Text("Pro Teams") }
+                text = { Text(stringResource(R.string.teams_pro)) }
             )
         }
         HorizontalPager(

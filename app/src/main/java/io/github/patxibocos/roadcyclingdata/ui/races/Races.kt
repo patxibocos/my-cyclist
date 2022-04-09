@@ -24,9 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.patxibocos.roadcyclingdata.R
 import io.github.patxibocos.roadcyclingdata.data.Race
 import io.github.patxibocos.roadcyclingdata.data.RaceMoment
 import io.github.patxibocos.roadcyclingdata.data.getMoment
@@ -102,7 +104,11 @@ private fun RaceRow(
                 }
             }
             Text(
-                text = if (race.stages.size == 1) "Single day race" else "${race.stages.size} stages"
+                text = LocalContext.current.resources.getQuantityString(
+                    R.plurals.races_stages,
+                    race.stages.size,
+                    race.stages.size
+                )
             )
         }
     }
