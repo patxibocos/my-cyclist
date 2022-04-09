@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Road Cycling Data</string>
+    <string name="app_name">My Cyclist</string>
 
     <string name="riders_search">Search</string>
     <string name="riders_sort">Sort</string>

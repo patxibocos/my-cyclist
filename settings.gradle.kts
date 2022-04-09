@@ -5,7 +5,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Road Cycling Data"
+rootProject.name = "My Cyclist"
 include(":app")
-
-enableFeaturePreview("VERSION_CATALOGS")

@@ -1,7 +1,7 @@
 <resources>
 
-    <style name="Platform.Theme.RoadCyclingData" parent="android:Theme.Material" />
+    <style name="Platform.Theme.MyCyclist" parent="android:Theme.Material" />
 
-    <style name="Theme.RoadCyclingData" parent="Base.Theme.RoadCyclingData" />
+    <style name="Theme.MyCyclist" parent="Base.Theme.MyCyclist" />
 
 </resources>

@@ -42,7 +42,7 @@ android {
     compileSdk = 31
 
     defaultConfig {
-        applicationId = "io.github.patxibocos.roadcyclingdata"
+        applicationId = "io.github.patxibocos.mycyclist"
         minSdk = 21
         targetSdk = 31
         versionCode = 1

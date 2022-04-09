@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1091271745671:android:1e85d07b91180f89f89822",
+        "mobilesdk_app_id": "1:1091271745671:android:dc7be3b7ebb254d5f89822",
         "android_client_info": {
-          "package_name": "io.github.patxibocos.roadcyclingdata"
+          "package_name": "io.github.patxibocos.mycyclist"
         }
       },
       "oauth_client": [

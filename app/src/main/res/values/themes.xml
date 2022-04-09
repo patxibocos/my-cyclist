@@ -1,19 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Platform.Theme.RoadCyclingData" parent="android:Theme.Material.Light" />
+    <style name="Platform.Theme.MyCyclist" parent="android:Theme.Material.Light" />
 
-    <style name="Base.Theme.RoadCyclingData" parent="Platform.Theme.RoadCyclingData">
+    <style name="Base.Theme.MyCyclist" parent="Platform.Theme.MyCyclist">
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 
-    <style name="Theme.RoadCyclingData" parent="Base.Theme.RoadCyclingData" />
+    <style name="Theme.MyCyclist" parent="Base.Theme.MyCyclist" />
 
-    <style name="Theme.RoadCyclingData.NoActionBar">
+    <style name="Theme.MyCyclist.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.RoadCyclingData.Immerse" parent="Theme.RoadCyclingData.NoActionBar">
+    <style name="Theme.MyCyclist.Immerse" parent="Theme.MyCyclist.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="android:navigationBarColor">@color/nav_bar_scrim</item>

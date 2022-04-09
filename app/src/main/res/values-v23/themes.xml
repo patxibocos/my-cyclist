@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.RoadCyclingData.Home" parent="Theme.RoadCyclingData.Immerse">
+    <style name="Theme.MyCyclist.Home" parent="Theme.MyCyclist.Immerse">
         <item name="android:windowLightStatusBar">@bool/use_light_status_bar</item>
     </style>
 
