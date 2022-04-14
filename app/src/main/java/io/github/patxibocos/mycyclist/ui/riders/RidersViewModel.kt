@@ -27,7 +27,11 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
             val filteredRiders = riders.filter(query)
             when (sorting) {
                 Sorting.LastName -> UiState(
-                    UiState.UiRiders.RidersByLastName(filteredRiders.groupBy { it.lastName.first() }),
+                    UiState.UiRiders.RidersByLastName(
+                        filteredRiders.groupBy {
+                            it.lastName.first().uppercaseChar()
+                        }
+                    ),
                     query
                 )
                 Sorting.Team -> {
