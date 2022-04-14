@@ -32,7 +32,13 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
                 )
                 Sorting.Team -> {
                     val ridersByTeam =
-                        teams.associateWith { team -> riders.filter { team.riderIds.contains(it.id) } }
+                        teams.associateWith { team ->
+                            filteredRiders.filter {
+                                team.riderIds.contains(
+                                    it.id
+                                )
+                            }
+                        }.filter { it.value.isNotEmpty() }
                     UiState(UiState.UiRiders.RidersByTeam(ridersByTeam), query)
                 }
                 Sorting.Country -> UiState(
