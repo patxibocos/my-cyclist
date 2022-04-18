@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mi Ciclista</string>
+
+    <string name="screen_teams">Equipos</string>
+    <string name="screen_riders">Corredores</string>
+    <string name="screen_races">Carreras</string>
+
+    <string name="riders_search">Buscar</string>
+    <string name="riders_sort">Ordenar</string>
+    <string name="riders_sort_name">Nombre</string>
+    <string name="riders_sort_team">Equipo</string>
+    <string name="riders_sort_country">País</string>
+
+    <plurals name="races_stages">
+        <item quantity="one">Carrera de un día</item>
+        <item quantity="other">%1$d etapas</item>
+    </plurals>
+</resources>

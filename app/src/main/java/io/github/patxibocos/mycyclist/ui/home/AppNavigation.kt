@@ -1,5 +1,6 @@
 package io.github.patxibocos.mycyclist.ui.home
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Flag
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.ui.races.RaceScreen
 import io.github.patxibocos.mycyclist.ui.races.RaceViewModel
 import io.github.patxibocos.mycyclist.ui.races.RacesScreen
@@ -50,10 +52,10 @@ internal fun AppNavigation(
     }
 }
 
-internal sealed class Screen(val route: String, val icon: ImageVector) {
-    object Teams : Screen("teams", Icons.Outlined.Group)
-    object Riders : Screen("riders", Icons.Outlined.Face)
-    object Races : Screen("races", Icons.Outlined.Flag)
+internal sealed class Screen(val route: String, @StringRes val label: Int, val icon: ImageVector) {
+    object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group)
+    object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face)
+    object Races : Screen("races", R.string.screen_races, Icons.Outlined.Flag)
 }
 
 internal sealed class LeafScreen(
