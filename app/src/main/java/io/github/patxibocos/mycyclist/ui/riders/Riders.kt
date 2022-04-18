@@ -26,8 +26,10 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,43 +70,56 @@ internal fun RidersScreen(
                 Text(stringResource(R.string.riders_search))
             }
         )
-        val sortingOptionsVisible = remember { mutableStateOf(false) }
+        var sortingOptionsVisible by remember { mutableStateOf(false) }
         Box {
-            Button(onClick = { sortingOptionsVisible.value = true }) {
+            Button(onClick = { sortingOptionsVisible = true }) {
                 Text(stringResource(R.string.riders_sort))
             }
-            if (sortingOptionsVisible.value) {
-                DropdownMenu(
-                    expanded = sortingOptionsVisible.value,
-                    onDismissRequest = { sortingOptionsVisible.value = false }
-                ) {
-                    DropdownMenuItem(
-                        onClick = {
-                            sortingOptionsVisible.value = false
-                            onSortingSelected(Sorting.LastName)
-                        },
-                        enabled = uiRiders.sorting != Sorting.LastName
-                    ) { Text(stringResource(R.string.riders_sort_name)) }
-                    DropdownMenuItem(
-                        onClick = {
-                            sortingOptionsVisible.value = false
-                            onSortingSelected(Sorting.Team)
-                        },
-                        enabled = uiRiders.sorting != Sorting.Team
-                    ) { Text(stringResource(R.string.riders_sort_team)) }
-                    DropdownMenuItem(
-                        onClick = {
-                            sortingOptionsVisible.value = false
-                            onSortingSelected(Sorting.Country)
-                        },
-                        enabled = uiRiders.sorting != Sorting.Country
-                    ) { Text(stringResource(R.string.riders_sort_country)) }
-                }
-            }
+            SortingMenu(
+                expanded = sortingOptionsVisible,
+                selectedSorting = uiRiders.sorting,
+                onSortingSelected = { sorting ->
+                    sortingOptionsVisible = false
+                    onSortingSelected(sorting)
+                },
+                onDismissed = { sortingOptionsVisible = false }
+            )
         }
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(uiRiders, onRiderSelected, reselectedScreen, onReselectedScreenConsumed)
         Spacer(modifier = Modifier.height(56.dp))
+    }
+}
+
+@Composable
+private fun SortingMenu(
+    expanded: Boolean,
+    selectedSorting: Sorting,
+    onSortingSelected: (Sorting) -> Unit,
+    onDismissed: () -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissed
+    ) {
+        DropdownMenuItem(
+            onClick = {
+                onSortingSelected(Sorting.LastName)
+            },
+            enabled = selectedSorting != Sorting.LastName
+        ) { Text(stringResource(R.string.riders_sort_name)) }
+        DropdownMenuItem(
+            onClick = {
+                onSortingSelected(Sorting.Team)
+            },
+            enabled = selectedSorting != Sorting.Team
+        ) { Text(stringResource(R.string.riders_sort_team)) }
+        DropdownMenuItem(
+            onClick = {
+                onSortingSelected(Sorting.Country)
+            },
+            enabled = selectedSorting != Sorting.Country
+        ) { Text(stringResource(R.string.riders_sort_country)) }
     }
 }
 
