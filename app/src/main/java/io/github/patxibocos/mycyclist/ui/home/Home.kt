@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Velocity
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -83,7 +84,7 @@ private fun BottomBar(
             screens.forEach { screen ->
                 BottomNavigationItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
-                    label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
+                    label = { Text(stringResource(screen.label)) },
                     selected = currentScreen == screen,
                     onClick = {
                         if (screen == currentScreen) {
