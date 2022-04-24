@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.teams
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,11 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -58,15 +57,15 @@ internal fun TeamsScreen(
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
 ) {
-    val worldTeamsLazyListState = rememberLazyListState()
-    val proTeamsLazyListState = rememberLazyListState()
+    val worldTeamsLazyGridState = rememberLazyGridState()
+    val proTeamsLazyGridState = rememberLazyGridState()
     val pagerState = rememberPagerState()
     LaunchedEffect(key1 = reselectedScreen.value) {
         if (reselectedScreen.value == Screen.Teams) {
             if (pagerState.currentPage == 0) {
-                worldTeamsLazyListState.animateScrollToItem(0)
+                worldTeamsLazyGridState.animateScrollToItem(0)
             } else {
-                proTeamsLazyListState.animateScrollToItem(0)
+                proTeamsLazyGridState.animateScrollToItem(0)
             }
             onReselectedScreenConsumed()
         }
@@ -97,28 +96,27 @@ internal fun TeamsScreen(
                 TeamsList(
                     teams = teams.filter { it.status == TeamStatus.WORLD_TEAM },
                     onTeamSelected = onTeamSelected,
-                    lazyListState = worldTeamsLazyListState,
+                    lazyListState = worldTeamsLazyGridState,
                 )
             } else {
                 TeamsList(
                     teams = teams.filter { it.status == TeamStatus.PRO_TEAM },
                     onTeamSelected = onTeamSelected,
-                    lazyListState = proTeamsLazyListState,
+                    lazyListState = proTeamsLazyGridState,
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun TeamsList(
     teams: List<Team>,
     onTeamSelected: (Team) -> Unit,
-    lazyListState: LazyListState,
+    lazyListState: LazyGridState,
 ) {
     LazyVerticalGrid(
-        cells = GridCells.Fixed(2),
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.dp),

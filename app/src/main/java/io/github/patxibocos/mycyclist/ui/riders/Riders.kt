@@ -17,12 +17,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -62,28 +64,35 @@ internal fun RidersScreen(
     onReselectedScreenConsumed: () -> Unit = {},
 ) {
     Column {
-        TextField(
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            value = searchQuery,
-            onValueChange = onRiderSearched,
-            label = {
-                Text(stringResource(R.string.riders_search))
-            }
-        )
-        var sortingOptionsVisible by remember { mutableStateOf(false) }
-        Box {
-            Button(onClick = { sortingOptionsVisible = true }) {
-                Text(stringResource(R.string.riders_sort))
-            }
-            SortingMenu(
-                expanded = sortingOptionsVisible,
-                selectedSorting = uiRiders.sorting,
-                onSortingSelected = { sorting ->
-                    sortingOptionsVisible = false
-                    onSortingSelected(sorting)
-                },
-                onDismissed = { sortingOptionsVisible = false }
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = searchQuery,
+                onValueChange = onRiderSearched,
+                label = {
+                    Text(stringResource(R.string.riders_search))
+                }
             )
+            Box {
+                var sortingOptionsVisible by remember { mutableStateOf(false) }
+                Icon(
+                    Icons.Outlined.Sort, contentDescription = null,
+                    modifier = Modifier.clickable { sortingOptionsVisible = true }
+                )
+                SortingMenu(
+                    expanded = sortingOptionsVisible,
+                    selectedSorting = uiRiders.sorting,
+                    onSortingSelected = { sorting ->
+                        sortingOptionsVisible = false
+                        onSortingSelected(sorting)
+                    },
+                    onDismissed = { sortingOptionsVisible = false }
+                )
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(uiRiders, onRiderSelected, reselectedScreen, onReselectedScreenConsumed)
