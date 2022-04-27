@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -36,7 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -64,6 +70,7 @@ internal fun RidersScreen(
     onReselectedScreenConsumed: () -> Unit = {},
 ) {
     Column {
+        val focusManager = LocalFocusManager.current
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -75,7 +82,16 @@ internal fun RidersScreen(
                 onValueChange = onRiderSearched,
                 label = {
                     Text(stringResource(R.string.riders_search))
-                }
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Words,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search,
+                ),
+                keyboardActions = KeyboardActions(onSearch = {
+                    focusManager.clearFocus()
+                })
             )
             Box {
                 var sortingOptionsVisible by remember { mutableStateOf(false) }
@@ -95,7 +111,15 @@ internal fun RidersScreen(
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
-        RidersList(uiRiders, onRiderSelected, reselectedScreen, onReselectedScreenConsumed)
+        RidersList(
+            uiRiders = uiRiders,
+            onRiderSelected = {
+                focusManager.clearFocus()
+                onRiderSelected(it)
+            },
+            screenReselected = reselectedScreen,
+            onReselectedScreenConsumed = onReselectedScreenConsumed
+        )
         Spacer(modifier = Modifier.height(56.dp))
     }
 }

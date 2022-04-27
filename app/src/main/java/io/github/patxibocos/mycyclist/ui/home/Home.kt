@@ -3,6 +3,7 @@ package io.github.patxibocos.mycyclist.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -54,8 +55,9 @@ fun Home() {
                 }
             }
         }
-    ) {
+    ) { paddingValues ->
         AppNavigation(
+            modifier = Modifier.padding(paddingValues),
             navController = navController,
             reselectedScreen = reselectedScreen,
             onReselectedScreenConsumed = {

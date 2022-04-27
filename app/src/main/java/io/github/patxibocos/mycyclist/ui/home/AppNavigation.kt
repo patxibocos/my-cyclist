@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,6 +39,7 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun AppNavigation(
+    modifier: Modifier,
     navController: NavHostController,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
@@ -45,6 +47,7 @@ internal fun AppNavigation(
     NavHost(
         navController,
         startDestination = Screen.Riders.route,
+        modifier = modifier,
     ) {
         addTeamsNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
         addRidersNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
