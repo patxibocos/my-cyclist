@@ -26,6 +26,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,7 +92,15 @@ internal fun RidersScreen(
                 ),
                 keyboardActions = KeyboardActions(onSearch = {
                     focusManager.clearFocus()
-                })
+                }),
+                singleLine = true,
+                trailingIcon = {
+                    Icon(
+                        Icons.Outlined.DeleteOutline,
+                        contentDescription = null,
+                        modifier = Modifier.clickable { onRiderSearched("") }
+                    )
+                }
             )
             Box {
                 var sortingOptionsVisible by remember { mutableStateOf(false) }

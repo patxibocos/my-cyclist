@@ -15,7 +15,6 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideDataRepository(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): DataRepository {
-        return FirebaseDataRepository(defaultDispatcher)
-    }
+    fun provideDataRepository(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): DataRepository =
+        FirebaseDataRepository(defaultDispatcher)
 }
