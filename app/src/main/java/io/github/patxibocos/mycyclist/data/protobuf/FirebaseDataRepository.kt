@@ -5,10 +5,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import io.github.patxibocos.pcsscraper.protobuf.CyclingDataOuterClass.CyclingData
-import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass
-import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
@@ -16,8 +12,12 @@ import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
+import io.github.patxibocos.pcsscraper.protobuf.CyclingDataOuterClass.CyclingData
+import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.RiderOuterClass
+import io.github.patxibocos.pcsscraper.protobuf.TeamOuterClass
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -26,7 +26,8 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.zip.GZIPInputStream
 
-internal class FirebaseDataRepository : DataRepository {
+internal class FirebaseDataRepository(defaultDispatcher: CoroutineDispatcher) :
+    DataRepository {
 
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY = "cycling_data"
@@ -45,7 +46,7 @@ internal class FirebaseDataRepository : DataRepository {
         ).use { inputStream -> GZIPInputStream(inputStream).use { it.readBytes() } }
 
     init {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(defaultDispatcher).launch {
             val remoteConfig = Firebase.remoteConfig
             emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
             val configSettings = remoteConfigSettings {

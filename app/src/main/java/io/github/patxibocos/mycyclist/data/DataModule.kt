@@ -4,7 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.protobuf.FirebaseDataRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -13,7 +15,7 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideDataRepository(): DataRepository {
-        return FirebaseDataRepository()
+    fun provideDataRepository(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): DataRepository {
+        return FirebaseDataRepository(defaultDispatcher)
     }
 }
