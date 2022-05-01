@@ -95,11 +95,13 @@ internal fun RidersScreen(
                 }),
                 singleLine = true,
                 trailingIcon = {
-                    Icon(
-                        Icons.Outlined.DeleteOutline,
-                        contentDescription = null,
-                        modifier = Modifier.clickable { onRiderSearched("") }
-                    )
+                    if (searchQuery.isNotEmpty()) {
+                        Icon(
+                            Icons.Outlined.DeleteOutline,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { onRiderSearched("") }
+                        )
+                    }
                 }
             )
             Box {
