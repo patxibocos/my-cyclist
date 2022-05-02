@@ -191,7 +191,8 @@ private fun NavGraphBuilder.addRidersNavigation(
                                     team.id
                                 )
                             )
-                        }
+                        },
+                        onBackPressed = { navController.navigateUp() },
                     )
                 }
             }
