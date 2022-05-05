@@ -1,12 +1,12 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
+import app.cash.turbine.test
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.rider
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -31,8 +31,14 @@ class RidersViewModelTest {
         viewModel.onSorted(Sorting.LastName)
         viewModel.onSearched(searchQuery)
 
-        val state = viewModel.state.first()
-        assertEquals(UiState.UiRiders.RidersByLastName(mapOf('B' to listOf(rider))), state.riders)
-        assertEquals(searchQuery, state.search)
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(
+                UiState.UiRiders.RidersByLastName(mapOf('B' to listOf(rider))),
+                state.riders
+            )
+            assertEquals(searchQuery, state.search)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 }

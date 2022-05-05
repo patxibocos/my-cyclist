@@ -242,7 +242,7 @@ private fun NavGraphBuilder.addRacesNavigation(
                                 LeafScreen.Stage.createRoute(
                                     Screen.Races,
                                     raceId,
-                                    stageId = stage.id,
+                                    stage.id,
                                 )
                             )
                         }

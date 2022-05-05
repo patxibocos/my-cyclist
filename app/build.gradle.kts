@@ -108,6 +108,7 @@ dependencies {
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
     testImplementation(libs.junit)
+    testImplementation(libs.turbine)
 
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

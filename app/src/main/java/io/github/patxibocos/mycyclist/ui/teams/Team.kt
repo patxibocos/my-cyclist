@@ -31,7 +31,7 @@ internal fun TeamScreen(
 }
 
 @Composable
-private fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit = {}) {
+private fun RidersList(riders: List<Rider>, onRiderSelected: (Rider) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(items = riders, key = Rider::id, itemContent = { rider ->
             RiderRow(rider, onRiderSelected)

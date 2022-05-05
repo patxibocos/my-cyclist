@@ -127,8 +127,10 @@ internal fun TeamsList(
         items(teams) { team ->
             TeamRow(team, onTeamSelected)
         }
-        item {
-            Spacer(modifier = Modifier.height(56.dp))
+        repeat(2) {
+            item {
+                Spacer(modifier = Modifier.height(56.dp))
+            }
         }
     }
 }

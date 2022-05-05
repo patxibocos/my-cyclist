@@ -131,7 +131,6 @@ internal fun RidersScreen(
             screenReselected = reselectedScreen,
             onReselectedScreenConsumed = onReselectedScreenConsumed
         )
-        Spacer(modifier = Modifier.height(56.dp))
     }
 }
 
@@ -194,7 +193,10 @@ internal fun RidersList(
                         Text(text = letter.toString())
                     }
                     items(riders, key = Rider::id) { rider ->
-                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                        RiderRow(rider, onRiderSelected)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(56.dp))
                     }
                 }
             }
@@ -204,7 +206,10 @@ internal fun RidersList(
                         Text(text = team.name)
                     }
                     items(riders, key = Rider::id) { rider ->
-                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                        RiderRow(rider, onRiderSelected)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(56.dp))
                     }
                 }
             }
@@ -214,7 +219,10 @@ internal fun RidersList(
                         Text(text = country)
                     }
                     items(riders, key = Rider::id) { rider ->
-                        RiderRow(Modifier.animateItemPlacement(), rider, onRiderSelected)
+                        RiderRow(rider, onRiderSelected)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(56.dp))
                     }
                 }
             }
@@ -224,11 +232,10 @@ internal fun RidersList(
 
 @Composable
 internal fun RiderRow(
-    modifier: Modifier,
     rider: Rider,
     onRiderSelected: (Rider) -> Unit,
 ) {
-    Column(modifier = modifier.clickable { onRiderSelected(rider) }) {
+    Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = rider.photo,
