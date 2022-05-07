@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.android.material)
     implementation(libs.androidx.compose.material.material)
+    implementation(libs.androidx.compose.material3.material3)
     implementation(libs.androidx.compose.material.material.icons.extended)
     implementation(libs.androidx.compose.ui.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)

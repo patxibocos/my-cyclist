@@ -12,6 +12,7 @@ accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-
 android-desugar-jdk = "com.android.tools:desugar_jdk_libs:1.1.5"
 android-material = "com.google.android.material:material:1.5.0"
 androidx-compose-material-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-compose-material3-material3 = "androidx.compose.material3:material3:1.0.0-alpha10"
 androidx-compose-material-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }

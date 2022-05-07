@@ -3,14 +3,14 @@ package io.github.patxibocos.mycyclist.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalElevationOverlay
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home() {
     val showBottomBar = remember { mutableStateOf(true) }
@@ -48,10 +49,8 @@ fun Home() {
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScrollConnection),
         bottomBar = {
-            CompositionLocalProvider(LocalElevationOverlay provides null) {
-                BottomBar(navController, showBottomBar) { screen ->
-                    reselectedScreen.value = screen
-                }
+            BottomBar(navController, showBottomBar) { screen ->
+                reselectedScreen.value = screen
             }
         }
     ) {
@@ -79,10 +78,10 @@ private fun BottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        BottomNavigation {
+        NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
             val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
             screens.forEach { screen ->
-                BottomNavigationItem(
+                NavigationBarItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
                     label = { Text(stringResource(screen.label)) },
                     selected = currentScreen == screen,
