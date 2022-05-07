@@ -19,12 +19,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -39,7 +39,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Team
@@ -72,11 +71,7 @@ internal fun TeamsScreen(
     }
     Column {
         val coroutineScope = rememberCoroutineScope()
-        TabRow(selectedTabIndex = pagerState.currentPage, indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-            )
-        }) {
+        TabRow(selectedTabIndex = pagerState.currentPage) {
             Tab(
                 selected = pagerState.currentPage == 0,
                 onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
@@ -129,12 +124,13 @@ internal fun TeamsList(
         }
         repeat(2) {
             item {
-                Spacer(modifier = Modifier.height(56.dp))
+                Spacer(modifier = Modifier.height(80.0.dp))
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TeamRow(
     team: Team,
@@ -152,7 +148,7 @@ internal fun TeamRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
-                    .background(MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
                     .constrainAs(background) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
@@ -161,7 +157,7 @@ internal fun TeamRow(
             )
             Text(
                 text = team.abbreviation,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.constrainAs(abbreviation) {
                     start.linkTo(jerseyImage.start)
                     end.linkTo(jerseyImage.end)
@@ -178,7 +174,7 @@ internal fun TeamRow(
                         end.linkTo(parent.end)
                     }
                     .padding(all = 16.dp)
-                    .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
                     .padding(2.dp)
                     .size(75.dp)
                     .clip(CircleShape),
@@ -186,7 +182,7 @@ internal fun TeamRow(
             )
             Text(
                 text = team.name,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .constrainAs(name) {
                         start.linkTo(parent.start)
@@ -197,7 +193,7 @@ internal fun TeamRow(
             )
             Text(
                 text = "\uD83D\uDEB4 ${team.bike}",
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .constrainAs(bike) {
                         start.linkTo(parent.start)

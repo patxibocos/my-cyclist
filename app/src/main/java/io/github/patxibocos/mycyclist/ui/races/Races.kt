@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -61,11 +62,12 @@ internal fun RacesScreen(
             RaceRow(race, onRaceSelected)
         })
         item {
-            Spacer(modifier = Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(80.0.dp))
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RaceRow(
     race: Race,
@@ -81,7 +83,7 @@ private fun RaceRow(
     ) {
         Text(
             text = "${getCountryEmoji(race.country)} ${race.name}",
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Row {
             Card(
@@ -94,12 +96,12 @@ private fun RaceRow(
                 Column(modifier = Modifier.padding(horizontal = 5.dp)) {
                     Text(
                         text = day,
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Text(
                         text = month,
-                        style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     )
                 }
             }

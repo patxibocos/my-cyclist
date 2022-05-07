@@ -19,15 +19,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -149,20 +149,29 @@ private fun SortingMenu(
             onClick = {
                 onSortingSelected(Sorting.LastName)
             },
-            enabled = selectedSorting != Sorting.LastName
-        ) { Text(stringResource(R.string.riders_sort_name)) }
+            enabled = selectedSorting != Sorting.LastName,
+            text = {
+                Text(stringResource(R.string.riders_sort_name))
+            }
+        )
         DropdownMenuItem(
             onClick = {
                 onSortingSelected(Sorting.Team)
             },
-            enabled = selectedSorting != Sorting.Team
-        ) { Text(stringResource(R.string.riders_sort_team)) }
+            enabled = selectedSorting != Sorting.Team,
+            text = {
+                Text(stringResource(R.string.riders_sort_team))
+            }
+        )
         DropdownMenuItem(
             onClick = {
                 onSortingSelected(Sorting.Country)
             },
-            enabled = selectedSorting != Sorting.Country
-        ) { Text(stringResource(R.string.riders_sort_country)) }
+            enabled = selectedSorting != Sorting.Country,
+            text = {
+                Text(stringResource(R.string.riders_sort_country))
+            }
+        )
     }
 }
 
@@ -196,7 +205,7 @@ internal fun RidersList(
                         RiderRow(rider, onRiderSelected)
                     }
                     item {
-                        Spacer(modifier = Modifier.height(56.dp))
+                        Spacer(modifier = Modifier.height(80.0.dp))
                     }
                 }
             }
@@ -209,7 +218,7 @@ internal fun RidersList(
                         RiderRow(rider, onRiderSelected)
                     }
                     item {
-                        Spacer(modifier = Modifier.height(56.dp))
+                        Spacer(modifier = Modifier.height(80.0.dp))
                     }
                 }
             }
@@ -222,7 +231,7 @@ internal fun RidersList(
                         RiderRow(rider, onRiderSelected)
                     }
                     item {
-                        Spacer(modifier = Modifier.height(56.dp))
+                        Spacer(modifier = Modifier.height(80.0.dp))
                     }
                 }
             }
@@ -240,7 +249,7 @@ internal fun RiderRow(
             AsyncImage(
                 model = rider.photo,
                 modifier = Modifier
-                    .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
                     .padding(2.dp)
                     .size(75.dp)
                     .clip(CircleShape),
@@ -256,7 +265,7 @@ internal fun RiderRow(
             ) {
                 Text(
                     text = "${rider.lastName.uppercase()} ${rider.firstName}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
                 Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
             }
@@ -269,6 +278,6 @@ internal fun Country(countryCode: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = "${getCountryEmoji(countryCode)} $countryCode",
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.bodyLarge,
     )
 }
