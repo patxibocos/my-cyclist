@@ -5,7 +5,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.material.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -78,7 +77,7 @@ private fun BottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
+        NavigationBar {
             val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
             screens.forEach { screen ->
                 NavigationBarItem(
