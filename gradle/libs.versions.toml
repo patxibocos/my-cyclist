@@ -1,7 +1,7 @@
 [versions]
 accompanist = "0.24.7-alpha"
 compose = "1.2.0-alpha08"
-hilt = "2.41"
+hilt = "2.42"
 kotlin = "1.6.20"
 ktlint = "0.45.2"
 
@@ -17,17 +17,17 @@ androidx-compose-ui-ui-text = { module = "androidx.compose.ui:ui-text-google-fon
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-compose:1.0.0"
-androidx-core = "androidx.core:core-ktx:1.7.0"
+androidx-core = "androidx.core:core-ktx:1.8.0-beta01"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
-androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
-androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.4.1"
-coil-compose = "io.coil-kt:coil-compose:2.0.0-rc03"
-firebase-config = "com.google.firebase:firebase-config-ktx:21.0.1"
+androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-beta01"
+androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-beta01"
+androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.0-beta01"
+coil-compose = "io.coil-kt:coil-compose:2.0.0"
+firebase-config = "com.google.firebase:firebase-config-ktx:21.1.0"
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0"
-protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.19.4"
+kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1"
+protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
 
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 androidx-test-junit = "androidx.test.ext:junit:1.1.3"
