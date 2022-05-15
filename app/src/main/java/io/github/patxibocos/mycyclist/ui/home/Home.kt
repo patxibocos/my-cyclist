@@ -96,7 +96,6 @@ private fun BottomBar(
                             }
                         }
                     },
-                    alwaysShowLabel = true,
                 )
             }
         }
