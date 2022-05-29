@@ -1,7 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.Theme.MyCyclist" parent="android:Theme.Material" />
-
-    <style name="Theme.MyCyclist" parent="Base.Theme.MyCyclist" />
+    <style name="Theme.Material.DayNight.NoActionBar" parent="@android:style/Theme.Material.NoActionBar" />
 
 </resources>

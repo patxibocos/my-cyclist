@@ -2,6 +2,9 @@ package io.github.patxibocos.mycyclist.ui.home
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
@@ -43,7 +46,7 @@ internal fun AppNavigation(
     onReselectedScreenConsumed: () -> Unit,
 ) {
     NavHost(
-        navController,
+        navController = navController,
         startDestination = Screen.Riders.route,
     ) {
         addTeamsNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
@@ -52,10 +55,15 @@ internal fun AppNavigation(
     }
 }
 
-internal sealed class Screen(val route: String, @StringRes val label: Int, val icon: ImageVector) {
-    object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group)
-    object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face)
-    object Races : Screen("races", R.string.screen_races, Icons.Outlined.Flag)
+internal sealed class Screen(
+    val route: String,
+    @StringRes val label: Int,
+    val unselectedIcon: ImageVector,
+    val selectedIcon: ImageVector,
+) {
+    object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group, Icons.Filled.Group)
+    object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face, Icons.Filled.Face)
+    object Races : Screen("races", R.string.screen_races, Icons.Outlined.Flag, Icons.Filled.Flag)
 }
 
 internal sealed class LeafScreen(
@@ -161,6 +169,7 @@ private fun NavGraphBuilder.addRidersNavigation(
             )
             RidersScreen(
                 uiRiders = uiState.riders,
+                showSearch = uiState.searching,
                 searchQuery = uiState.search,
                 onRiderSearched = viewModel::onSearched,
                 onRiderSelected = {
@@ -169,6 +178,7 @@ private fun NavGraphBuilder.addRidersNavigation(
                 onSortingSelected = viewModel::onSorted,
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onToggled = viewModel::onToggled,
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {

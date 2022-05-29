@@ -1,7 +1,0 @@
-<resources>
-
-    <style name="Theme.MyCyclist.Home" parent="Theme.MyCyclist.Immerse">
-        <item name="android:windowLightStatusBar">@bool/use_light_status_bar</item>
-    </style>
-
-</resources>

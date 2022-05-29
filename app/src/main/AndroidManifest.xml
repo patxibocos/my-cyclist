@@ -14,8 +14,7 @@
         android:theme="@style/Theme.MyCyclist">
         <activity
             android:name="io.github.patxibocos.mycyclist.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.MyCyclist.Home">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

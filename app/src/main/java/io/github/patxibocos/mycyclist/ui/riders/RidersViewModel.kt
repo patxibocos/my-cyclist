@@ -16,14 +16,16 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
 
     private val _search = MutableStateFlow("")
     private val _sorting = MutableStateFlow(Sorting.LastName)
+    private val _searching = MutableStateFlow(false)
 
     val state: Flow<UiState> =
         combine(
             dataRepository.riders,
             dataRepository.teams,
+            _searching,
             _search,
             _sorting
-        ) { riders, teams, query, sorting ->
+        ) { riders, teams, searching, query, sorting ->
             val filteredRiders = riders.filter(query)
             when (sorting) {
                 Sorting.LastName -> UiState(
@@ -32,6 +34,7 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
                             it.lastName.first().uppercaseChar()
                         }
                     ),
+                    searching,
                     query
                 )
                 Sorting.Team -> {
@@ -43,13 +46,14 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
                                 )
                             }
                         }.filter { it.value.isNotEmpty() }
-                    UiState(UiState.UiRiders.RidersByTeam(ridersByTeam), query)
+                    UiState(UiState.UiRiders.RidersByTeam(ridersByTeam), searching, query)
                 }
                 Sorting.Country -> UiState(
                     UiState.UiRiders.RidersByCountry(
                         filteredRiders.groupBy { it.country }
                             .toSortedMap()
                     ),
+                    searching,
                     query
                 )
             }
@@ -61,6 +65,13 @@ class RidersViewModel @Inject constructor(dataRepository: DataRepository) :
 
     fun onSorted(sorting: Sorting) {
         _sorting.value = sorting
+    }
+
+    fun onToggled() {
+        _searching.value = !_searching.value
+        if (!_searching.value) {
+            _search.value = ""
+        }
     }
 }
 
@@ -83,7 +94,7 @@ enum class Sorting {
     Country
 }
 
-data class UiState(val riders: UiRiders, val search: String) {
+data class UiState(val riders: UiRiders, val searching: Boolean, val search: String) {
 
     sealed class UiRiders(val sorting: Sorting) {
         data class RidersByLastName(val riders: Map<Char, List<Rider>>) : UiRiders(Sorting.LastName)
@@ -92,6 +103,6 @@ data class UiState(val riders: UiRiders, val search: String) {
     }
 
     companion object {
-        val Empty = UiState(UiRiders.RidersByLastName(emptyMap()), "")
+        val Empty = UiState(UiRiders.RidersByLastName(emptyMap()), false, "")
     }
 }

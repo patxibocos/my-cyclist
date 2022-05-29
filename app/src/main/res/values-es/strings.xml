@@ -6,6 +6,7 @@
     <string name="screen_riders">Corredores</string>
     <string name="screen_races">Carreras</string>
 
+    <string name="riders_title">Corredores</string>
     <string name="riders_search">Buscar</string>
     <string name="riders_sort">Ordenar</string>
     <string name="riders_sort_name">Nombre</string>

@@ -3,8 +3,10 @@ package io.github.patxibocos.mycyclist.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -23,6 +25,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Velocity
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -46,7 +49,9 @@ fun Home() {
     val navController by rememberUpdatedState(newValue = rememberNavController())
     val reselectedScreen: MutableState<Screen?> = remember { mutableStateOf(null) }
     Scaffold(
-        modifier = Modifier.nestedScroll(nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(nestedScrollConnection)
+            .statusBarsPadding(),
         bottomBar = {
             BottomBar(navController, showBottomBar) { screen ->
                 reselectedScreen.value = screen
@@ -77,15 +82,28 @@ private fun BottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        NavigationBar {
+        NavigationBar(
+            tonalElevation = 0.dp,
+            modifier = Modifier.navigationBarsPadding(),
+        ) {
             val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
             screens.forEach { screen ->
+                val selected = currentScreen == screen
                 NavigationBarItem(
-                    icon = { Icon(screen.icon, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            if (selected) {
+                                screen.selectedIcon
+                            } else {
+                                screen.unselectedIcon
+                            },
+                            contentDescription = null
+                        )
+                    },
                     label = { Text(stringResource(screen.label)) },
                     selected = currentScreen == screen,
                     onClick = {
-                        if (screen == currentScreen) {
+                        if (selected) {
                             screenReselected(screen)
                         }
                         navController.navigate(screen.route) {

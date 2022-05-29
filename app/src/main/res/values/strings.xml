@@ -6,6 +6,7 @@
     <string name="screen_riders">Riders</string>
     <string name="screen_races">Races</string>
 
+    <string name="riders_title">Riders</string>
     <string name="riders_search">Search</string>
     <string name="riders_sort">Sort</string>
     <string name="riders_sort_name">Name</string>

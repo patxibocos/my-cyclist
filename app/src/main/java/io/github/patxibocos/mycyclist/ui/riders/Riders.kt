@@ -1,5 +1,7 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,18 +15,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DeleteOutline
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,6 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -63,64 +72,28 @@ internal fun RidersScreen(
             )
         )
     ),
+    showSearch: Boolean = false,
     searchQuery: String = "",
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {},
     onSortingSelected: (Sorting) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
+    onToggled: () -> Unit = {},
 ) {
     Column {
         val focusManager = LocalFocusManager.current
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = searchQuery,
-                onValueChange = onRiderSearched,
-                label = {
-                    Text(stringResource(R.string.riders_search))
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Words,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search,
-                ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    focusManager.clearFocus()
-                }),
-                singleLine = true,
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        Icon(
-                            Icons.Outlined.DeleteOutline,
-                            contentDescription = null,
-                            modifier = Modifier.clickable { onRiderSearched("") }
-                        )
-                    }
-                }
-            )
-            Box {
-                var sortingOptionsVisible by remember { mutableStateOf(false) }
-                Icon(
-                    Icons.Outlined.Sort, contentDescription = null,
-                    modifier = Modifier.clickable { sortingOptionsVisible = true }
-                )
-                SortingMenu(
-                    expanded = sortingOptionsVisible,
-                    selectedSorting = uiRiders.sorting,
-                    onSortingSelected = { sorting ->
-                        sortingOptionsVisible = false
-                        onSortingSelected(sorting)
-                    },
-                    onDismissed = { sortingOptionsVisible = false }
-                )
+        TopAppBar(
+            uiRiders.sorting,
+            searchQuery,
+            showSearch,
+            focusManager,
+            onSortingSelected,
+            onRiderSearched,
+            onToggled = {
+                onToggled()
             }
-        }
+        )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(
             uiRiders = uiRiders,
@@ -132,6 +105,95 @@ internal fun RidersScreen(
             onReselectedScreenConsumed = onReselectedScreenConsumed
         )
     }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun TopAppBar(
+    sorting: Sorting,
+    searchQuery: String,
+    showSearch: Boolean,
+    focusManager: FocusManager,
+    onSortingSelected: (Sorting) -> Unit,
+    onSearched: (String) -> Unit,
+    onToggled: () -> Unit,
+) {
+//    val text = remember {
+//        mutableStateOf(
+//            TextFieldValue(
+//                searchQuery,
+//                selection = TextRange(searchQuery.length)
+//            )
+//        )
+//    }
+    val focusRequester = remember { FocusRequester() }
+    var showKeyboard by remember { mutableStateOf(false) }
+    if (showKeyboard) {
+        showKeyboard = false
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+    }
+    CenterAlignedTopAppBar(
+        title = {
+            AnimatedContent(showSearch) {
+                if (it) {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = onSearched,
+                        label = {
+                            Text(stringResource(R.string.riders_search))
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Words,
+                            autoCorrect = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Search,
+                        ),
+                        keyboardActions = KeyboardActions(onSearch = {
+                            focusManager.clearFocus()
+                        }),
+                        singleLine = true,
+                        maxLines = 1,
+                        modifier = Modifier.focusRequester(focusRequester)
+                    )
+                } else {
+                    LaunchedEffect(Unit) {
+                        focusManager.clearFocus()
+                    }
+                    Text(text = stringResource(R.string.riders_title))
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+                if (!showSearch) {
+                    showKeyboard = true
+                }
+                onToggled()
+            }) {
+                val icon = if (showSearch) Icons.Outlined.Close else Icons.Outlined.Search
+                Icon(imageVector = icon, contentDescription = null)
+            }
+        },
+        actions = {
+            Box {
+                var sortingOptionsVisible by remember { mutableStateOf(false) }
+                IconButton(onClick = { sortingOptionsVisible = true }) {
+                    Icon(imageVector = Icons.Outlined.Sort, contentDescription = null)
+                }
+                SortingMenu(
+                    expanded = sortingOptionsVisible,
+                    selectedSorting = sorting,
+                    onSortingSelected = { sorting ->
+                        sortingOptionsVisible = false
+                        onSortingSelected(sorting)
+                    },
+                    onDismissed = { sortingOptionsVisible = false }
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -191,7 +253,9 @@ internal fun RidersList(
         }
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         state = lazyListState,
     ) {
@@ -204,9 +268,6 @@ internal fun RidersList(
                     items(riders, key = Rider::id) { rider ->
                         RiderRow(rider, onRiderSelected)
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(80.0.dp))
-                    }
                 }
             }
             is UiState.UiRiders.RidersByTeam -> {
@@ -217,9 +278,6 @@ internal fun RidersList(
                     items(riders, key = Rider::id) { rider ->
                         RiderRow(rider, onRiderSelected)
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(80.0.dp))
-                    }
                 }
             }
             is UiState.UiRiders.RidersByCountry -> {
@@ -229,9 +287,6 @@ internal fun RidersList(
                     }
                     items(riders, key = Rider::id) { rider ->
                         RiderRow(rider, onRiderSelected)
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(80.0.dp))
                     }
                 }
             }

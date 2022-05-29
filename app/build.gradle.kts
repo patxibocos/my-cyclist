@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.firebase.config)
     implementation(libs.hilt.library)
     implementation(libs.kotlin.coroutines.play.services)
+    implementation(libs.material3)
     implementation(libs.protobuf.javalite)
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
