@@ -13,6 +13,8 @@
     <string name="riders_sort_team">Team</string>
     <string name="riders_sort_country">Country</string>
 
+    <string name="teams_title">Teams</string>
+
     <string name="teams_world" translatable="false">World Teams</string>
     <string name="teams_pro" translatable="false">Pro Teams</string>
 

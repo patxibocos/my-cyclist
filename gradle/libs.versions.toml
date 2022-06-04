@@ -1,6 +1,6 @@
 [versions]
-accompanist = "0.24.9-beta"
-compose = "1.2.0-beta02"
+accompanist = "0.24.10-beta"
+compose = "1.2.0-beta03"
 hilt = "2.42"
 kotlin = "1.6.21"
 ktlint = "0.45.2"

@@ -34,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -47,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -90,9 +92,7 @@ internal fun RidersScreen(
             focusManager,
             onSortingSelected,
             onRiderSearched,
-            onToggled = {
-                onToggled()
-            }
+            onToggled = onToggled,
         )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(
@@ -118,14 +118,6 @@ private fun TopAppBar(
     onSearched: (String) -> Unit,
     onToggled: () -> Unit,
 ) {
-//    val text = remember {
-//        mutableStateOf(
-//            TextFieldValue(
-//                searchQuery,
-//                selection = TextRange(searchQuery.length)
-//            )
-//        )
-//    }
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
     if (showKeyboard) {
@@ -141,9 +133,12 @@ private fun TopAppBar(
                     TextField(
                         value = searchQuery,
                         onValueChange = onSearched,
-                        label = {
+                        placeholder = {
                             Text(stringResource(R.string.riders_search))
                         },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent
+                        ),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Words,
                             autoCorrect = false,

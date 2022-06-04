@@ -13,6 +13,8 @@
     <string name="riders_sort_team">Equipo</string>
     <string name="riders_sort_country">País</string>
 
+    <string name="teams_title">Equipos</string>
+
     <plurals name="races_stages">
         <item quantity="one">Carrera de un día</item>
         <item quantity="other">%1$d etapas</item>
