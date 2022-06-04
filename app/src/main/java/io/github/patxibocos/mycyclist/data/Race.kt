@@ -16,7 +16,16 @@ data class Race(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val website: String,
+    val teamParticipations: List<TeamParticipation>,
 )
+
+@Immutable
+@Stable
+data class TeamParticipation(val teamId: String, val riderParticipations: List<RiderParticipation>)
+
+@Immutable
+@Stable
+data class RiderParticipation(val riderId: String, val number: Int)
 
 fun Race.isSingleDay(): Boolean =
     startDate == endDate

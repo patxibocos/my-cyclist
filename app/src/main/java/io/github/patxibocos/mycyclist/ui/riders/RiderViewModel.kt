@@ -3,7 +3,8 @@ package io.github.patxibocos.mycyclist.ui.riders
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
-import io.github.patxibocos.mycyclist.ui.data.RiderOfTeam
+import io.github.patxibocos.mycyclist.ui.data.Participation
+import io.github.patxibocos.mycyclist.ui.data.RiderDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -15,12 +16,21 @@ class RiderViewModel @Inject constructor(dataRepository: DataRepository) :
 
     private val _riderId = MutableStateFlow("")
 
-    val riderOfTeam: Flow<RiderOfTeam?> =
-        combine(_riderId, dataRepository.teams, dataRepository.riders) { riderId, teams, riders ->
+    val riderDetails: Flow<RiderDetails?> =
+        combine(
+            _riderId,
+            dataRepository.teams,
+            dataRepository.riders,
+            dataRepository.races
+        ) { riderId, teams, riders, races ->
             val rider = riders.find { it.id == riderId }
             val team = teams.find { it.riderIds.contains(riderId) }
             if (rider != null && team != null) {
-                RiderOfTeam(rider, team)
+                val participations = races.mapNotNull { race ->
+                    race.teamParticipations.find { it.teamId == team.id }?.riderParticipations?.find { it.riderId == riderId }
+                        ?.let { Participation(race, it.number) }
+                }
+                RiderDetails(rider, team, participations, emptyList())
             } else {
                 null
             }

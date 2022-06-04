@@ -59,5 +59,6 @@ val racePreview: Race by lazy {
         endDate = LocalDate.now(),
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
+        teamParticipations = emptyList(),
     )
 }

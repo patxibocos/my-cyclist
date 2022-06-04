@@ -8,9 +8,11 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
+import io.github.patxibocos.mycyclist.data.RiderParticipation
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
+import io.github.patxibocos.mycyclist.data.TeamParticipation
 import io.github.patxibocos.mycyclist.data.TeamStatus
 import io.github.patxibocos.pcsscraper.protobuf.CyclingDataOuterClass.CyclingData
 import io.github.patxibocos.pcsscraper.protobuf.RaceOuterClass
@@ -88,7 +90,22 @@ fun RaceOuterClass.Race.toDomain(): Race {
         endDate = Instant.ofEpochSecond(this.endDate.seconds).atZone(ZoneId.systemDefault())
             .toLocalDate(),
         stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
-        website = this.website
+        website = this.website,
+        teamParticipations = this.teamsList.map(RaceOuterClass.TeamParticipation::toDomain),
+    )
+}
+
+fun RaceOuterClass.TeamParticipation.toDomain(): TeamParticipation {
+    return TeamParticipation(
+        teamId = this.teamId,
+        riderParticipations = this.ridersList.map(RaceOuterClass.RiderParticipation::toDomain),
+    )
+}
+
+fun RaceOuterClass.RiderParticipation.toDomain(): RiderParticipation {
+    return RiderParticipation(
+        riderId = this.riderId,
+        number = this.number,
     )
 }
 
