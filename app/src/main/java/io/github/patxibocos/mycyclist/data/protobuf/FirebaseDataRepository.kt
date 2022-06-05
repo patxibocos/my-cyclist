@@ -9,6 +9,7 @@ import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.RiderParticipation
+import io.github.patxibocos.mycyclist.data.RiderResult
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
@@ -92,6 +93,15 @@ fun RaceOuterClass.Race.toDomain(): Race {
         stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
         website = this.website,
         teamParticipations = this.teamsList.map(RaceOuterClass.TeamParticipation::toDomain),
+        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain),
+    )
+}
+
+fun RaceOuterClass.RiderResult.toDomain(): RiderResult {
+    return RiderResult(
+        position = this.position,
+        riderId = this.riderId,
+        time = this.time,
     )
 }
 
@@ -125,7 +135,8 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
             RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_UPHILL_FINISH -> StageType.MOUNTAINS_UPHILL_FINISH
             else -> null
         },
-        timeTrial = this.timeTrial
+        timeTrial = this.timeTrial,
+        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain)
     )
 }
 

@@ -19,12 +19,12 @@ class RiderDetails(
 @Immutable
 @Stable
 class Participation(val race: Race, val number: Int)
-sealed class Result(open val position: Int) {
-    class RaceResult(val race: Race, override val position: Int) : Result(position)
+sealed class Result(open val race: Race, open val position: Int) {
+    class RaceResult(override val race: Race, override val position: Int) : Result(race, position)
     class StageResult(
-        val race: Race,
+        override val race: Race,
         val stage: Stage,
         val stageNumber: Int,
         override val position: Int
-    ) : Result(position)
+    ) : Result(race, position)
 }

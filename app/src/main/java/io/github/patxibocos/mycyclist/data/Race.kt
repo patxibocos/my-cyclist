@@ -17,7 +17,10 @@ data class Race(
     val endDate: LocalDate,
     val website: String,
     val teamParticipations: List<TeamParticipation>,
+    val result: List<RiderResult>,
 )
+
+data class RiderResult(val position: Int, val riderId: String, val time: Long)
 
 @Immutable
 @Stable
@@ -45,6 +48,12 @@ enum class RaceMoment {
     Future
 }
 
+fun Race.areResultsAvailable(): Boolean =
+    this.stages.last().result.isNotEmpty()
+
+fun Race.hasMultipleStages(): Boolean =
+    this.stages.count() > 1
+
 @Immutable
 @Stable
 data class Stage(
@@ -55,6 +64,7 @@ data class Stage(
     val arrival: String,
     val type: StageType?,
     val timeTrial: Boolean,
+    val result: List<RiderResult>,
 )
 
 enum class StageType {

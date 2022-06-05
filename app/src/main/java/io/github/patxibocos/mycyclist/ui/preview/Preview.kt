@@ -46,7 +46,8 @@ val stagePreview: Stage by lazy {
         type = StageType.FLAT,
         departure = "Bilbao",
         arrival = "Barcelona",
-        timeTrial = false
+        timeTrial = false,
+        result = emptyList(),
     )
 }
 
@@ -60,5 +61,6 @@ val racePreview: Race by lazy {
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),
+        result = emptyList(),
     )
 }
