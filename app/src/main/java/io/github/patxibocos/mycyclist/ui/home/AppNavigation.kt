@@ -144,7 +144,8 @@ private fun NavGraphBuilder.addTeamsNavigation(
                                     rider.id
                                 )
                             )
-                        }
+                        },
+                        onBackPressed = { navController.navigateUp() },
                     )
                 }
             }
@@ -255,7 +256,8 @@ private fun NavGraphBuilder.addRacesNavigation(
                                     stage.id,
                                 )
                             )
-                        }
+                        },
+                        onBackPressed = { navController.navigateUp() },
                     )
                 }
             }

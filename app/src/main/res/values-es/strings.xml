@@ -15,6 +15,8 @@
 
     <string name="teams_title">Equipos</string>
 
+    <string name="races_title">Carreras</string>
+
     <plurals name="races_stages">
         <item quantity="one">Carrera de un día</item>
         <item quantity="other">%1$d etapas</item>

@@ -4,8 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +23,7 @@ import io.github.patxibocos.mycyclist.ui.data.TeamOfRiders
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 internal fun TeamScreen(
@@ -22,11 +31,28 @@ internal fun TeamScreen(
         teamPreview,
         listOf(riderPreview)
     ),
-    onRiderSelected: (Rider) -> Unit = {}
+    onRiderSelected: (Rider) -> Unit = {},
+    onBackPressed: () -> Unit = {},
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = teamOfRiders.team.name)
-        RidersList(teamOfRiders.riders, onRiderSelected)
+    Scaffold(topBar = {
+        SmallTopAppBar(
+            title = {
+                Text(text = teamOfRiders.team.name)
+            }, navigationIcon = {
+                IconButton(onClick = onBackPressed) {
+                    Icon(Icons.Filled.ArrowBack, null)
+                }
+            }
+        )
+    }) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
+            Text(text = teamOfRiders.team.name)
+            RidersList(teamOfRiders.riders, onRiderSelected)
+        }
     }
 }
 

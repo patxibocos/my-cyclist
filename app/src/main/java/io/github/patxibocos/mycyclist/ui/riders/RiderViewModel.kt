@@ -44,7 +44,7 @@ class RiderViewModel @Inject constructor(dataRepository: DataRepository) :
 
     private fun riderParticipations(riderId: String, races: List<Race>): List<Participation> =
         races.mapNotNull { race ->
-            race.teamParticipations.flatMap { it.riderParticipations } // Flattening this because team IDS may change on PCS
+            race.teamParticipations.flatMap { it.riderParticipations } // Flattening this because team IDs may change on PCS
                 .find { it.riderId == riderId }
                 ?.let { Participation(race, it.number) }
         }
