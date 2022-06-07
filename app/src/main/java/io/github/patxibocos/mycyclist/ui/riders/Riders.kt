@@ -120,12 +120,6 @@ private fun TopAppBar(
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
-    if (showKeyboard) {
-        showKeyboard = false
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
-    }
     CenterAlignedTopAppBar(
         title = {
             AnimatedContent(showSearch) {
@@ -152,6 +146,12 @@ private fun TopAppBar(
                         maxLines = 1,
                         modifier = Modifier.focusRequester(focusRequester)
                     )
+                    if (showKeyboard) {
+                        showKeyboard = false
+                        LaunchedEffect(Unit) {
+                            focusRequester.requestFocus()
+                        }
+                    }
                 } else {
                     LaunchedEffect(Unit) {
                         focusManager.clearFocus()

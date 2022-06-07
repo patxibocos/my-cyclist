@@ -6,6 +6,7 @@ import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.rider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -25,7 +26,7 @@ class RidersViewModelTest {
             override val races: Flow<List<Race>>
                 get() = flowOf(emptyList())
         }
-        val viewModel = RidersViewModel(dataRepository)
+        val viewModel = RidersViewModel(dataRepository, Dispatchers.Default)
 
         val searchQuery = "pa bo"
         viewModel.onSorted(Sorting.LastName)
