@@ -130,13 +130,13 @@ private fun NavGraphBuilder.addTeamsNavigation(
                 LaunchedEffect(key1 = teamId) {
                     viewModel.loadTeam(teamId)
                 }
-                val teamOfRiders by viewModel.teamOfRiders.rememberFlowWithLifecycle(
+                val teamDetails by viewModel.teamDetails.rememberFlowWithLifecycle(
                     viewModel.viewModelScope,
                     null
                 )
-                teamOfRiders?.let {
+                teamDetails?.let {
                     TeamScreen(
-                        teamOfRiders = it,
+                        teamDetails = it,
                         onRiderSelected = { rider ->
                             navController.navigate(
                                 LeafScreen.Rider.createRoute(

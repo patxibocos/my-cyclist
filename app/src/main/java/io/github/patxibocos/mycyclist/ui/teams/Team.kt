@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.patxibocos.mycyclist.data.Rider
-import io.github.patxibocos.mycyclist.ui.data.TeamOfRiders
+import io.github.patxibocos.mycyclist.ui.data.TeamDetails
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 
@@ -27,7 +27,7 @@ import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 @Preview
 @Composable
 internal fun TeamScreen(
-    teamOfRiders: TeamOfRiders = TeamOfRiders(
+    teamDetails: TeamDetails = TeamDetails(
         teamPreview,
         listOf(riderPreview)
     ),
@@ -37,7 +37,7 @@ internal fun TeamScreen(
     Scaffold(topBar = {
         SmallTopAppBar(
             title = {
-                Text(text = teamOfRiders.team.name)
+                Text(text = teamDetails.team.name)
             }, navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(Icons.Filled.ArrowBack, null)
@@ -50,8 +50,8 @@ internal fun TeamScreen(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            Text(text = teamOfRiders.team.name)
-            RidersList(teamOfRiders.riders, onRiderSelected)
+            Text(text = teamDetails.team.name)
+            RidersList(teamDetails.riders, onRiderSelected)
         }
     }
 }

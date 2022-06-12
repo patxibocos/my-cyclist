@@ -12,15 +12,25 @@ import io.github.patxibocos.mycyclist.data.Team
 class RiderDetails(
     val rider: Rider,
     val team: Team,
-    val participations: List<Participation>,
+    val currentParticipation: Participation?,
+    val pastParticipations: List<Participation>,
+    val futureParticipations: List<Participation>,
     val results: List<Result>,
 )
 
 @Immutable
 @Stable
 class Participation(val race: Race, val number: Int)
+
+@Immutable
+@Stable
 sealed class Result(open val race: Race, open val position: Int) {
+    @Immutable
+    @Stable
     class RaceResult(override val race: Race, override val position: Int) : Result(race, position)
+
+    @Immutable
+    @Stable
     class StageResult(
         override val race: Race,
         val stage: Stage,

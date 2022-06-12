@@ -24,7 +24,14 @@ import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 @Preview
 @Composable
 internal fun RiderScreen(
-    riderDetails: RiderDetails = RiderDetails(riderPreview, teamPreview, emptyList(), emptyList()),
+    riderDetails: RiderDetails = RiderDetails(
+        riderPreview,
+        teamPreview,
+        null,
+        emptyList(),
+        emptyList(),
+        emptyList()
+    ),
     onTeamSelected: (Team) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
@@ -51,6 +58,9 @@ internal fun RiderScreen(
                     onTeamSelected(riderDetails.team)
                 }
             )
+            riderDetails.currentParticipation?.let { currentParticipation ->
+                Text(text = "Currently running ${currentParticipation.race.name}")
+            }
         }
     }
 }

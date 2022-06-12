@@ -7,4 +7,4 @@ import io.github.patxibocos.mycyclist.data.Team
 
 @Immutable
 @Stable
-class TeamOfRiders(val team: Team, val riders: List<Rider>)
+class TeamDetails(val team: Team, val riders: List<Rider>)

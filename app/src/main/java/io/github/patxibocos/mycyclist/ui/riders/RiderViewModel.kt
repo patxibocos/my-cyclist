@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,8 +82,20 @@ suspend fun getRiderDetails(
     val team = teams.find { it.riderIds.contains(riderId) }
     if (rider != null && team != null) {
         val participations = riderParticipations(riderId, races)
+        val today = LocalDate.now()
+        val currentParticipation =
+            participations.find { it.race.startDate <= today && it.race.endDate >= today }
+        val pastParticipations = participations.filter { it.race.endDate < today }
+        val futureParticipations = participations.filter { it.race.startDate > today }
         val results = riderResults(riderId, participations)
-        RiderDetails(rider, team, participations, results)
+        RiderDetails(
+            rider = rider,
+            team = team,
+            currentParticipation = currentParticipation,
+            pastParticipations = pastParticipations,
+            futureParticipations = futureParticipations,
+            results = results
+        )
     } else {
         null
     }

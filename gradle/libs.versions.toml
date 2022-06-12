@@ -10,14 +10,14 @@ accompanist-pager = { module = "com.google.accompanist:accompanist-pager", versi
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 android-desugar-jdk = "com.android.tools:desugar_jdk_libs:1.1.5"
-androidx-compose-material3-material3 = "androidx.compose.material3:material3:1.0.0-alpha12"
+androidx-compose-material3-material3 = "androidx.compose.material3:material3:1.0.0-alpha13"
 androidx-compose-material-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 androidx-compose-ui-ui-text = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-androidx-core = "androidx.core:core-ktx:1.8.0-rc02"
+androidx-core = "androidx.core:core-ktx:1.8.0"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-rc01"
 androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-rc01"
@@ -27,7 +27,7 @@ firebase-config = "com.google.firebase:firebase-config-ktx:21.1.0"
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.2"
-material3 = "com.google.android.material:material:1.6.0"
+material3 = "com.google.android.material:material:1.6.1"
 protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
 
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
@@ -36,7 +36,7 @@ androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.4.0"
 junit = "junit:junit:4.13.2"
 turbine = "app.cash.turbine:turbine:0.8.0"
 
-android-plugin-gradle = "com.android.tools.build:gradle:7.4.0-alpha02"
+android-plugin-gradle = "com.android.tools.build:gradle:7.4.0-alpha03"
 google-services = "com.google.gms:google-services:4.3.10"
 kotlin-plugin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hilt-plugin-gradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
