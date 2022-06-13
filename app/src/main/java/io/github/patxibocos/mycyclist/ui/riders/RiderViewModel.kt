@@ -1,5 +1,7 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
+import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
@@ -7,96 +9,119 @@ import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
-import io.github.patxibocos.mycyclist.data.areResultsAvailable
-import io.github.patxibocos.mycyclist.data.hasMultipleStages
+import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.ui.data.Participation
 import io.github.patxibocos.mycyclist.ui.data.Result
-import io.github.patxibocos.mycyclist.ui.data.RiderDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
 @HiltViewModel
 class RiderViewModel @Inject constructor(
     dataRepository: DataRepository,
+    savedStateHandle: SavedStateHandle,
     @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
 ) :
     ViewModel() {
 
-    private val _riderId = MutableStateFlow("")
+    private val riderId: String = savedStateHandle["riderId"]!!
 
-    val riderDetails: Flow<RiderDetails?> =
+    val riderViewState: Flow<RiderViewState> =
         combine(
-            _riderId,
             dataRepository.teams,
             dataRepository.riders,
             dataRepository.races
-        ) { riderId, teams, riders, races ->
-            getRiderDetails(defaultDispatcher, riderId, riders, teams, races)
+        ) { teams, riders, races ->
+            val rider = riders.find { it.id == riderId }
+            val team = teams.find { it.riderIds.contains(riderId) }
+            val (pastParticipations, currentParticipation, futureParticipations) = riderParticipations(
+                defaultDispatcher,
+                riderId,
+                races
+            )
+            val results = riderResults(
+                defaultDispatcher,
+                riderId,
+                pastParticipations + listOfNotNull(currentParticipation)
+            )
+            RiderViewState(
+                rider,
+                team,
+                currentParticipation,
+                pastParticipations,
+                futureParticipations,
+                results
+            )
         }
-
-    fun loadRider(riderId: String) {
-        _riderId.value = riderId
-    }
 }
 
-suspend fun getRiderDetails(
+suspend fun riderParticipations(
     defaultDispatcher: CoroutineDispatcher,
     riderId: String,
-    riders: List<Rider>,
-    teams: List<Team>,
     races: List<Race>
-): RiderDetails? = withContext(defaultDispatcher) {
-    fun riderParticipations(riderId: String, races: List<Race>): List<Participation> =
-        races.mapNotNull { race ->
+): Triple<List<Participation>, Participation?, List<Participation>> {
+    return withContext(defaultDispatcher) {
+        val participations = races.mapNotNull { race ->
             race.teamParticipations.flatMap { it.riderParticipations } // Flattening this because team IDs may change on PCS
                 .find { it.riderId == riderId }
                 ?.let { Participation(race, it.number) }
         }
-
-    fun riderResults(riderId: String, participations: List<Participation>): List<Result> =
-        participations.map { it.race }.filter(Race::areResultsAvailable)
-            .mapNotNull { race ->
-                race.result.take(3).find { it.riderId == riderId }
-                    ?.let { Result.RaceResult(race, it.position) }
-            } + participations.map { it.race }.filter(Race::hasMultipleStages)
-            .flatMap { race ->
-                race.stages.mapNotNull { stage ->
-                    stage.result.take(3).find { it.riderId == riderId }
-                        ?.let {
-                            Result.StageResult(
-                                race,
-                                stage,
-                                race.stages.indexOf(stage) + 1,
-                                it.position
-                            )
-                        }
-                }
-            }
-
-    val rider = riders.find { it.id == riderId }
-    val team = teams.find { it.riderIds.contains(riderId) }
-    if (rider != null && team != null) {
-        val participations = riderParticipations(riderId, races)
         val today = LocalDate.now()
         val currentParticipation =
             participations.find { it.race.startDate <= today && it.race.endDate >= today }
         val pastParticipations = participations.filter { it.race.endDate < today }
         val futureParticipations = participations.filter { it.race.startDate > today }
-        val results = riderResults(riderId, participations)
-        RiderDetails(
-            rider = rider,
-            team = team,
-            currentParticipation = currentParticipation,
-            pastParticipations = pastParticipations,
-            futureParticipations = futureParticipations,
-            results = results
-        )
-    } else {
-        null
+        Triple(pastParticipations, currentParticipation, futureParticipations)
+    }
+}
+
+suspend fun riderResults(
+    defaultDispatcher: CoroutineDispatcher,
+    riderId: String,
+    participations: List<Participation>
+): List<Result> {
+    return withContext(defaultDispatcher) {
+        participations.map { it.race }
+            .flatMap { race ->
+                listOfNotNull(
+                    race.result.take(3).find { it.riderId == riderId }
+                        ?.let { Result.RaceResult(race, it.position) }
+                ).run {
+                    if (!race.isSingleDay()) {
+                        this + race.stages.mapNotNull { stage ->
+                            stage.result.take(3).find { it.riderId == riderId }
+                                ?.let {
+                                    Result.StageResult(
+                                        race,
+                                        stage,
+                                        race.stages.indexOf(stage) + 1,
+                                        it.position
+                                    )
+                                }
+                        }
+                    } else {
+                        this
+                    }
+                }
+            }
+    }
+}
+
+@Immutable
+@Stable
+data class RiderViewState(
+    val rider: Rider? = null,
+    val team: Team? = null,
+    val currentParticipation: Participation? = null,
+    val pastParticipations: List<Participation> = emptyList(),
+    val futureParticipations: List<Participation> = emptyList(),
+    val results: List<Result> = emptyList(),
+) {
+    companion object {
+        val Empty = RiderViewState()
     }
 }

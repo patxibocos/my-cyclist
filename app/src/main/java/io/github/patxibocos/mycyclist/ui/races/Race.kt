@@ -22,20 +22,21 @@ import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.stages.StageScreen
+import io.github.patxibocos.mycyclist.ui.stages.StageViewState
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 internal fun RaceScreen(
-    race: Race = racePreview,
-    onStageSelected: (Stage) -> Unit = {},
+    raceViewState: RaceViewState = RaceViewState(racePreview),
+    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {},
 ) {
     Scaffold(topBar = {
         SmallTopAppBar(
             title = {
-                Text(text = race.name)
+                Text(text = raceViewState.race?.name.toString())
             }, navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(Icons.Filled.ArrowBack, null)
@@ -43,16 +44,20 @@ internal fun RaceScreen(
             }
         )
     }) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-        ) {
-            Text(text = race.name)
-            if (race.stages.size == 1) {
-                StageScreen(race.stages.first())
-            } else {
-                StagesList(race.stages, onStageSelected)
+        if (raceViewState.race != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                Text(text = raceViewState.race.name)
+                if (raceViewState.race.stages.size == 1) {
+                    StageScreen(StageViewState(raceViewState.race.stages.first()))
+                } else {
+                    StagesList(raceViewState.race.stages) { stage ->
+                        onStageSelected(raceViewState.race, stage)
+                    }
+                }
             }
         }
     }

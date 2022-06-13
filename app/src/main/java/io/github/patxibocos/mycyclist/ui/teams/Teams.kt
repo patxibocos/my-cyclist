@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 @Preview
 @Composable
 internal fun TeamsScreen(
-    teams: List<Team> = listOf(teamPreview),
+    teamsViewState: TeamsViewState = TeamsViewState(listOf(teamPreview)),
     onTeamSelected: (Team) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
@@ -100,13 +100,13 @@ internal fun TeamsScreen(
         ) { page ->
             if (page == 0) {
                 TeamsList(
-                    teams = teams.filter { it.status == TeamStatus.WORLD_TEAM },
+                    teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
                     onTeamSelected = onTeamSelected,
                     lazyListState = worldTeamsLazyGridState,
                 )
             } else {
                 TeamsList(
-                    teams = teams.filter { it.status == TeamStatus.PRO_TEAM },
+                    teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
                     onTeamSelected = onTeamSelected,
                     lazyListState = proTeamsLazyGridState,
                 )

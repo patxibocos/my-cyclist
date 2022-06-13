@@ -55,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -67,7 +68,7 @@ import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 @Preview
 @Composable
 internal fun RidersScreen(
-    uiRiders: UiState.UiRiders = UiState.UiRiders.RidersByLastName(
+    riders: RidersViewState.Riders = RidersViewState.Riders.ByLastName(
         mapOf(
             riderPreview.lastName.first() to listOf(
                 riderPreview
@@ -86,7 +87,7 @@ internal fun RidersScreen(
     Column {
         val focusManager = LocalFocusManager.current
         TopAppBar(
-            uiRiders.sorting,
+            riders.sorting,
             searchQuery,
             showSearch,
             focusManager,
@@ -96,7 +97,7 @@ internal fun RidersScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(
-            uiRiders = uiRiders,
+            ridersState = riders,
             onRiderSelected = {
                 focusManager.clearFocus()
                 onRiderSelected(it)
@@ -124,9 +125,13 @@ private fun TopAppBar(
         title = {
             AnimatedContent(showSearch) {
                 if (it) {
+                    var searchFieldValue by remember { mutableStateOf(TextFieldValue(searchQuery)) }
                     TextField(
-                        value = searchQuery,
-                        onValueChange = onSearched,
+                        value = searchFieldValue,
+                        onValueChange = {
+                            searchFieldValue = it
+                            onSearched(it.text)
+                        },
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
                         },
@@ -235,7 +240,7 @@ private fun SortingMenu(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RidersList(
-    uiRiders: UiState.UiRiders,
+    ridersState: RidersViewState.Riders,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
@@ -254,9 +259,9 @@ internal fun RidersList(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         state = lazyListState,
     ) {
-        when (uiRiders) {
-            is UiState.UiRiders.RidersByLastName -> {
-                uiRiders.riders.forEach { (letter, riders) ->
+        when (ridersState) {
+            is RidersViewState.Riders.ByLastName -> {
+                ridersState.riders.forEach { (letter, riders) ->
                     stickyHeader {
                         Text(text = letter.toString())
                     }
@@ -265,8 +270,8 @@ internal fun RidersList(
                     }
                 }
             }
-            is UiState.UiRiders.RidersByTeam -> {
-                uiRiders.riders.forEach { (team, riders) ->
+            is RidersViewState.Riders.ByTeam -> {
+                ridersState.riders.forEach { (team, riders) ->
                     stickyHeader {
                         Text(text = team.name)
                     }
@@ -275,8 +280,8 @@ internal fun RidersList(
                     }
                 }
             }
-            is UiState.UiRiders.RidersByCountry -> {
-                uiRiders.riders.forEach { (country, riders) ->
+            is RidersViewState.Riders.ByCountry -> {
+                ridersState.riders.forEach { (country, riders) ->
                     stickyHeader {
                         Text(text = country)
                     }

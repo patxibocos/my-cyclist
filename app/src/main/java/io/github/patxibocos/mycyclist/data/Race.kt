@@ -48,12 +48,6 @@ enum class RaceMoment {
     Future
 }
 
-fun Race.areResultsAvailable(): Boolean =
-    this.stages.last().result.isNotEmpty()
-
-fun Race.hasMultipleStages(): Boolean =
-    this.stages.count() > 1
-
 @Immutable
 @Stable
 data class Stage(

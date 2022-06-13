@@ -35,7 +35,7 @@ class RidersViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertEquals(
-                UiState.UiRiders.RidersByLastName(mapOf('B' to listOf(rider))),
+                RidersViewState.Riders.ByLastName(mapOf('B' to listOf(rider))),
                 state.riders
             )
             assertEquals(searchQuery, state.search)

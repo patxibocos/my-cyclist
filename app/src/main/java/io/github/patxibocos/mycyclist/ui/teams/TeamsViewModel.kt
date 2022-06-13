@@ -5,11 +5,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Team
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
 class TeamsViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
-    val teams: Flow<List<Team>> = dataRepository.teams
+    val teamsViewState: Flow<TeamsViewState> = dataRepository.teams.map(::TeamsViewState)
+}
+
+data class TeamsViewState(val teams: List<Team> = emptyList()) {
+    companion object {
+        val Empty = TeamsViewState()
+    }
 }

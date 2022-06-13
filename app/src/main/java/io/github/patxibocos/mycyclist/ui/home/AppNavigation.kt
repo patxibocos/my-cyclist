@@ -9,7 +9,6 @@ import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,19 +23,25 @@ import androidx.navigation.navigation
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.ui.races.RaceScreen
 import io.github.patxibocos.mycyclist.ui.races.RaceViewModel
+import io.github.patxibocos.mycyclist.ui.races.RaceViewState
 import io.github.patxibocos.mycyclist.ui.races.RacesScreen
 import io.github.patxibocos.mycyclist.ui.races.RacesViewModel
+import io.github.patxibocos.mycyclist.ui.races.RacesViewState
 import io.github.patxibocos.mycyclist.ui.riders.RiderScreen
 import io.github.patxibocos.mycyclist.ui.riders.RiderViewModel
+import io.github.patxibocos.mycyclist.ui.riders.RiderViewState
 import io.github.patxibocos.mycyclist.ui.riders.RidersScreen
 import io.github.patxibocos.mycyclist.ui.riders.RidersViewModel
-import io.github.patxibocos.mycyclist.ui.riders.UiState
+import io.github.patxibocos.mycyclist.ui.riders.RidersViewState
 import io.github.patxibocos.mycyclist.ui.stages.StageScreen
 import io.github.patxibocos.mycyclist.ui.stages.StageViewModel
+import io.github.patxibocos.mycyclist.ui.stages.StageViewState
 import io.github.patxibocos.mycyclist.ui.teams.TeamScreen
 import io.github.patxibocos.mycyclist.ui.teams.TeamViewModel
+import io.github.patxibocos.mycyclist.ui.teams.TeamViewState
 import io.github.patxibocos.mycyclist.ui.teams.TeamsScreen
 import io.github.patxibocos.mycyclist.ui.teams.TeamsViewModel
+import io.github.patxibocos.mycyclist.ui.teams.TeamsViewState
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
@@ -111,12 +116,12 @@ private fun NavGraphBuilder.addTeamsNavigation(
     ) {
         composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
             val viewModel = hiltViewModel<TeamsViewModel>()
-            val teams by viewModel.teams.rememberFlowWithLifecycle(
+            val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle(
                 viewModel.viewModelScope,
-                emptyList()
+                TeamsViewState.Empty
             )
             TeamsScreen(
-                teams = teams,
+                teamsViewState = teamsViewState,
                 onTeamSelected = {
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                 },
@@ -125,30 +130,23 @@ private fun NavGraphBuilder.addTeamsNavigation(
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {
-            it.arguments?.getString("teamId")?.let { teamId ->
-                val viewModel = hiltViewModel<TeamViewModel>()
-                LaunchedEffect(key1 = teamId) {
-                    viewModel.loadTeam(teamId)
-                }
-                val teamDetails by viewModel.teamDetails.rememberFlowWithLifecycle(
-                    viewModel.viewModelScope,
-                    null
-                )
-                teamDetails?.let {
-                    TeamScreen(
-                        teamDetails = it,
-                        onRiderSelected = { rider ->
-                            navController.navigate(
-                                LeafScreen.Rider.createRoute(
-                                    Screen.Riders,
-                                    rider.id
-                                )
-                            )
-                        },
-                        onBackPressed = { navController.navigateUp() },
+            val viewModel = hiltViewModel<TeamViewModel>()
+            val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle(
+                viewModel.viewModelScope,
+                TeamViewState.Empty
+            )
+            TeamScreen(
+                teamViewState = teamViewState,
+                onRiderSelected = { rider ->
+                    navController.navigate(
+                        LeafScreen.Rider.createRoute(
+                            Screen.Riders,
+                            rider.id
+                        )
                     )
-                }
-            }
+                },
+                onBackPressed = { navController.navigateUp() },
+            )
         }
     }
 }
@@ -164,14 +162,14 @@ private fun NavGraphBuilder.addRidersNavigation(
     ) {
         composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
             val viewModel = hiltViewModel<RidersViewModel>()
-            val uiState by viewModel.state.rememberFlowWithLifecycle(
+            val ridersViewState by viewModel.state.rememberFlowWithLifecycle(
                 viewModel.viewModelScope,
-                UiState.Empty
+                RidersViewState.Empty
             )
             RidersScreen(
-                uiRiders = uiState.riders,
-                showSearch = uiState.searching,
-                searchQuery = uiState.search,
+                riders = ridersViewState.riders,
+                showSearch = ridersViewState.searching,
+                searchQuery = ridersViewState.search,
                 onRiderSearched = viewModel::onSearched,
                 onRiderSelected = {
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
@@ -183,30 +181,23 @@ private fun NavGraphBuilder.addRidersNavigation(
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
-            it.arguments?.getString("riderId")?.let { riderId ->
-                val viewModel = hiltViewModel<RiderViewModel>()
-                LaunchedEffect(key1 = riderId) {
-                    viewModel.loadRider(riderId)
-                }
-                val riderDetails by viewModel.riderDetails.rememberFlowWithLifecycle(
-                    viewModel.viewModelScope,
-                    null
-                )
-                riderDetails?.let {
-                    RiderScreen(
-                        riderDetails = it,
-                        onTeamSelected = { team ->
-                            navController.navigate(
-                                LeafScreen.Team.createRoute(
-                                    Screen.Teams,
-                                    team.id
-                                )
-                            )
-                        },
-                        onBackPressed = { navController.navigateUp() },
+            val viewModel = hiltViewModel<RiderViewModel>()
+            val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle(
+                viewModel.viewModelScope,
+                RiderViewState.Empty
+            )
+            RiderScreen(
+                riderViewState = riderViewState,
+                onTeamSelected = { team ->
+                    navController.navigate(
+                        LeafScreen.Team.createRoute(
+                            Screen.Teams,
+                            team.id
+                        )
                     )
-                }
-            }
+                },
+                onBackPressed = { navController.navigateUp() },
+            )
         }
     }
 }
@@ -222,12 +213,12 @@ private fun NavGraphBuilder.addRacesNavigation(
     ) {
         composable(LeafScreen.Races.createRoute(Screen.Races)) {
             val viewModel = hiltViewModel<RacesViewModel>()
-            val races by viewModel.races.rememberFlowWithLifecycle(
+            val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
                 viewModel.viewModelScope,
-                emptyList()
+                RacesViewState.Empty
             )
             RacesScreen(
-                races = races,
+                racesViewState = racesViewState,
                 onRaceSelected = {
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                 },
@@ -236,48 +227,32 @@ private fun NavGraphBuilder.addRacesNavigation(
             )
         }
         composable(LeafScreen.Race.createRoute(Screen.Races)) {
-            it.arguments?.getString("raceId")?.let { raceId ->
-                val viewModel = hiltViewModel<RaceViewModel>()
-                LaunchedEffect(key1 = raceId) {
-                    viewModel.loadRace(raceId)
-                }
-                val race by viewModel.race.rememberFlowWithLifecycle(
-                    viewModel.viewModelScope,
-                    null
-                )
-                race?.let {
-                    RaceScreen(
-                        race = it,
-                        onStageSelected = { stage ->
-                            navController.navigate(
-                                LeafScreen.Stage.createRoute(
-                                    Screen.Races,
-                                    raceId,
-                                    stage.id,
-                                )
-                            )
-                        },
-                        onBackPressed = { navController.navigateUp() },
+            val viewModel = hiltViewModel<RaceViewModel>()
+            val raceViewState by viewModel.raceViewState.rememberFlowWithLifecycle(
+                viewModel.viewModelScope,
+                RaceViewState.Empty
+            )
+            RaceScreen(
+                raceViewState = raceViewState,
+                onStageSelected = { race, stage ->
+                    navController.navigate(
+                        LeafScreen.Stage.createRoute(
+                            Screen.Races,
+                            race.id,
+                            stage.id,
+                        )
                     )
-                }
-            }
+                },
+                onBackPressed = { navController.navigateUp() },
+            )
         }
         composable(LeafScreen.Stage.createRoute(Screen.Races)) {
-            val raceId = it.arguments?.getString("raceId")
-            val stageId = it.arguments?.getString("stageId")
-            if (raceId != null && stageId != null) {
-                val viewModel = hiltViewModel<StageViewModel>()
-                LaunchedEffect(key1 = raceId, key2 = stageId) {
-                    viewModel.loadStage(raceId, stageId)
-                }
-                val stage by viewModel.stage.rememberFlowWithLifecycle(
-                    viewModel.viewModelScope,
-                    null
-                )
-                stage?.let {
-                    StageScreen(it)
-                }
-            }
+            val viewModel = hiltViewModel<StageViewModel>()
+            val stateViewState by viewModel.stateViewState.rememberFlowWithLifecycle(
+                viewModel.viewModelScope,
+                StageViewState.Empty
+            )
+            StageScreen(stageViewState = stateViewState)
         }
     }
 }

@@ -42,7 +42,7 @@ import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 @Preview
 @Composable
 internal fun RacesScreen(
-    races: List<Race> = listOf(racePreview),
+    racesViewState: RacesViewState = RacesViewState(listOf(racePreview)),
     onRaceSelected: (Race) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
@@ -67,7 +67,7 @@ internal fun RacesScreen(
             state = lazyListState,
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            items(items = races, key = Race::id, itemContent = { race ->
+            items(items = racesViewState.races, key = Race::id, itemContent = { race ->
                 RaceRow(race, onRaceSelected)
             })
         }

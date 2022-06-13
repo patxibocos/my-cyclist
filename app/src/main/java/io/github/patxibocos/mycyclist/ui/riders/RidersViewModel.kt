@@ -24,7 +24,7 @@ class RidersViewModel @Inject constructor(
     private val _sorting = MutableStateFlow(Sorting.LastName)
     private val _searching = MutableStateFlow(false)
 
-    val state: Flow<UiState> =
+    val state: Flow<RidersViewState> =
         combine(
             dataRepository.riders,
             dataRepository.teams,
@@ -34,8 +34,8 @@ class RidersViewModel @Inject constructor(
         ) { riders, teams, searching, query, sorting ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
             when (sorting) {
-                Sorting.LastName -> UiState(
-                    UiState.UiRiders.RidersByLastName(
+                Sorting.LastName -> RidersViewState(
+                    RidersViewState.Riders.ByLastName(
                         filteredRiders.groupBy {
                             it.lastName.first().uppercaseChar()
                         }
@@ -52,10 +52,10 @@ class RidersViewModel @Inject constructor(
                                 )
                             }
                         }.filter { it.value.isNotEmpty() }
-                    UiState(UiState.UiRiders.RidersByTeam(ridersByTeam), searching, query)
+                    RidersViewState(RidersViewState.Riders.ByTeam(ridersByTeam), searching, query)
                 }
-                Sorting.Country -> UiState(
-                    UiState.UiRiders.RidersByCountry(
+                Sorting.Country -> RidersViewState(
+                    RidersViewState.Riders.ByCountry(
                         filteredRiders.groupBy { it.country }
                             .toSortedMap()
                     ),
@@ -87,16 +87,16 @@ enum class Sorting {
     Country
 }
 
-data class UiState(val riders: UiRiders, val searching: Boolean, val search: String) {
+data class RidersViewState(val riders: Riders, val searching: Boolean, val search: String) {
 
-    sealed class UiRiders(val sorting: Sorting) {
-        data class RidersByLastName(val riders: Map<Char, List<Rider>>) : UiRiders(Sorting.LastName)
-        data class RidersByTeam(val riders: Map<Team, List<Rider>>) : UiRiders(Sorting.Team)
-        data class RidersByCountry(val riders: Map<String, List<Rider>>) : UiRiders(Sorting.Country)
+    sealed class Riders(val sorting: Sorting) {
+        data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders(Sorting.LastName)
+        data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders(Sorting.Team)
+        data class ByCountry(val riders: Map<String, List<Rider>>) : Riders(Sorting.Country)
     }
 
     companion object {
-        val Empty = UiState(UiRiders.RidersByLastName(emptyMap()), false, "")
+        val Empty = RidersViewState(Riders.ByLastName(emptyMap()), false, "")
     }
 }
 
