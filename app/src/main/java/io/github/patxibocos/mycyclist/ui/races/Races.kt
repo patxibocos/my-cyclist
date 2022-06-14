@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.RaceMoment
@@ -38,6 +41,26 @@ import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
+import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+
+@Composable
+internal fun RacesRoute(
+    onRaceSelected: (Race) -> Unit = {},
+    reselectedScreen: State<Screen?> = mutableStateOf(null),
+    onReselectedScreenConsumed: () -> Unit = {},
+    viewModel: RacesViewModel = hiltViewModel(),
+) {
+    val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        RacesViewState.Empty
+    )
+    RacesScreen(
+        racesViewState = racesViewState,
+        onRaceSelected = onRaceSelected,
+        reselectedScreen = reselectedScreen,
+        onReselectedScreenConsumed = onReselectedScreenConsumed,
+    )
+}
 
 @Preview
 @Composable

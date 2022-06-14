@@ -13,12 +13,33 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.Result
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
+import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+
+@Composable
+internal fun RiderRoute(
+    onTeamSelected: (Team) -> Unit = {},
+    onBackPressed: () -> Unit = {},
+    viewModel: RiderViewModel = hiltViewModel(),
+) {
+    val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        RiderViewState.Empty
+    )
+    RiderScreen(
+        riderViewState = riderViewState,
+        onTeamSelected = onTeamSelected,
+        onBackPressed = onBackPressed,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview

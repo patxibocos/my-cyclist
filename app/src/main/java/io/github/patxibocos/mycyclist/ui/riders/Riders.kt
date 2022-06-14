@@ -55,28 +55,58 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
+import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+
+@Composable
+internal fun RidersRoute(
+    onRiderSelected: (Rider) -> Unit = {},
+    reselectedScreen: State<Screen?> = mutableStateOf(null),
+    onReselectedScreenConsumed: () -> Unit = {},
+    viewModel: RidersViewModel = hiltViewModel(),
+) {
+    val ridersViewState by viewModel.ridersState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        RidersViewState.Empty
+    )
+    val topBarState by viewModel.topBarState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        TopBarState.Empty
+    )
+    RidersScreen(
+        ridersViewState = ridersViewState,
+        topBarState = topBarState,
+        onRiderSearched = viewModel::onSearched,
+        onRiderSelected = onRiderSelected,
+        onSortingSelected = viewModel::onSorted,
+        reselectedScreen = reselectedScreen,
+        onReselectedScreenConsumed = onReselectedScreenConsumed,
+        onToggled = viewModel::onToggled,
+    )
+}
 
 @Preview
 @Composable
 internal fun RidersScreen(
-    riders: RidersViewState.Riders = RidersViewState.Riders.ByLastName(
-        mapOf(
-            riderPreview.lastName.first() to listOf(
-                riderPreview
+    ridersViewState: RidersViewState = RidersViewState(
+        riders = RidersViewState.Riders.ByLastName(
+            mapOf(
+                riderPreview.lastName.first() to listOf(
+                    riderPreview
+                )
             )
         )
     ),
-    showSearch: Boolean = false,
-    searchQuery: String = "",
+    topBarState: TopBarState = TopBarState("", false, Sorting.LastName),
     onRiderSearched: (String) -> Unit = {},
     onRiderSelected: (Rider) -> Unit = {},
     onSortingSelected: (Sorting) -> Unit = {},
@@ -87,9 +117,7 @@ internal fun RidersScreen(
     Column {
         val focusManager = LocalFocusManager.current
         TopAppBar(
-            riders.sorting,
-            searchQuery,
-            showSearch,
+            topBarState,
             focusManager,
             onSortingSelected,
             onRiderSearched,
@@ -97,7 +125,7 @@ internal fun RidersScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
         RidersList(
-            ridersState = riders,
+            ridersState = ridersViewState.riders,
             onRiderSelected = {
                 focusManager.clearFocus()
                 onRiderSelected(it)
@@ -111,9 +139,7 @@ internal fun RidersScreen(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun TopAppBar(
-    sorting: Sorting,
-    searchQuery: String,
-    showSearch: Boolean,
+    topBarState: TopBarState,
     focusManager: FocusManager,
     onSortingSelected: (Sorting) -> Unit,
     onSearched: (String) -> Unit,
@@ -123,14 +149,12 @@ private fun TopAppBar(
     var showKeyboard by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         title = {
-            AnimatedContent(showSearch) {
+            AnimatedContent(topBarState.searching) {
                 if (it) {
-                    var searchFieldValue by remember { mutableStateOf(TextFieldValue(searchQuery)) }
                     TextField(
-                        value = searchFieldValue,
+                        value = topBarState.search,
                         onValueChange = {
-                            searchFieldValue = it
-                            onSearched(it.text)
+                            onSearched(it)
                         },
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
@@ -167,12 +191,13 @@ private fun TopAppBar(
         },
         navigationIcon = {
             IconButton(onClick = {
-                if (!showSearch) {
+                if (!topBarState.searching) {
                     showKeyboard = true
                 }
                 onToggled()
             }) {
-                val icon = if (showSearch) Icons.Outlined.Close else Icons.Outlined.Search
+                val icon =
+                    if (topBarState.searching) Icons.Outlined.Close else Icons.Outlined.Search
                 Icon(imageVector = icon, contentDescription = null)
             }
         },
@@ -184,7 +209,7 @@ private fun TopAppBar(
                 }
                 SortingMenu(
                     expanded = sortingOptionsVisible,
-                    selectedSorting = sorting,
+                    selectedSorting = topBarState.sorting,
                     onSortingSelected = { sorting ->
                         sortingOptionsVisible = false
                         onSortingSelected(sorting)

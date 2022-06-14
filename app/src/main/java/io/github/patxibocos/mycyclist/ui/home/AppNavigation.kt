@@ -10,10 +10,7 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -21,28 +18,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import io.github.patxibocos.mycyclist.R
-import io.github.patxibocos.mycyclist.ui.races.RaceScreen
-import io.github.patxibocos.mycyclist.ui.races.RaceViewModel
-import io.github.patxibocos.mycyclist.ui.races.RaceViewState
-import io.github.patxibocos.mycyclist.ui.races.RacesScreen
-import io.github.patxibocos.mycyclist.ui.races.RacesViewModel
-import io.github.patxibocos.mycyclist.ui.races.RacesViewState
-import io.github.patxibocos.mycyclist.ui.riders.RiderScreen
-import io.github.patxibocos.mycyclist.ui.riders.RiderViewModel
-import io.github.patxibocos.mycyclist.ui.riders.RiderViewState
-import io.github.patxibocos.mycyclist.ui.riders.RidersScreen
-import io.github.patxibocos.mycyclist.ui.riders.RidersViewModel
-import io.github.patxibocos.mycyclist.ui.riders.RidersViewState
-import io.github.patxibocos.mycyclist.ui.stages.StageScreen
-import io.github.patxibocos.mycyclist.ui.stages.StageViewModel
-import io.github.patxibocos.mycyclist.ui.stages.StageViewState
-import io.github.patxibocos.mycyclist.ui.teams.TeamScreen
-import io.github.patxibocos.mycyclist.ui.teams.TeamViewModel
-import io.github.patxibocos.mycyclist.ui.teams.TeamViewState
-import io.github.patxibocos.mycyclist.ui.teams.TeamsScreen
-import io.github.patxibocos.mycyclist.ui.teams.TeamsViewModel
-import io.github.patxibocos.mycyclist.ui.teams.TeamsViewState
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+import io.github.patxibocos.mycyclist.ui.races.RaceRoute
+import io.github.patxibocos.mycyclist.ui.races.RacesRoute
+import io.github.patxibocos.mycyclist.ui.riders.RiderRoute
+import io.github.patxibocos.mycyclist.ui.riders.RidersRoute
+import io.github.patxibocos.mycyclist.ui.stages.StageRoute
+import io.github.patxibocos.mycyclist.ui.teams.TeamRoute
+import io.github.patxibocos.mycyclist.ui.teams.TeamsRoute
 
 @Composable
 internal fun AppNavigation(
@@ -115,13 +97,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
         route = Screen.Teams.route
     ) {
         composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
-            val viewModel = hiltViewModel<TeamsViewModel>()
-            val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                TeamsViewState.Empty
-            )
-            TeamsScreen(
-                teamsViewState = teamsViewState,
+            TeamsRoute(
                 onTeamSelected = {
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                 },
@@ -130,13 +106,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {
-            val viewModel = hiltViewModel<TeamViewModel>()
-            val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                TeamViewState.Empty
-            )
-            TeamScreen(
-                teamViewState = teamViewState,
+            TeamRoute(
                 onRiderSelected = { rider ->
                     navController.navigate(
                         LeafScreen.Rider.createRoute(
@@ -161,33 +131,16 @@ private fun NavGraphBuilder.addRidersNavigation(
         route = Screen.Riders.route
     ) {
         composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
-            val viewModel = hiltViewModel<RidersViewModel>()
-            val ridersViewState by viewModel.state.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                RidersViewState.Empty
-            )
-            RidersScreen(
-                riders = ridersViewState.riders,
-                showSearch = ridersViewState.searching,
-                searchQuery = ridersViewState.search,
-                onRiderSearched = viewModel::onSearched,
+            RidersRoute(
                 onRiderSelected = {
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
                 },
-                onSortingSelected = viewModel::onSorted,
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
-                onToggled = viewModel::onToggled,
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
-            val viewModel = hiltViewModel<RiderViewModel>()
-            val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                RiderViewState.Empty
-            )
-            RiderScreen(
-                riderViewState = riderViewState,
+            RiderRoute(
                 onTeamSelected = { team ->
                     navController.navigate(
                         LeafScreen.Team.createRoute(
@@ -212,13 +165,7 @@ private fun NavGraphBuilder.addRacesNavigation(
         route = Screen.Races.route
     ) {
         composable(LeafScreen.Races.createRoute(Screen.Races)) {
-            val viewModel = hiltViewModel<RacesViewModel>()
-            val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                RacesViewState.Empty
-            )
-            RacesScreen(
-                racesViewState = racesViewState,
+            RacesRoute(
                 onRaceSelected = {
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                 },
@@ -227,13 +174,7 @@ private fun NavGraphBuilder.addRacesNavigation(
             )
         }
         composable(LeafScreen.Race.createRoute(Screen.Races)) {
-            val viewModel = hiltViewModel<RaceViewModel>()
-            val raceViewState by viewModel.raceViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                RaceViewState.Empty
-            )
-            RaceScreen(
-                raceViewState = raceViewState,
+            RaceRoute(
                 onStageSelected = { race, stage ->
                     navController.navigate(
                         LeafScreen.Stage.createRoute(
@@ -247,12 +188,7 @@ private fun NavGraphBuilder.addRacesNavigation(
             )
         }
         composable(LeafScreen.Stage.createRoute(Screen.Races)) {
-            val viewModel = hiltViewModel<StageViewModel>()
-            val stateViewState by viewModel.stateViewState.rememberFlowWithLifecycle(
-                viewModel.viewModelScope,
-                StageViewState.Empty
-            )
-            StageScreen(stageViewState = stateViewState)
+            StageRoute()
         }
     }
 }

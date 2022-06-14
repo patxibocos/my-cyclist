@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -38,6 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -47,7 +50,27 @@ import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
+import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 import kotlinx.coroutines.launch
+
+@Composable
+internal fun TeamsRoute(
+    onTeamSelected: (Team) -> Unit = {},
+    reselectedScreen: State<Screen?> = mutableStateOf(null),
+    onReselectedScreenConsumed: () -> Unit = {},
+    viewModel: TeamsViewModel = hiltViewModel(),
+) {
+    val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        TeamsViewState.Empty
+    )
+    TeamsScreen(
+        teamsViewState = teamsViewState,
+        onTeamSelected = onTeamSelected,
+        reselectedScreen = reselectedScreen,
+        onReselectedScreenConsumed = onReselectedScreenConsumed,
+    )
+}
 
 @OptIn(ExperimentalPagerApi::class)
 @Preview

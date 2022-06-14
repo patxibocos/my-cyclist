@@ -16,14 +16,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.stages.StageScreen
 import io.github.patxibocos.mycyclist.ui.stages.StageViewState
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
+import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+
+@Composable
+internal fun RaceRoute(
+    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
+    onBackPressed: () -> Unit = {},
+    viewModel: RaceViewModel = hiltViewModel(),
+) {
+    val raceViewState by viewModel.raceViewState.rememberFlowWithLifecycle(
+        viewModel.viewModelScope,
+        RaceViewState.Empty
+    )
+    RaceScreen(
+        raceViewState = raceViewState,
+        onStageSelected = onStageSelected,
+        onBackPressed = onBackPressed,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview

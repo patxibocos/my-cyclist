@@ -21,17 +21,21 @@ class RidersViewModel @Inject constructor(
     ViewModel() {
 
     private val _search = MutableStateFlow("")
-    private val _sorting = MutableStateFlow(Sorting.LastName)
     private val _searching = MutableStateFlow(false)
+    private val _sorting = MutableStateFlow(Sorting.LastName)
 
-    val state: Flow<RidersViewState> =
+    val topBarState: Flow<TopBarState> =
+        combine(_search, _searching, _sorting) { search, searching, sorting ->
+            TopBarState(search, searching, sorting)
+        }
+
+    val ridersState: Flow<RidersViewState> =
         combine(
             dataRepository.riders,
             dataRepository.teams,
-            _searching,
             _search,
             _sorting
-        ) { riders, teams, searching, query, sorting ->
+        ) { riders, teams, query, sorting ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
             when (sorting) {
                 Sorting.LastName -> RidersViewState(
@@ -40,8 +44,6 @@ class RidersViewModel @Inject constructor(
                             it.lastName.first().uppercaseChar()
                         }
                     ),
-                    searching,
-                    query
                 )
                 Sorting.Team -> {
                     val ridersByTeam =
@@ -52,15 +54,13 @@ class RidersViewModel @Inject constructor(
                                 )
                             }
                         }.filter { it.value.isNotEmpty() }
-                    RidersViewState(RidersViewState.Riders.ByTeam(ridersByTeam), searching, query)
+                    RidersViewState(RidersViewState.Riders.ByTeam(ridersByTeam))
                 }
                 Sorting.Country -> RidersViewState(
                     RidersViewState.Riders.ByCountry(
                         filteredRiders.groupBy { it.country }
                             .toSortedMap()
-                    ),
-                    searching,
-                    query
+                    )
                 )
             }
         }
@@ -87,16 +87,26 @@ enum class Sorting {
     Country
 }
 
-data class RidersViewState(val riders: Riders, val searching: Boolean, val search: String) {
+data class RidersViewState(val riders: Riders) {
 
-    sealed class Riders(val sorting: Sorting) {
-        data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders(Sorting.LastName)
-        data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders(Sorting.Team)
-        data class ByCountry(val riders: Map<String, List<Rider>>) : Riders(Sorting.Country)
+    sealed class Riders {
+        data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders()
+        data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders()
+        data class ByCountry(val riders: Map<String, List<Rider>>) : Riders()
     }
 
     companion object {
-        val Empty = RidersViewState(Riders.ByLastName(emptyMap()), false, "")
+        val Empty = RidersViewState(Riders.ByLastName(emptyMap()))
+    }
+}
+
+data class TopBarState(
+    val search: String = "",
+    val searching: Boolean = false,
+    val sorting: Sorting = Sorting.LastName
+) {
+    companion object {
+        val Empty = TopBarState()
     }
 }
 
