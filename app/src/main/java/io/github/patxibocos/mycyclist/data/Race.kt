@@ -68,3 +68,7 @@ enum class StageType {
     MOUNTAINS_FLAT_FINISH,
     MOUNTAINS_UPHILL_FINISH
 }
+
+fun List<RiderResult>.isAvailable(): Boolean {
+    return this.isNotEmpty()
+}
