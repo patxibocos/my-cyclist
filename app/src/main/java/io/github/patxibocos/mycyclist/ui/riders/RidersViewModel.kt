@@ -1,5 +1,6 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,8 +89,12 @@ enum class Sorting {
     Country
 }
 
+@Immutable
+@Stable
 data class RidersViewState(val riders: Riders) {
 
+    @Immutable
+    @Stable
     sealed class Riders {
         data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders()
         data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders()
@@ -100,6 +106,8 @@ data class RidersViewState(val riders: Riders) {
     }
 }
 
+@Immutable
+@Stable
 data class TopBarState(
     val search: String = "",
     val searching: Boolean = false,
@@ -115,6 +123,9 @@ suspend fun searchRiders(
     riders: List<Rider>,
     query: String,
 ): List<Rider> = withContext(defaultDispatcher) {
+    if (query.isBlank()) {
+        return@withContext riders
+    }
     val querySplits = query.trim().split(" ").map { it.trim() }
     riders.filter { rider ->
         // For each of the split, it should be contained either on first or last name

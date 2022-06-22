@@ -13,7 +13,7 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 fun StageRoute(viewModel: StageViewModel = hiltViewModel()) {
-    val stateViewState by viewModel.stateViewState.rememberFlowWithLifecycle(
+    val stateViewState by viewModel.stageViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
         StageViewState.Empty
     )

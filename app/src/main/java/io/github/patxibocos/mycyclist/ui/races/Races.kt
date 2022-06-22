@@ -73,7 +73,7 @@ internal fun RacesScreen(
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = reselectedScreen.value) {
         if (reselectedScreen.value == Screen.Races) {
-            lazyListState.animateScrollToItem(0)
+            lazyListState.scrollToItem(0)
             onReselectedScreenConsumed()
         }
     }

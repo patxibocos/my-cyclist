@@ -22,7 +22,7 @@ class StageViewModel @Inject constructor(
     private val raceId: String = savedStateHandle["raceId"]!!
     private val stageId: String = savedStateHandle["stageId"]!!
 
-    val stateViewState: Flow<StageViewState> =
+    val stageViewState: Flow<StageViewState> =
         combine(dataRepository.races, dataRepository.riders) { races, riders ->
             val stage = races.find { it.id == raceId }!!.stages.find { it.id == stageId }!!
             val riderResults = stage.result.map { riderResult ->

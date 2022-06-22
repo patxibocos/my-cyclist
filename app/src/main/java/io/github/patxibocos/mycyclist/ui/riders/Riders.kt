@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -123,7 +121,6 @@ internal fun RidersScreen(
             onRiderSearched,
             onToggled = onToggled,
         )
-        Spacer(modifier = Modifier.height(10.dp))
         RidersList(
             ridersState = ridersViewState.riders,
             onRiderSelected = {
@@ -273,7 +270,7 @@ internal fun RidersList(
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = screenReselected.value) {
         if (screenReselected.value == Screen.Riders) {
-            lazyListState.animateScrollToItem(0)
+            lazyListState.scrollToItem(0)
             onReselectedScreenConsumed()
         }
     }

@@ -87,9 +87,9 @@ internal fun TeamsScreen(
     LaunchedEffect(key1 = reselectedScreen.value) {
         if (reselectedScreen.value == Screen.Teams) {
             if (pagerState.currentPage == 0) {
-                worldTeamsLazyGridState.animateScrollToItem(0)
+                worldTeamsLazyGridState.scrollToItem(0)
             } else {
-                proTeamsLazyGridState.animateScrollToItem(0)
+                proTeamsLazyGridState.scrollToItem(0)
             }
             onReselectedScreenConsumed()
         }
