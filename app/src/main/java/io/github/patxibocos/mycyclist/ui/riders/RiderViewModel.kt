@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,6 +8,7 @@ import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
+import io.github.patxibocos.mycyclist.data.isFinished
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.ui.data.Participation
 import io.github.patxibocos.mycyclist.ui.data.Result
@@ -87,39 +87,35 @@ suspend fun riderResults(
     return withContext(defaultDispatcher) {
         participations.map { it.race }
             .flatMap { race ->
-                listOfNotNull(
-                    race.result.take(3).find { it.riderId == riderId }
-                        ?.let { Result.RaceResult(race, it.position) }
-                ).run {
-                    if (!race.isSingleDay()) {
-                        this + race.stages.mapNotNull { stage ->
-                            stage.result.take(3).find { it.riderId == riderId }
-                                ?.let {
-                                    Result.StageResult(
-                                        race,
-                                        stage,
-                                        race.stages.indexOf(stage) + 1,
-                                        it.position
-                                    )
-                                }
-                        }
-                    } else {
-                        this
-                    }
+                val raceResult = race.result.take(3).find { it.riderId == riderId }
+                    ?.let { Result.RaceResult(race, it.position) }.takeIf { race.isFinished() }
+                if (race.isSingleDay()) {
+                    return@flatMap listOfNotNull(raceResult)
                 }
+                val stageResults = race.stages.mapNotNull { stage ->
+                    stage.result.take(3).find { it.riderId == riderId }
+                        ?.let {
+                            Result.StageResult(
+                                race,
+                                stage,
+                                race.stages.indexOf(stage) + 1,
+                                it.position
+                            )
+                        }
+                }
+                return@flatMap stageResults + listOfNotNull(raceResult)
             }
     }
 }
 
 @Immutable
-@Stable
 data class RiderViewState(
     val rider: Rider? = null,
     val team: Team? = null,
     val currentParticipation: Participation? = null,
     val pastParticipations: List<Participation> = emptyList(),
     val futureParticipations: List<Participation> = emptyList(),
-    val results: List<Result> = emptyList(),
+    val results: List<Result> = emptyList()
 ) {
     companion object {
         val Empty = RiderViewState()

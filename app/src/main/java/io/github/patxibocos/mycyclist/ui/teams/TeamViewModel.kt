@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.teams
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,10 +30,9 @@ class TeamViewModel @Inject constructor(
 }
 
 @Immutable
-@Stable
 data class TeamViewState(
     val team: Team? = null,
-    val riders: List<Rider> = emptyList(),
+    val riders: List<Rider> = emptyList()
 ) {
     companion object {
         val Empty = TeamViewState()

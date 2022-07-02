@@ -34,7 +34,7 @@ val riderPreview: Rider by lazy {
         birthPlace = "Barakaldo",
         weight = 70,
         height = 185,
-        photo = "https://avatars.githubusercontent.com/u/4415614",
+        photo = "https://avatars.githubusercontent.com/u/4415614"
     )
 }
 
@@ -47,7 +47,7 @@ val stagePreview: Stage by lazy {
         departure = "Bilbao",
         arrival = "Barcelona",
         timeTrial = false,
-        result = emptyList(),
+        result = emptyList()
     )
 }
 
@@ -61,6 +61,6 @@ val racePreview: Race by lazy {
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),
-        result = emptyList(),
+        result = emptyList()
     )
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -33,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -70,7 +70,7 @@ internal fun RidersRoute(
     onRiderSelected: (Rider) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
-    viewModel: RidersViewModel = hiltViewModel(),
+    viewModel: RidersViewModel = hiltViewModel()
 ) {
     val ridersViewState by viewModel.ridersState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -88,7 +88,7 @@ internal fun RidersRoute(
         onSortingSelected = viewModel::onSorted,
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
-        onToggled = viewModel::onToggled,
+        onToggled = viewModel::onToggled
     )
 }
 
@@ -110,7 +110,7 @@ internal fun RidersScreen(
     onSortingSelected: (Sorting) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
-    onToggled: () -> Unit = {},
+    onToggled: () -> Unit = {}
 ) {
     Column {
         val focusManager = LocalFocusManager.current
@@ -119,7 +119,7 @@ internal fun RidersScreen(
             focusManager,
             onSortingSelected,
             onRiderSearched,
-            onToggled = onToggled,
+            onToggled = onToggled
         )
         RidersList(
             ridersState = ridersViewState.riders,
@@ -140,11 +140,14 @@ private fun TopAppBar(
     focusManager: FocusManager,
     onSortingSelected: (Sorting) -> Unit,
     onSearched: (String) -> Unit,
-    onToggled: () -> Unit,
+    onToggled: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color.Transparent
+        ),
         title = {
             AnimatedContent(topBarState.searching) {
                 if (it) {
@@ -163,7 +166,7 @@ private fun TopAppBar(
                             capitalization = KeyboardCapitalization.Words,
                             autoCorrect = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Search,
+                            imeAction = ImeAction.Search
                         ),
                         keyboardActions = KeyboardActions(onSearch = {
                             focusManager.clearFocus()
@@ -214,7 +217,7 @@ private fun TopAppBar(
                     onDismissed = { sortingOptionsVisible = false }
                 )
             }
-        },
+        }
     )
 }
 
@@ -265,7 +268,7 @@ internal fun RidersList(
     ridersState: RidersViewState.Riders,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = screenReselected.value) {
@@ -276,10 +279,9 @@ internal fun RidersList(
     }
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding(),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        state = lazyListState,
+        state = lazyListState
     ) {
         when (ridersState) {
             is RidersViewState.Riders.ByLastName -> {
@@ -319,7 +321,7 @@ internal fun RidersList(
 @Composable
 internal fun RiderRow(
     rider: Rider,
-    onRiderSelected: (Rider) -> Unit,
+    onRiderSelected: (Rider) -> Unit
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -332,17 +334,17 @@ internal fun RiderRow(
                     .clip(CircleShape),
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Crop,
-                contentDescription = null,
+                contentDescription = null
             )
             Box(
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .fillMaxWidth()
-                    .align(Alignment.CenterVertically),
+                    .align(Alignment.CenterVertically)
             ) {
                 Text(
                     text = "${rider.lastName.uppercase()} ${rider.firstName}",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
             }
@@ -355,6 +357,6 @@ internal fun Country(countryCode: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = "${getCountryEmoji(countryCode)} $countryCode",
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.bodyLarge
     )
 }

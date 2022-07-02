@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,6 +16,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -48,7 +48,7 @@ internal fun RacesRoute(
     onRaceSelected: (Race) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
-    viewModel: RacesViewModel = hiltViewModel(),
+    viewModel: RacesViewModel = hiltViewModel()
 ) {
     val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -58,7 +58,7 @@ internal fun RacesRoute(
         racesViewState = racesViewState,
         onRaceSelected = onRaceSelected,
         reselectedScreen = reselectedScreen,
-        onReselectedScreenConsumed = onReselectedScreenConsumed,
+        onReselectedScreenConsumed = onReselectedScreenConsumed
     )
 }
 
@@ -68,7 +68,7 @@ internal fun RacesScreen(
     racesViewState: RacesViewState = RacesViewState(listOf(racePreview)),
     onRaceSelected: (Race) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {},
+    onReselectedScreenConsumed: () -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = reselectedScreen.value) {
@@ -79,16 +79,18 @@ internal fun RacesScreen(
     }
     Column {
         CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            ),
             title = {
                 Text(text = stringResource(R.string.races_title))
-            },
+            }
         )
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
+                .fillMaxSize(),
             state = lazyListState,
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             items(items = racesViewState.races, key = Race::id, itemContent = { race ->
                 RaceRow(race, onRaceSelected)
@@ -113,7 +115,7 @@ private fun RaceRow(
     ) {
         Text(
             text = "${getCountryEmoji(race.country)} ${race.name}",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
         )
         Row {
             Card(
@@ -131,7 +133,7 @@ private fun RaceRow(
                     )
                     Text(
                         text = month,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             }

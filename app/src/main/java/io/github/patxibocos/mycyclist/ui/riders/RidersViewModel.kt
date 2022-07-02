@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
@@ -18,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RidersViewModel @Inject constructor(
     dataRepository: DataRepository,
-    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
+    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
 ) :
     ViewModel() {
 
@@ -45,7 +44,7 @@ class RidersViewModel @Inject constructor(
                         filteredRiders.groupBy {
                             it.lastName.first().uppercaseChar()
                         }
-                    ),
+                    )
                 )
                 Sorting.Team -> {
                     val ridersByTeam =
@@ -90,14 +89,17 @@ enum class Sorting {
 }
 
 @Immutable
-@Stable
 data class RidersViewState(val riders: Riders) {
 
     @Immutable
-    @Stable
     sealed class Riders {
+        @Immutable
         data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders()
+
+        @Immutable
         data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders()
+
+        @Immutable
         data class ByCountry(val riders: Map<String, List<Rider>>) : Riders()
     }
 
@@ -107,7 +109,6 @@ data class RidersViewState(val riders: Riders) {
 }
 
 @Immutable
-@Stable
 data class TopBarState(
     val search: String = "",
     val searching: Boolean = false,
@@ -121,7 +122,7 @@ data class TopBarState(
 suspend fun searchRiders(
     defaultDispatcher: CoroutineDispatcher,
     riders: List<Rider>,
-    query: String,
+    query: String
 ): List<Rider> = withContext(defaultDispatcher) {
     if (query.isBlank()) {
         return@withContext riders

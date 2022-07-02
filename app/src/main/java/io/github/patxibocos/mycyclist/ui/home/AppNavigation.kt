@@ -1,6 +1,7 @@
 package io.github.patxibocos.mycyclist.ui.home
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Flag
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -30,11 +32,12 @@ import io.github.patxibocos.mycyclist.ui.teams.TeamsRoute
 internal fun AppNavigation(
     navController: NavHostController,
     reselectedScreen: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     NavHost(
+        modifier = Modifier.systemBarsPadding(),
         navController = navController,
-        startDestination = Screen.Riders.route,
+        startDestination = Screen.Riders.route
     ) {
         addTeamsNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
         addRidersNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
@@ -46,7 +49,7 @@ internal sealed class Screen(
     val route: String,
     @StringRes val label: Int,
     val unselectedIcon: ImageVector,
-    val selectedIcon: ImageVector,
+    val selectedIcon: ImageVector
 ) {
     object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group, Icons.Filled.Group)
     object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face, Icons.Filled.Face)
@@ -90,7 +93,7 @@ internal sealed class LeafScreen(
 private fun NavGraphBuilder.addTeamsNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     navigation(
         startDestination = LeafScreen.Teams.createRoute(Screen.Teams),
@@ -102,7 +105,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
                 },
                 reselectedScreen = reselectedScreen,
-                onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onReselectedScreenConsumed = onReselectedScreenConsumed
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {
@@ -115,7 +118,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
                         )
                     )
                 },
-                onBackPressed = { navController.navigateUp() },
+                onBackPressed = { navController.navigateUp() }
             )
         }
     }
@@ -124,7 +127,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
 private fun NavGraphBuilder.addRidersNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     navigation(
         startDestination = LeafScreen.Riders.createRoute(Screen.Riders),
@@ -136,7 +139,7 @@ private fun NavGraphBuilder.addRidersNavigation(
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
                 },
                 reselectedScreen = reselectedScreen,
-                onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onReselectedScreenConsumed = onReselectedScreenConsumed
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
@@ -149,7 +152,7 @@ private fun NavGraphBuilder.addRidersNavigation(
                         )
                     )
                 },
-                onBackPressed = { navController.navigateUp() },
+                onBackPressed = { navController.navigateUp() }
             )
         }
     }
@@ -158,7 +161,7 @@ private fun NavGraphBuilder.addRidersNavigation(
 private fun NavGraphBuilder.addRacesNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     navigation(
         startDestination = LeafScreen.Races.createRoute(Screen.Races),
@@ -170,7 +173,7 @@ private fun NavGraphBuilder.addRacesNavigation(
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                 },
                 reselectedScreen = reselectedScreen,
-                onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onReselectedScreenConsumed = onReselectedScreenConsumed
             )
         }
         composable(LeafScreen.Race.createRoute(Screen.Races)) {
@@ -180,11 +183,11 @@ private fun NavGraphBuilder.addRacesNavigation(
                         LeafScreen.Stage.createRoute(
                             Screen.Races,
                             race.id,
-                            stage.id,
+                            stage.id
                         )
                     )
                 },
-                onBackPressed = { navController.navigateUp() },
+                onBackPressed = { navController.navigateUp() }
             )
         }
         composable(LeafScreen.Stage.createRoute(Screen.Races)) {

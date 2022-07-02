@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.util
 
 import androidx.compose.runtime.Composable
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 @Composable
 fun <T> Flow<T>.rememberFlowWithLifecycle(
     scope: CoroutineScope,
-    initial: T,
+    initial: T
 ): State<T> {
     val lifecycleOwner = LocalLifecycleOwner.current
     return remember(this, lifecycleOwner) {
@@ -25,7 +26,7 @@ fun <T> Flow<T>.rememberFlowWithLifecycle(
         ).stateIn(
             scope = scope,
             started = SharingStarted.Eagerly,
-            initialValue = initial,
+            initialValue = initial
         )
     }.collectAsState()
 }

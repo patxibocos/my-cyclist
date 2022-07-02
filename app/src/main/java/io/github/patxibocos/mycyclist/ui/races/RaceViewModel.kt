@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.races
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RaceViewModel @Inject constructor(
     dataRepository: DataRepository,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
 
@@ -28,9 +27,8 @@ class RaceViewModel @Inject constructor(
 }
 
 @Immutable
-@Stable
 data class RaceViewState(
-    val race: Race? = null,
+    val race: Race? = null
 ) {
     companion object {
         val Empty = RaceViewState()

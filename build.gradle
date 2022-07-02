@@ -12,17 +12,10 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.14.2'
+    id 'com.diffplug.spotless' version '6.8.0'
 }
 
 subprojects {
-    configurations.configureEach {
-        // We forcefully exclude AppCompat + MDC from any transitive dependencies.
-        // This is a Compose app, so there's no need for these
-        exclude group: 'androidx.appcompat'
-        exclude group: 'com.google.android.material', module: 'material'
-    }
-
     apply plugin: 'com.diffplug.spotless'
     spotless {
         kotlin {

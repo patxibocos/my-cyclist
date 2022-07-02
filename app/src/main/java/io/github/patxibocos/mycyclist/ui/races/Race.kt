@@ -4,17 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +29,7 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 internal fun RaceRoute(
     onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {},
-    viewModel: RaceViewModel = hiltViewModel(),
+    viewModel: RaceViewModel = hiltViewModel()
 ) {
     val raceViewState by viewModel.raceViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -44,42 +38,25 @@ internal fun RaceRoute(
     RaceScreen(
         raceViewState = raceViewState,
         onStageSelected = onStageSelected,
-        onBackPressed = onBackPressed,
+        onBackPressed = onBackPressed
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 internal fun RaceScreen(
     raceViewState: RaceViewState = RaceViewState(racePreview),
     onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
-    onBackPressed: () -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
-    Scaffold(topBar = {
-        SmallTopAppBar(
-            title = {
-                Text(text = raceViewState.race?.name.toString())
-            }, navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(Icons.Filled.ArrowBack, null)
-                }
-            }
-        )
-    }) {
+    Column {
         if (raceViewState.race != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                Text(text = raceViewState.race.name)
-                if (raceViewState.race.stages.size == 1) {
-                    StageScreen(StageViewState(raceViewState.race.stages.first()))
-                } else {
-                    StagesList(raceViewState.race.stages) { stage ->
-                        onStageSelected(raceViewState.race, stage)
-                    }
+            Text(text = raceViewState.race.name)
+            if (raceViewState.race.stages.size == 1) {
+                StageScreen(StageViewState(raceViewState.race.stages.first()))
+            } else {
+                StagesList(raceViewState.race.stages) { stage ->
+                    onStageSelected(raceViewState.race, stage)
                 }
             }
         }

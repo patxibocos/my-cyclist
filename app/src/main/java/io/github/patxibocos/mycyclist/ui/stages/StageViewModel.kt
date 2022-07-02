@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.stages
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StageViewModel @Inject constructor(
     dataRepository: DataRepository,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
 
@@ -36,14 +35,14 @@ class StageViewModel @Inject constructor(
 }
 
 @Immutable
-@Stable
 data class StageViewState(
     val stage: Stage? = null,
-    val ridersResult: List<RiderResult> = emptyList(),
+    val ridersResult: List<RiderResult> = emptyList()
 ) {
     companion object {
         val Empty = StageViewState()
     }
 }
 
+@Immutable
 data class RiderResult(val rider: Rider, val time: Long)

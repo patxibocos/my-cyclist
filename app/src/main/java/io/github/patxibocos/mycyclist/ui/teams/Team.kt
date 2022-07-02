@@ -4,20 +4,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +29,7 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 internal fun TeamRoute(
     onRiderSelected: (Rider) -> Unit = {},
     onBackPressed: () -> Unit = {},
-    viewModel: TeamViewModel = hiltViewModel(),
+    viewModel: TeamViewModel = hiltViewModel()
 ) {
     val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -39,11 +38,10 @@ internal fun TeamRoute(
     TeamScreen(
         teamViewState = teamViewState,
         onRiderSelected = onRiderSelected,
-        onBackPressed = onBackPressed,
+        onBackPressed = onBackPressed
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 internal fun TeamScreen(
@@ -52,28 +50,25 @@ internal fun TeamScreen(
         listOf(riderPreview)
     ),
     onRiderSelected: (Rider) -> Unit = {},
-    onBackPressed: () -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
-    Scaffold(topBar = {
+    Column {
         SmallTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            ),
             title = {
                 Text(text = teamViewState.team?.name.toString())
-            }, navigationIcon = {
+            },
+            navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(Icons.Filled.ArrowBack, null)
                 }
             }
         )
-    }) {
         if (teamViewState.team != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                Text(text = teamViewState.team.name)
-                RidersList(teamViewState.riders, onRiderSelected)
-            }
+            Text(text = teamViewState.team.name)
+            RidersList(teamViewState.riders, onRiderSelected)
         }
     }
 }

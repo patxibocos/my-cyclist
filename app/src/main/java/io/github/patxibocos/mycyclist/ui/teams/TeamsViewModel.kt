@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.teams
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
@@ -18,7 +17,6 @@ class TeamsViewModel @Inject constructor(dataRepository: DataRepository) :
 }
 
 @Immutable
-@Stable
 data class TeamsViewState(val teams: List<Team> = emptyList()) {
     companion object {
         val Empty = TeamsViewState()

@@ -1,13 +1,11 @@
 package io.github.patxibocos.mycyclist.data
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Immutable
-@Stable
 data class Race(
     val id: String,
     val name: String,
@@ -17,21 +15,23 @@ data class Race(
     val endDate: LocalDate,
     val website: String,
     val teamParticipations: List<TeamParticipation>,
-    val result: List<RiderResult>,
+    val result: List<RiderResult>
 )
 
+@Immutable
 data class RiderResult(val position: Int, val riderId: String, val time: Long)
 
 @Immutable
-@Stable
 data class TeamParticipation(val teamId: String, val riderParticipations: List<RiderParticipation>)
 
 @Immutable
-@Stable
 data class RiderParticipation(val riderId: String, val number: Int)
 
 fun Race.isSingleDay(): Boolean =
     startDate == endDate
+
+fun Race.isFinished(): Boolean =
+    this.stages.last().result.isAvailable()
 
 fun Race.getMoment(): RaceMoment {
     val today = LocalDate.now(ZoneId.systemDefault())
@@ -49,7 +49,6 @@ enum class RaceMoment {
 }
 
 @Immutable
-@Stable
 data class Stage(
     val id: String,
     val distance: Float,
@@ -58,7 +57,7 @@ data class Stage(
     val arrival: String,
     val type: StageType?,
     val timeTrial: Boolean,
-    val result: List<RiderResult>,
+    val result: List<RiderResult>
 )
 
 enum class StageType {

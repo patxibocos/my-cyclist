@@ -1,10 +1,8 @@
 package io.github.patxibocos.mycyclist.data
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 
 @Immutable
-@Stable
 data class Team(
     val id: String,
     val name: String,
@@ -14,7 +12,7 @@ data class Team(
     val bike: String,
     val jersey: String,
     val website: String,
-    val riderIds: List<String>,
+    val riderIds: List<String>
 )
 
 enum class TeamStatus {

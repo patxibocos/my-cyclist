@@ -15,7 +15,7 @@ fun rider(
     birthDate: LocalDate = LocalDate.now(),
     birthPlace: String = "",
     weight: Int = 0,
-    height: Int = 0,
+    height: Int = 0
 ): Rider =
     Rider(
         id = id,
@@ -27,7 +27,7 @@ fun rider(
         birthDate = birthDate,
         birthPlace = birthPlace,
         weight = weight,
-        height = height,
+        height = height
     )
 
 fun team(
@@ -39,7 +39,7 @@ fun team(
     bike: String = "",
     jersey: String = "",
     website: String = "",
-    riderIds: List<String> = emptyList(),
+    riderIds: List<String> = emptyList()
 ): Team =
     Team(
         id = id,
@@ -50,5 +50,5 @@ fun team(
         bike = bike,
         jersey = jersey,
         website = website,
-        riderIds = riderIds,
+        riderIds = riderIds
     )

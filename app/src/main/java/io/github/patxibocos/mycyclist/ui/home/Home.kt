@@ -4,12 +4,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -49,9 +51,10 @@ fun Home() {
     val navController by rememberUpdatedState(newValue = rememberNavController())
     val reselectedScreen: MutableState<Screen?> = remember { mutableStateOf(null) }
     Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier
-            .nestedScroll(nestedScrollConnection)
-            .statusBarsPadding(),
+            .nestedScroll(nestedScrollConnection),
         bottomBar = {
             BottomBar(navController, showBottomBar) { screen ->
                 reselectedScreen.value = screen
@@ -72,7 +75,7 @@ fun Home() {
 private fun BottomBar(
     navController: NavController,
     showBottomBar: MutableState<Boolean>,
-    screenReselected: (Screen) -> Unit,
+    screenReselected: (Screen) -> Unit
 ) {
     val currentScreen by navController.currentScreenAsState(onNavigatedToRootScreen = {
         showBottomBar.value = true
@@ -82,39 +85,44 @@ private fun BottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        NavigationBar(
-            tonalElevation = 0.dp,
+        Surface(
             modifier = Modifier.navigationBarsPadding(),
+            color = Color.Transparent
         ) {
-            val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
-            screens.forEach { screen ->
-                val selected = currentScreen == screen
-                NavigationBarItem(
-                    icon = {
-                        Icon(
+            NavigationBar(
+                tonalElevation = 2.dp,
+                containerColor = MaterialTheme.colorScheme.surface
+            ) {
+                val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
+                screens.forEach { screen ->
+                    val selected = currentScreen == screen
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                if (selected) {
+                                    screen.selectedIcon
+                                } else {
+                                    screen.unselectedIcon
+                                },
+                                contentDescription = null
+                            )
+                        },
+                        label = { Text(stringResource(screen.label)) },
+                        selected = currentScreen == screen,
+                        onClick = {
                             if (selected) {
-                                screen.selectedIcon
-                            } else {
-                                screen.unselectedIcon
-                            },
-                            contentDescription = null
-                        )
-                    },
-                    label = { Text(stringResource(screen.label)) },
-                    selected = currentScreen == screen,
-                    onClick = {
-                        if (selected) {
-                            screenReselected(screen)
-                        }
-                        navController.navigate(screen.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                                screenReselected(screen)
+                            }
+                            navController.navigate(screen.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
                             }
                         }
-                    },
-                )
+                    )
+                }
             }
         }
     }

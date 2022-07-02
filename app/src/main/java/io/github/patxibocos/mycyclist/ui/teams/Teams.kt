@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -58,7 +58,7 @@ internal fun TeamsRoute(
     onTeamSelected: (Team) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
-    viewModel: TeamsViewModel = hiltViewModel(),
+    viewModel: TeamsViewModel = hiltViewModel()
 ) {
     val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -68,7 +68,7 @@ internal fun TeamsRoute(
         teamsViewState = teamsViewState,
         onTeamSelected = onTeamSelected,
         reselectedScreen = reselectedScreen,
-        onReselectedScreenConsumed = onReselectedScreenConsumed,
+        onReselectedScreenConsumed = onReselectedScreenConsumed
     )
 }
 
@@ -79,7 +79,7 @@ internal fun TeamsScreen(
     teamsViewState: TeamsViewState = TeamsViewState(listOf(teamPreview)),
     onTeamSelected: (Team) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {},
+    onReselectedScreenConsumed: () -> Unit = {}
 ) {
     val worldTeamsLazyGridState = rememberLazyGridState()
     val proTeamsLazyGridState = rememberLazyGridState()
@@ -96,9 +96,12 @@ internal fun TeamsScreen(
     }
     Column {
         CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            ),
             title = {
                 Text(text = stringResource(R.string.teams_title))
-            },
+            }
         )
         val coroutineScope = rememberCoroutineScope()
         TabRow(
@@ -119,19 +122,19 @@ internal fun TeamsScreen(
         }
         HorizontalPager(
             count = 2,
-            state = pagerState,
+            state = pagerState
         ) { page ->
             if (page == 0) {
                 TeamsList(
                     teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
                     onTeamSelected = onTeamSelected,
-                    lazyListState = worldTeamsLazyGridState,
+                    lazyListState = worldTeamsLazyGridState
                 )
             } else {
                 TeamsList(
                     teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
                     onTeamSelected = onTeamSelected,
-                    lazyListState = proTeamsLazyGridState,
+                    lazyListState = proTeamsLazyGridState
                 )
             }
         }
@@ -142,17 +145,15 @@ internal fun TeamsScreen(
 internal fun TeamsList(
     teams: List<Team>,
     onTeamSelected: (Team) -> Unit,
-    lazyListState: LazyGridState,
+    lazyListState: LazyGridState
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 10.dp)
-            .systemBarsPadding(),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
-        state = lazyListState,
+        state = lazyListState
     ) {
         items(teams) { team ->
             TeamRow(team, onTeamSelected)
@@ -208,7 +209,7 @@ internal fun TeamRow(
                     .padding(2.dp)
                     .size(75.dp)
                     .clip(CircleShape),
-                contentDescription = null,
+                contentDescription = null
             )
             Text(
                 text = team.name,

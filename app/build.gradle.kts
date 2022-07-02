@@ -68,7 +68,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
@@ -121,7 +121,6 @@ dependencies {
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
     testImplementation(libs.junit)
-    testImplementation(libs.turbine)
 
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

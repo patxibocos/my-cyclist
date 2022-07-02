@@ -1,11 +1,9 @@
 package io.github.patxibocos.mycyclist.data
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import java.time.LocalDate
 
 @Immutable
-@Stable
 data class Rider(
     val id: String,
     val firstName: String,
