@@ -12,11 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -39,6 +37,7 @@ import io.github.patxibocos.mycyclist.data.RaceMoment
 import io.github.patxibocos.mycyclist.data.getMoment
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
+import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
@@ -78,14 +77,7 @@ internal fun RacesScreen(
         }
     }
     Column {
-        CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent
-            ),
-            title = {
-                Text(text = stringResource(R.string.races_title))
-            }
-        )
+        CenterAlignedTopAppBar(title = stringResource(R.string.races_title))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),

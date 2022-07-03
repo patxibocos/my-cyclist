@@ -7,17 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +20,7 @@ import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.isAvailable
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
+import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
@@ -53,19 +49,7 @@ internal fun RaceScreen(
     onBackPressed: () -> Unit = {}
 ) {
     Column {
-        SmallTopAppBar(
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent
-            ),
-            title = {
-                Text(text = raceViewState.race?.name.toString())
-            },
-            navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(Icons.Filled.ArrowBack, null)
-                }
-            }
-        )
+        SmallTopAppBar(title = raceViewState.race?.name.toString(), onBackPressed)
         if (raceViewState.race != null) {
             if (raceViewState.race.stages.size == 1) {
                 SingleStage(raceViewState.race.stages.first())

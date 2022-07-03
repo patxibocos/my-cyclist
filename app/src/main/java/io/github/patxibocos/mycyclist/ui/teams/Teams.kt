@@ -19,13 +19,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -50,6 +48,7 @@ import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
+import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -95,14 +94,7 @@ internal fun TeamsScreen(
         }
     }
     Column {
-        CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent
-            ),
-            title = {
-                Text(text = stringResource(R.string.teams_title))
-            }
-        )
+        CenterAlignedTopAppBar(title = stringResource(R.string.teams_title))
         val coroutineScope = rememberCoroutineScope()
         TabRow(
             selectedTabIndex = pagerState.currentPage,
