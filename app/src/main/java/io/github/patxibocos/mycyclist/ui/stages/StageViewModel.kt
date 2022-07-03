@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
+import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
 import kotlinx.coroutines.flow.Flow
@@ -23,20 +24,23 @@ class StageViewModel @Inject constructor(
 
     val stageViewState: Flow<StageViewState> =
         combine(dataRepository.races, dataRepository.riders) { races, riders ->
-            val stage = races.find { it.id == raceId }!!.stages.find { it.id == stageId }!!
+            val race = races.find { it.id == raceId }!!
+            val stage = race.stages.find { it.id == stageId }!!
             val riderResults = stage.result.map { riderResult ->
                 RiderResult(
                     riders.find { it.id == riderResult.riderId }!!,
                     riderResult.time
                 )
             }
-            StageViewState(stage, riderResults)
+            StageViewState(race, stage, race.stages.indexOf(stage) + 1, riderResults)
         }
 }
 
 @Immutable
 data class StageViewState(
+    val race: Race? = null,
     val stage: Stage? = null,
+    val stageNumber: Int = 0,
     val ridersResult: List<RiderResult> = emptyList()
 ) {
     companion object {
