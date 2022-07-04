@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.compose.foundation.clickable
@@ -43,7 +44,7 @@ internal fun RaceRoute(
 
 @Preview
 @Composable
-internal fun RaceScreen(
+private fun RaceScreen(
     raceViewState: RaceViewState = RaceViewState(racePreview),
     onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {}

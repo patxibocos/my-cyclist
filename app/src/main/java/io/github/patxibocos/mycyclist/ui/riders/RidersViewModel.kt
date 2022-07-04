@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Rider
-import io.github.patxibocos.mycyclist.data.Team
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,10 +32,9 @@ class RidersViewModel @Inject constructor(
     val ridersState: Flow<RidersViewState> =
         combine(
             dataRepository.riders,
-            dataRepository.teams,
             _search,
             _sorting
-        ) { riders, teams, query, sorting ->
+        ) { riders, query, sorting ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
             when (sorting) {
                 Sorting.LastName -> RidersViewState(
@@ -46,17 +44,6 @@ class RidersViewModel @Inject constructor(
                         }
                     )
                 )
-                Sorting.Team -> {
-                    val ridersByTeam =
-                        teams.associateWith { team ->
-                            filteredRiders.filter {
-                                team.riderIds.contains(
-                                    it.id
-                                )
-                            }
-                        }.filter { it.value.isNotEmpty() }
-                    RidersViewState(RidersViewState.Riders.ByTeam(ridersByTeam))
-                }
                 Sorting.Country -> RidersViewState(
                     RidersViewState.Riders.ByCountry(
                         filteredRiders.groupBy { it.country }
@@ -89,7 +76,6 @@ class RidersViewModel @Inject constructor(
 
 enum class Sorting {
     LastName,
-    Team,
     Country,
     UciRanking
 }
@@ -101,9 +87,6 @@ data class RidersViewState(val riders: Riders) {
     sealed class Riders {
         @Immutable
         data class ByLastName(val riders: Map<Char, List<Rider>>) : Riders()
-
-        @Immutable
-        data class ByTeam(val riders: Map<Team, List<Rider>>) : Riders()
 
         @Immutable
         data class ByCountry(val riders: Map<String, List<Rider>>) : Riders()

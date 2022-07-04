@@ -152,6 +152,23 @@ private fun NavGraphBuilder.addRidersNavigation(
                         )
                     )
                 },
+                onRaceSelected = { race ->
+                    navController.navigate(
+                        LeafScreen.Race.createRoute(
+                            Screen.Races,
+                            race.id
+                        )
+                    )
+                },
+                onStageSelected = { race, stage ->
+                    navController.navigate(
+                        LeafScreen.Stage.createRoute(
+                            Screen.Races,
+                            race.id,
+                            stage.id
+                        )
+                    )
+                },
                 onBackPressed = { navController.navigateUp() }
             )
         }

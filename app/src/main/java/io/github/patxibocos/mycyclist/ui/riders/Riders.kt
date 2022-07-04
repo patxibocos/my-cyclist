@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.compose.animation.AnimatedContent
@@ -94,7 +95,7 @@ internal fun RidersRoute(
 
 @Preview
 @Composable
-internal fun RidersScreen(
+private fun RidersScreen(
     ridersViewState: RidersViewState = RidersViewState(
         riders = RidersViewState.Riders.ByLastName(
             mapOf(
@@ -252,15 +253,6 @@ private fun SortingMenu(
         )
         DropdownMenuItem(
             onClick = {
-                onSortingSelected(Sorting.Team)
-            },
-            enabled = selectedSorting != Sorting.Team,
-            text = {
-                Text(stringResource(R.string.riders_sort_team))
-            }
-        )
-        DropdownMenuItem(
-            onClick = {
                 onSortingSelected(Sorting.Country)
             },
             enabled = selectedSorting != Sorting.Country,
@@ -273,7 +265,7 @@ private fun SortingMenu(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun RidersList(
+private fun RidersList(
     ridersState: RidersViewState.Riders,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
@@ -303,16 +295,6 @@ internal fun RidersList(
                     }
                 }
             }
-            is RidersViewState.Riders.ByTeam -> {
-                ridersState.riders.forEach { (team, riders) ->
-                    stickyHeader {
-                        Text(text = team.name)
-                    }
-                    items(riders, key = Rider::id) { rider ->
-                        RiderRow(rider, onRiderSelected)
-                    }
-                }
-            }
             is RidersViewState.Riders.ByCountry -> {
                 ridersState.riders.forEach { (country, riders) ->
                     stickyHeader {
@@ -333,7 +315,7 @@ internal fun RidersList(
 }
 
 @Composable
-internal fun RiderRow(
+private fun RiderRow(
     rider: Rider,
     onRiderSelected: (Rider) -> Unit
 ) {
@@ -367,7 +349,7 @@ internal fun RiderRow(
 }
 
 @Composable
-internal fun Country(countryCode: String, modifier: Modifier = Modifier) {
+private fun Country(countryCode: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = "${getCountryEmoji(countryCode)} $countryCode",

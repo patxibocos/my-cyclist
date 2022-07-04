@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.teams
 
 import androidx.compose.foundation.clickable
@@ -38,7 +39,7 @@ internal fun TeamRoute(
 
 @Preview
 @Composable
-internal fun TeamScreen(
+private fun TeamScreen(
     teamViewState: TeamViewState = TeamViewState(
         teamPreview,
         listOf(riderPreview)

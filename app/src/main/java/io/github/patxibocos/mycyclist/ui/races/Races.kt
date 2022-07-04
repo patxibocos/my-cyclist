@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.compose.foundation.BorderStroke
@@ -63,7 +64,7 @@ internal fun RacesRoute(
 
 @Preview
 @Composable
-internal fun RacesScreen(
+private fun RacesScreen(
     racesViewState: RacesViewState = RacesViewState(listOf(racePreview)),
     onRaceSelected: (Race) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),

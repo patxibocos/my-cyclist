@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.compose.foundation.clickable
@@ -9,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.patxibocos.mycyclist.data.Race
+import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.Result
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
@@ -19,6 +22,8 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 @Composable
 internal fun RiderRoute(
     onTeamSelected: (Team) -> Unit = {},
+    onRaceSelected: (Race) -> Unit = {},
+    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {},
     viewModel: RiderViewModel = hiltViewModel()
 ) {
@@ -29,15 +34,19 @@ internal fun RiderRoute(
     RiderScreen(
         riderViewState = riderViewState,
         onTeamSelected = onTeamSelected,
+        onRaceSelected = onRaceSelected,
+        onStageSelected = onStageSelected,
         onBackPressed = onBackPressed
     )
 }
 
 @Preview
 @Composable
-internal fun RiderScreen(
+private fun RiderScreen(
     riderViewState: RiderViewState = RiderViewState(riderPreview, teamPreview),
     onTeamSelected: (Team) -> Unit = {},
+    onRaceSelected: (Race) -> Unit = {},
+    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {}
 ) {
     Column {
@@ -54,12 +63,27 @@ internal fun RiderScreen(
                 }
             )
             riderViewState.currentParticipation?.let { currentParticipation ->
-                Text(text = "Currently running ${currentParticipation.race.name}")
+                Text(
+                    text = "Currently running ${currentParticipation.race.name}",
+                    modifier = Modifier.clickable {
+                        onRaceSelected(riderViewState.currentParticipation.race)
+                    }
+                )
             }
             riderViewState.results.forEach { lastResult ->
                 when (lastResult) {
-                    is Result.RaceResult -> Text(text = "${lastResult.position} on ${lastResult.race.name}")
-                    is Result.StageResult -> Text(text = "${lastResult.position} on stage ${lastResult.stageNumber} of ${lastResult.race.name}")
+                    is Result.RaceResult -> Text(
+                        text = "${lastResult.position} on ${lastResult.race.name}",
+                        modifier = Modifier.clickable {
+                            onRaceSelected(lastResult.race)
+                        }
+                    )
+                    is Result.StageResult -> Text(
+                        text = "${lastResult.position} on stage ${lastResult.stageNumber} of ${lastResult.race.name}",
+                        modifier = Modifier.clickable {
+                            onStageSelected(lastResult.race, lastResult.stage)
+                        }
+                    )
                 }
             }
         }

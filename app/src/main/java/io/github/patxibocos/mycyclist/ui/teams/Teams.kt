@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.teams
 
 import androidx.compose.foundation.background
@@ -74,7 +75,7 @@ internal fun TeamsRoute(
 @OptIn(ExperimentalPagerApi::class)
 @Preview
 @Composable
-internal fun TeamsScreen(
+private fun TeamsScreen(
     teamsViewState: TeamsViewState = TeamsViewState(listOf(teamPreview)),
     onTeamSelected: (Team) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
@@ -134,7 +135,7 @@ internal fun TeamsScreen(
 }
 
 @Composable
-internal fun TeamsList(
+private fun TeamsList(
     teams: List<Team>,
     onTeamSelected: (Team) -> Unit,
     lazyListState: LazyGridState
@@ -155,7 +156,7 @@ internal fun TeamsList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun TeamRow(
+private fun TeamRow(
     team: Team,
     onTeamSelected: (Team) -> Unit
 ) {
