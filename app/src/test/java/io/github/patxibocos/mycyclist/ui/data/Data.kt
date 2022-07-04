@@ -27,7 +27,8 @@ fun rider(
         birthDate = birthDate,
         birthPlace = birthPlace,
         weight = weight,
-        height = height
+        height = height,
+        uciRankingPosition = 1
     )
 
 fun team(

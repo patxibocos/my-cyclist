@@ -14,7 +14,8 @@ data class Rider(
     val birthDate: LocalDate,
     val birthPlace: String,
     val weight: Int,
-    val height: Int
+    val height: Int,
+    val uciRankingPosition: Int
 ) {
     fun fullName(): String {
         return "$firstName $lastName"

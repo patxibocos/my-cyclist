@@ -34,7 +34,8 @@ val riderPreview: Rider by lazy {
         birthPlace = "Barakaldo",
         weight = 70,
         height = 185,
-        photo = "https://avatars.githubusercontent.com/u/4415614"
+        photo = "https://avatars.githubusercontent.com/u/4415614",
+        uciRankingPosition = 1
     )
 }
 

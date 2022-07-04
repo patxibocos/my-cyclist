@@ -44,6 +44,9 @@ internal fun RiderScreen(
         SmallTopAppBar(title = riderViewState.rider?.lastName.toString(), onBackPressed)
         if (riderViewState.rider != null && riderViewState.team != null) {
             Text(text = riderViewState.rider.lastName)
+            if (riderViewState.rider.uciRankingPosition > 0) {
+                Text(text = "UCI Ranking: ${riderViewState.rider.uciRankingPosition}")
+            }
             Text(
                 text = riderViewState.team.name,
                 modifier = Modifier.clickable {

@@ -153,6 +153,7 @@ fun RiderOuterClass.Rider.toDomain(): Rider {
         birthPlace = this.birthPlace,
         weight = this.weight,
         height = this.height,
+        uciRankingPosition = this.uciRankingPosition,
     )
 }
 

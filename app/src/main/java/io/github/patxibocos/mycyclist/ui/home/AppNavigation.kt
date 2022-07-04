@@ -191,7 +191,17 @@ private fun NavGraphBuilder.addRacesNavigation(
             )
         }
         composable(LeafScreen.Stage.createRoute(Screen.Races)) {
-            StageRoute(onBackPressed = { navController.navigateUp() })
+            StageRoute(
+                onBackPressed = { navController.navigateUp() },
+                onRiderSelected = { rider ->
+                    navController.navigate(
+                        LeafScreen.Rider.createRoute(
+                            Screen.Riders,
+                            rider.id
+                        )
+                    )
+                }
+            )
         }
     }
 }
