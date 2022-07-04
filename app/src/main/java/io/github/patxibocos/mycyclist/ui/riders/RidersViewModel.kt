@@ -23,7 +23,7 @@ class RidersViewModel @Inject constructor(
 
     private val _search = MutableStateFlow("")
     private val _searching = MutableStateFlow(false)
-    private val _sorting = MutableStateFlow(Sorting.LastName)
+    private val _sorting = MutableStateFlow(Sorting.UciRanking)
 
     val topBarState: Flow<TopBarState> =
         combine(_search, _searching, _sorting) { search, searching, sorting ->
@@ -63,6 +63,11 @@ class RidersViewModel @Inject constructor(
                             .toSortedMap()
                     )
                 )
+                Sorting.UciRanking -> RidersViewState(
+                    RidersViewState.Riders.ByUciRanking(
+                        filteredRiders.sortedBy { if (it.uciRankingPosition > 0) it.uciRankingPosition else Int.MAX_VALUE }
+                    )
+                )
             }
         }
 
@@ -85,7 +90,8 @@ class RidersViewModel @Inject constructor(
 enum class Sorting {
     LastName,
     Team,
-    Country
+    Country,
+    UciRanking
 }
 
 @Immutable
@@ -101,10 +107,13 @@ data class RidersViewState(val riders: Riders) {
 
         @Immutable
         data class ByCountry(val riders: Map<String, List<Rider>>) : Riders()
+
+        @Immutable
+        data class ByUciRanking(val riders: List<Rider>) : Riders()
     }
 
     companion object {
-        val Empty = RidersViewState(Riders.ByLastName(emptyMap()))
+        val Empty = RidersViewState(Riders.ByUciRanking(emptyList()))
     }
 }
 

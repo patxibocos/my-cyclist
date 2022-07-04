@@ -234,6 +234,15 @@ private fun SortingMenu(
     ) {
         DropdownMenuItem(
             onClick = {
+                onSortingSelected(Sorting.UciRanking)
+            },
+            enabled = selectedSorting != Sorting.UciRanking,
+            text = {
+                Text(stringResource(R.string.riders_sort_uci_ranking))
+            }
+        )
+        DropdownMenuItem(
+            onClick = {
                 onSortingSelected(Sorting.LastName)
             },
             enabled = selectedSorting != Sorting.LastName,
@@ -312,6 +321,11 @@ internal fun RidersList(
                     items(riders, key = Rider::id) { rider ->
                         RiderRow(rider, onRiderSelected)
                     }
+                }
+            }
+            is RidersViewState.Riders.ByUciRanking -> {
+                items(ridersState.riders, key = Rider::id) { rider ->
+                    RiderRow(rider, onRiderSelected)
                 }
             }
         }

@@ -9,6 +9,7 @@
     <string name="riders_title">Corredores</string>
     <string name="riders_search">Buscar</string>
     <string name="riders_sort">Ordenar</string>
+    <string name="riders_sort_uci_ranking">Ranking UCI</string>
     <string name="riders_sort_name">Nombre</string>
     <string name="riders_sort_team">Equipo</string>
     <string name="riders_sort_country">País</string>

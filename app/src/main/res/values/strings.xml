@@ -9,6 +9,7 @@
     <string name="riders_title">Riders</string>
     <string name="riders_search">Search</string>
     <string name="riders_sort">Sort</string>
+    <string name="riders_sort_uci_ranking">UCI Ranking</string>
     <string name="riders_sort_name">Name</string>
     <string name="riders_sort_team">Team</string>
     <string name="riders_sort_country">Country</string>

@@ -15,6 +15,7 @@ data class Team(
     val riderIds: List<String>
 )
 
+@Immutable
 enum class TeamStatus {
     WORLD_TEAM,
     PRO_TEAM
