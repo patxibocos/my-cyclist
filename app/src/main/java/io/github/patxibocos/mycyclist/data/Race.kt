@@ -33,20 +33,16 @@ fun Race.isSingleDay(): Boolean =
 fun Race.isFinished(): Boolean =
     this.stages.last().result.isAvailable()
 
-fun Race.getMoment(): RaceMoment {
-    val today = LocalDate.now(ZoneId.systemDefault())
-    return when {
-        today.isAfter(endDate) -> RaceMoment.Past
-        today.isBefore(startDate) -> RaceMoment.Future
-        else -> RaceMoment.Active
-    }
-}
+private fun today(): LocalDate = LocalDate.now(ZoneId.systemDefault())
+fun Race.isActive(): Boolean = this.isPast().not() && this.isFuture().not()
 
-enum class RaceMoment {
-    Past,
-    Active,
-    Future
-}
+fun Race.isPast(): Boolean = today().isAfter(this.endDate)
+
+fun Race.isFuture(): Boolean = today().isBefore(this.startDate)
+
+fun Race.todayStage(): Pair<Stage, Int>? =
+    this.stages.find { it.startDateTime.toLocalDate() == today() }
+        ?.let { it to this.stages.indexOf(it) }
 
 @Immutable
 data class Stage(

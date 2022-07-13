@@ -15,29 +15,24 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Race
-import io.github.patxibocos.mycyclist.data.RaceMoment
-import io.github.patxibocos.mycyclist.data.getMoment
 import io.github.patxibocos.mycyclist.ui.home.Screen
-import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
@@ -45,9 +40,9 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun RacesRoute(
-    onRaceSelected: (Race) -> Unit = {},
-    reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {},
+    onRaceSelected: (Race) -> Unit,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
     viewModel: RacesViewModel = hiltViewModel()
 ) {
     val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
@@ -62,13 +57,12 @@ internal fun RacesRoute(
     )
 }
 
-@Preview
 @Composable
 private fun RacesScreen(
-    racesViewState: RacesViewState = RacesViewState(listOf(racePreview)),
-    onRaceSelected: (Race) -> Unit = {},
-    reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {}
+    racesViewState: RacesViewState,
+    onRaceSelected: (Race) -> Unit,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = reselectedScreen.value) {
@@ -79,15 +73,23 @@ private fun RacesScreen(
     }
     Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.races_title))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            state = lazyListState,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(items = racesViewState.races, key = Race::id, itemContent = { race ->
-                RaceRow(race, onRaceSelected)
-            })
+        Surface {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                if (racesViewState is RacesViewState.SeasonInProgressViewState) {
+                    items(
+                        items = racesViewState.todayStages.map { it.race },
+                        key = Race::id,
+                        itemContent = { race ->
+                            RaceRow(race, onRaceSelected)
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -102,9 +104,7 @@ private fun RaceRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .clickable { onRaceSelected(race) }.run {
-                if (race.getMoment() == RaceMoment.Past) alpha(.7f) else this
-            }
+            .clickable { onRaceSelected(race) }
     ) {
         Text(
             text = "${getCountryEmoji(race.country)} ${race.name}",

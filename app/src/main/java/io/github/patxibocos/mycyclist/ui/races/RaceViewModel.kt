@@ -27,10 +27,8 @@ class RaceViewModel @Inject constructor(
 }
 
 @Immutable
-data class RaceViewState(
-    val race: Race? = null
-) {
+data class RaceViewState(val race: Race?) {
     companion object {
-        val Empty = RaceViewState()
+        val Empty = RaceViewState(race = null)
     }
 }

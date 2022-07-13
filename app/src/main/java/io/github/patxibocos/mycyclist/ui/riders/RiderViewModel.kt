@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
@@ -70,7 +71,7 @@ suspend fun riderParticipations(
                 .find { it.riderId == riderId }
                 ?.let { Participation(race, it.number) }
         }
-        val today = LocalDate.now()
+        val today = LocalDate.now(ZoneId.systemDefault())
         val currentParticipation =
             participations.find { it.race.startDate <= today && it.race.endDate >= today }
         val pastParticipations = participations.filter { it.race.endDate < today }
@@ -110,14 +111,21 @@ suspend fun riderResults(
 
 @Immutable
 data class RiderViewState(
-    val rider: Rider? = null,
-    val team: Team? = null,
-    val currentParticipation: Participation? = null,
-    val pastParticipations: List<Participation> = emptyList(),
-    val futureParticipations: List<Participation> = emptyList(),
-    val results: List<Result> = emptyList()
+    val rider: Rider?,
+    val team: Team?,
+    val currentParticipation: Participation?,
+    val pastParticipations: List<Participation>,
+    val futureParticipations: List<Participation>,
+    val results: List<Result>
 ) {
     companion object {
-        val Empty = RiderViewState()
+        val Empty = RiderViewState(
+            rider = null,
+            team = null,
+            currentParticipation = null,
+            pastParticipations = emptyList(),
+            futureParticipations = emptyList(),
+            results = emptyList()
+        )
     }
 }

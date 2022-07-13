@@ -102,12 +102,12 @@ data class RidersViewState(val riders: Riders) {
 
 @Immutable
 data class TopBarState(
-    val search: String = "",
-    val searching: Boolean = false,
-    val sorting: Sorting = Sorting.LastName
+    val search: String,
+    val searching: Boolean,
+    val sorting: Sorting
 ) {
     companion object {
-        val Empty = TopBarState()
+        val Empty = TopBarState(search = "", searching = false, sorting = Sorting.UciRanking)
     }
 }
 

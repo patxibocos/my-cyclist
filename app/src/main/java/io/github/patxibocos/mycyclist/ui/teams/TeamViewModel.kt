@@ -31,10 +31,10 @@ class TeamViewModel @Inject constructor(
 
 @Immutable
 data class TeamViewState(
-    val team: Team? = null,
-    val riders: List<Rider> = emptyList()
+    val team: Team?,
+    val riders: List<Rider>
 ) {
     companion object {
-        val Empty = TeamViewState()
+        val Empty = TeamViewState(team = null, riders = emptyList())
     }
 }

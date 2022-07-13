@@ -38,13 +38,13 @@ class StageViewModel @Inject constructor(
 
 @Immutable
 data class StageViewState(
-    val race: Race? = null,
-    val stage: Stage? = null,
-    val stageNumber: Int = 0,
-    val ridersResult: List<RiderResult> = emptyList()
+    val race: Race?,
+    val stage: Stage?,
+    val stageNumber: Int,
+    val ridersResult: List<RiderResult>
 ) {
     companion object {
-        val Empty = StageViewState()
+        val Empty = StageViewState(race = null, stage = null, stageNumber = 0, ridersResult = emptyList())
     }
 }
 

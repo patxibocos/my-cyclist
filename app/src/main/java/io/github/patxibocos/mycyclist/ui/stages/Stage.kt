@@ -8,21 +8,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Rider
-import io.github.patxibocos.mycyclist.ui.preview.racePreview
-import io.github.patxibocos.mycyclist.ui.preview.stagePreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 fun StageRoute(
-    onBackPressed: () -> Unit = {},
-    viewModel: StageViewModel = hiltViewModel(),
-    onRiderSelected: (Rider) -> Unit = {}
+    onBackPressed: () -> Unit,
+    onRiderSelected: (Rider) -> Unit,
+    viewModel: StageViewModel = hiltViewModel()
 ) {
     val stateViewState by viewModel.stageViewState.rememberFlowWithLifecycle(
         viewModel.viewModelScope,
@@ -31,12 +28,11 @@ fun StageRoute(
     StageScreen(stateViewState, onBackPressed, onRiderSelected)
 }
 
-@Preview
 @Composable
 private fun StageScreen(
-    stageViewState: StageViewState = StageViewState(racePreview, stagePreview),
-    onBackPressed: () -> Unit = {},
-    onRiderSelected: (Rider) -> Unit = {}
+    stageViewState: StageViewState,
+    onBackPressed: () -> Unit,
+    onRiderSelected: (Rider) -> Unit
 ) {
     Column {
         SmallTopAppBar(

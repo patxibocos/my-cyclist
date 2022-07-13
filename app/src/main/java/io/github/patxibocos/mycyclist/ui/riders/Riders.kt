@@ -30,6 +30,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -122,15 +123,17 @@ private fun RidersScreen(
             onRiderSearched,
             onToggled = onToggled
         )
-        RidersList(
-            ridersState = ridersViewState.riders,
-            onRiderSelected = {
-                focusManager.clearFocus()
-                onRiderSelected(it)
-            },
-            screenReselected = reselectedScreen,
-            onReselectedScreenConsumed = onReselectedScreenConsumed
-        )
+        Surface {
+            RidersList(
+                ridersState = ridersViewState.riders,
+                onRiderSelected = {
+                    focusManager.clearFocus()
+                    onRiderSelected(it)
+                },
+                screenReselected = reselectedScreen,
+                onReselectedScreenConsumed = onReselectedScreenConsumed
+            )
+        }
     }
 }
 

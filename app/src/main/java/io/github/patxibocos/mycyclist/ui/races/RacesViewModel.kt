@@ -4,8 +4,16 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
+import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.isActive
+import io.github.patxibocos.mycyclist.data.isFuture
+import io.github.patxibocos.mycyclist.data.isPast
+import io.github.patxibocos.mycyclist.data.isSingleDay
+import io.github.patxibocos.mycyclist.data.todayStage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
@@ -13,12 +21,61 @@ import javax.inject.Inject
 class RacesViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
-    val racesViewState: Flow<RacesViewState> = dataRepository.races.map(::RacesViewState)
+    val racesViewState: Flow<RacesViewState> = dataRepository.races.map { races ->
+        val minStartDate = races.first().startDate
+        val maxEndDate = races.last().endDate
+        val today = LocalDate.now(ZoneId.systemDefault())
+        when {
+            today.isBefore(minStartDate) -> RacesViewState.SeasonNotStartedViewState(races)
+            today.isAfter(maxEndDate) -> RacesViewState.SeasonEndedViewState(races)
+            else -> {
+                val todayStages = races.filter(Race::isActive).map { race ->
+                    val todayStage = race.todayStage()
+                    when {
+                        race.isSingleDay() -> TodayStage.SingleDayRace(race, race.stages.first())
+                        todayStage != null -> TodayStage.MultiStageRace(
+                            race,
+                            todayStage.first,
+                            todayStage.second
+                        )
+                        else -> TodayStage.RestDay(race)
+                    }
+                }
+                RacesViewState.SeasonInProgressViewState(
+                    todayStages = todayStages,
+                    pastRaces = races.filter(Race::isPast),
+                    futureRaces = races.filter(Race::isFuture)
+                )
+            }
+        }
+    }
 }
 
 @Immutable
-data class RacesViewState(val races: List<Race> = emptyList()) {
+sealed class TodayStage(open val race: Race) {
+    data class RestDay(override val race: Race) : TodayStage(race)
+    data class SingleDayRace(override val race: Race, val stage: Stage) : TodayStage(race)
+    data class MultiStageRace(override val race: Race, val stage: Stage, val stageNumber: Int) :
+        TodayStage(race)
+}
+
+@Immutable
+sealed interface RacesViewState {
+    @Immutable
+    data class SeasonNotStartedViewState(val futureRaces: List<Race>) : RacesViewState
+
+    @Immutable
+    data class SeasonInProgressViewState(
+        val pastRaces: List<Race>,
+        val todayStages: List<TodayStage>,
+        val futureRaces: List<Race>
+    ) : RacesViewState
+
+    @Immutable
+    data class SeasonEndedViewState(val pastRaces: List<Race>) : RacesViewState
+
+    object EmptyViewState : RacesViewState
     companion object {
-        val Empty = RacesViewState()
+        val Empty = EmptyViewState
     }
 }

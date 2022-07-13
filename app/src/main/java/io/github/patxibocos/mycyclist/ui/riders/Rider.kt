@@ -7,24 +7,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.Result
-import io.github.patxibocos.mycyclist.ui.preview.riderPreview
-import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun RiderRoute(
-    onTeamSelected: (Team) -> Unit = {},
-    onRaceSelected: (Race) -> Unit = {},
-    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
-    onBackPressed: () -> Unit = {},
+    onTeamSelected: (Team) -> Unit,
+    onRaceSelected: (Race) -> Unit,
+    onStageSelected: (Race, Stage) -> Unit,
+    onBackPressed: () -> Unit,
     viewModel: RiderViewModel = hiltViewModel()
 ) {
     val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle(
@@ -40,14 +37,13 @@ internal fun RiderRoute(
     )
 }
 
-@Preview
 @Composable
 private fun RiderScreen(
-    riderViewState: RiderViewState = RiderViewState(riderPreview, teamPreview),
-    onTeamSelected: (Team) -> Unit = {},
-    onRaceSelected: (Race) -> Unit = {},
-    onStageSelected: (Race, Stage) -> Unit = { _, _ -> },
-    onBackPressed: () -> Unit = {}
+    riderViewState: RiderViewState,
+    onTeamSelected: (Team) -> Unit,
+    onRaceSelected: (Race) -> Unit,
+    onStageSelected: (Race, Stage) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     Column {
         SmallTopAppBar(title = riderViewState.rider?.lastName.toString(), onBackPressed)

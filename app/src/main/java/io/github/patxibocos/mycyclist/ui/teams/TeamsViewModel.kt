@@ -17,8 +17,8 @@ class TeamsViewModel @Inject constructor(dataRepository: DataRepository) :
 }
 
 @Immutable
-data class TeamsViewState(val teams: List<Team> = emptyList()) {
+data class TeamsViewState(val teams: List<Team>) {
     companion object {
-        val Empty = TeamsViewState()
+        val Empty = TeamsViewState(teams = emptyList())
     }
 }
