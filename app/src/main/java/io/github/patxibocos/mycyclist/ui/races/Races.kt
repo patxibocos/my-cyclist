@@ -2,6 +2,7 @@
 package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
@@ -29,9 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Race
+import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
@@ -41,17 +43,16 @@ import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 @Composable
 internal fun RacesRoute(
     onRaceSelected: (Race) -> Unit,
+    onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
     viewModel: RacesViewModel = hiltViewModel()
 ) {
-    val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        RacesViewState.Empty
-    )
+    val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle()
     RacesScreen(
         racesViewState = racesViewState,
         onRaceSelected = onRaceSelected,
+        onStageSelected = onStageSelected,
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed
     )
@@ -61,6 +62,7 @@ internal fun RacesRoute(
 private fun RacesScreen(
     racesViewState: RacesViewState,
     onRaceSelected: (Race) -> Unit,
+    onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit
 ) {
@@ -77,20 +79,156 @@ private fun RacesScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                state = lazyListState
             ) {
-                if (racesViewState is RacesViewState.SeasonInProgressViewState) {
-                    items(
-                        items = racesViewState.todayStages.map { it.race },
-                        key = Race::id,
-                        itemContent = { race ->
-                            RaceRow(race, onRaceSelected)
-                        }
-                    )
+                when (racesViewState) {
+                    RacesViewState.EmptyViewState -> {}
+                    is RacesViewState.SeasonEndedViewState -> {
+                        seasonEnded(racesViewState.pastRaces, onRaceSelected)
+                    }
+                    is RacesViewState.SeasonInProgressViewState -> {
+                        seasonInProgress(
+                            racesViewState.pastRaces,
+                            racesViewState.todayStages,
+                            racesViewState.futureRaces,
+                            onRaceSelected,
+                            onStageSelected
+                        )
+                    }
+                    is RacesViewState.SeasonNotStartedViewState -> {
+                        seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
+                    }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.seasonInProgress(
+    pastRaces: List<Race>,
+    todayStages: List<TodayStage>,
+    futureRaces: List<Race>,
+    onRaceSelected: (Race) -> Unit,
+    onStageSelected: (Race, Stage) -> Unit
+) {
+    item {
+        Text(text = "Today", style = MaterialTheme.typography.titleLarge)
+    }
+    if (todayStages.isEmpty()) {
+        item {
+            Text("No races today, see next races below")
+        }
+    }
+    items(todayStages) { todayStage ->
+        when (todayStage) {
+            is TodayStage.MultiStageRace -> TodayMultiStageRaceStage(
+                todayStage.race,
+                todayStage.stage,
+                todayStage.stageNumber,
+                onStageSelected
+            )
+            is TodayStage.RestDay -> TodayRestDayStage(todayStage.race, onRaceSelected)
+            is TodayStage.SingleDayRace -> TodaySingleDayRaceStage(
+                todayStage.race,
+                todayStage.stage,
+                onRaceSelected
+            )
+        }
+    }
+    if (futureRaces.isNotEmpty()) {
+        stickyHeader { Text(text = "Future races", style = MaterialTheme.typography.titleLarge) }
+        items(
+            items = futureRaces,
+            key = Race::id,
+            itemContent = { race ->
+                RaceRow(race, onRaceSelected)
+            }
+        )
+    }
+    if (pastRaces.isNotEmpty()) {
+        stickyHeader { Text(text = "Past races", style = MaterialTheme.typography.titleLarge) }
+        items(
+            items = pastRaces,
+            key = Race::id,
+            itemContent = { race ->
+                RaceRow(race, onRaceSelected)
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TodayMultiStageRaceStage(
+    race: Race,
+    stage: Stage,
+    stageNumber: Int,
+    onStageSelected: (Race, Stage) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onStageSelected(race, stage)
+            }
+    ) {
+        Text("${race.name} - Stage $stageNumber")
+        // Show stage Top 3 results if available
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TodayRestDayStage(race: Race, onRaceSelected: (Race) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onRaceSelected(race) }
+    ) {
+        Text("Rest day - ${race.name}")
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TodaySingleDayRaceStage(race: Race, stage: Stage, onRaceSelected: (Race) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onRaceSelected(race) }
+    ) {
+        Text(text = race.name)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.seasonEnded(pastRaces: List<Race>, onRaceSelected: (Race) -> Unit) {
+    item {
+        Text(text = "Season has ended")
+    }
+    stickyHeader {
+        Text(text = "Past races")
+    }
+    items(pastRaces) { pastRace ->
+        RaceRow(race = pastRace, onRaceSelected = onRaceSelected)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.seasonNotStarted(
+    futureRaces: List<Race>,
+    onRaceSelected: (Race) -> Unit
+) {
+    item {
+        Text(text = "Season has not started")
+    }
+    stickyHeader {
+        Text(text = "Future races")
+    }
+    items(futureRaces) { pastRace ->
+        RaceRow(race = pastRace, onRaceSelected = onRaceSelected)
     }
 }
 

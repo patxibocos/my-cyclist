@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -60,10 +59,7 @@ internal fun TeamsRoute(
     onReselectedScreenConsumed: () -> Unit = {},
     viewModel: TeamsViewModel = hiltViewModel()
 ) {
-    val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        TeamsViewState.Empty
-    )
+    val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle()
     TeamsScreen(
         teamsViewState = teamsViewState,
         onTeamSelected = onTeamSelected,

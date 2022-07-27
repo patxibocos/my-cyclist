@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
@@ -24,10 +23,7 @@ internal fun RiderRoute(
     onBackPressed: () -> Unit,
     viewModel: RiderViewModel = hiltViewModel()
 ) {
-    val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        RiderViewState.Empty
-    )
+    val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle()
     RiderScreen(
         riderViewState = riderViewState,
         onTeamSelected = onTeamSelected,

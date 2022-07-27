@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
@@ -26,10 +25,7 @@ internal fun TeamRoute(
     onBackPressed: () -> Unit = {},
     viewModel: TeamViewModel = hiltViewModel()
 ) {
-    val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        TeamViewState.Empty
-    )
+    val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle()
     TeamScreen(
         teamViewState = teamViewState,
         onRiderSelected = onRiderSelected,

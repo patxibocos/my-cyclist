@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.24.13-rc"
-compose-ui = "1.2.0-rc03"
+compose-ui = "1.2.0"
 compose-compiler = "1.2.0"
 hilt = "2.42"
 kotlin = "1.7.0"

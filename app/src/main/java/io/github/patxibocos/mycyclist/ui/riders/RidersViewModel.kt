@@ -1,14 +1,17 @@
 package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Rider
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
@@ -24,12 +27,16 @@ class RidersViewModel @Inject constructor(
     private val _searching = MutableStateFlow(false)
     private val _sorting = MutableStateFlow(Sorting.UciRanking)
 
-    val topBarState: Flow<TopBarState> =
+    val topBarState: StateFlow<TopBarState> =
         combine(_search, _searching, _sorting) { search, searching, sorting ->
             TopBarState(search, searching, sorting)
-        }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = TopBarState.Empty
+        )
 
-    val ridersState: Flow<RidersViewState> =
+    val ridersState: StateFlow<RidersViewState> =
         combine(
             dataRepository.riders,
             _search,
@@ -56,7 +63,11 @@ class RidersViewModel @Inject constructor(
                     )
                 )
             }
-        }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = RidersViewState.Empty
+        )
 
     fun onSearched(query: String) {
         _search.value = query

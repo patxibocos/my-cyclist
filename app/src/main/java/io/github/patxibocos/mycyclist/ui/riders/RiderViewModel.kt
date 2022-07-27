@@ -2,6 +2,7 @@ package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.DataRepository
@@ -13,8 +14,10 @@ import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.ui.data.Participation
 import io.github.patxibocos.mycyclist.ui.data.Result
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.ZoneId
@@ -31,7 +34,7 @@ class RiderViewModel @Inject constructor(
 
     private val riderId: String = savedStateHandle["riderId"]!!
 
-    val riderViewState: Flow<RiderViewState> =
+    val riderViewState: StateFlow<RiderViewState> =
         combine(
             dataRepository.teams,
             dataRepository.riders,
@@ -57,7 +60,11 @@ class RiderViewModel @Inject constructor(
                 futureParticipations,
                 results
             )
-        }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = RiderViewState.Empty
+        )
 }
 
 suspend fun riderParticipations(

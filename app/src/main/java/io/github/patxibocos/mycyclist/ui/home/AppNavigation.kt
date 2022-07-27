@@ -189,6 +189,15 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onRaceSelected = {
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
                 },
+                onStageSelected = { race, stage ->
+                    navController.navigate(
+                        LeafScreen.Stage.createRoute(
+                            Screen.Races,
+                            race.id,
+                            stage.id
+                        )
+                    )
+                },
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed
             )

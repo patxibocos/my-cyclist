@@ -1,6 +1,7 @@
 package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
@@ -10,8 +11,10 @@ import io.github.patxibocos.mycyclist.data.isFuture
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.data.todayStage
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.annotation.concurrent.Immutable
@@ -21,7 +24,7 @@ import javax.inject.Inject
 class RacesViewModel @Inject constructor(dataRepository: DataRepository) :
     ViewModel() {
 
-    val racesViewState: Flow<RacesViewState> = dataRepository.races.map { races ->
+    val racesViewState: StateFlow<RacesViewState> = dataRepository.races.map { races ->
         val minStartDate = races.first().startDate
         val maxEndDate = races.last().endDate
         val today = LocalDate.now(ZoneId.systemDefault())
@@ -36,19 +39,23 @@ class RacesViewModel @Inject constructor(dataRepository: DataRepository) :
                         todayStage != null -> TodayStage.MultiStageRace(
                             race,
                             todayStage.first,
-                            todayStage.second
+                            todayStage.second + 1
                         )
                         else -> TodayStage.RestDay(race)
                     }
                 }
                 RacesViewState.SeasonInProgressViewState(
                     todayStages = todayStages,
-                    pastRaces = races.filter(Race::isPast),
+                    pastRaces = races.filter(Race::isPast).reversed(),
                     futureRaces = races.filter(Race::isFuture)
                 )
             }
         }
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = RacesViewState.Empty
+    )
 }
 
 @Immutable

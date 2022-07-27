@@ -58,7 +58,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Rider
@@ -74,14 +73,8 @@ internal fun RidersRoute(
     onReselectedScreenConsumed: () -> Unit = {},
     viewModel: RidersViewModel = hiltViewModel()
 ) {
-    val ridersViewState by viewModel.ridersState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        RidersViewState.Empty
-    )
-    val topBarState by viewModel.topBarState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        TopBarState.Empty
-    )
+    val ridersViewState by viewModel.ridersState.rememberFlowWithLifecycle()
+    val topBarState by viewModel.topBarState.rememberFlowWithLifecycle()
     RidersScreen(
         ridersViewState = ridersViewState,
         topBarState = topBarState,

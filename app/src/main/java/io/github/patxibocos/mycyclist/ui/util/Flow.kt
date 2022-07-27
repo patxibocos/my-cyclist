@@ -3,30 +3,25 @@ package io.github.patxibocos.mycyclist.ui.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun <T> Flow<T>.rememberFlowWithLifecycle(
-    scope: CoroutineScope,
-    initial: T
-): State<T> {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    return remember(this, lifecycleOwner) {
-        this.flowWithLifecycle(
-            lifecycle = lifecycleOwner.lifecycle,
-            minActiveState = Lifecycle.State.STARTED
-        ).stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = initial
-        )
-    }.collectAsState()
+fun <T> StateFlow<T>.rememberFlowWithLifecycle(): State<T> {
+    val initialValue = remember(this) { this.value }
+    val lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle
+    return produceState(
+        key1 = this,
+        initialValue = initialValue
+    ) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            this@rememberFlowWithLifecycle.collect {
+                this@produceState.value = it
+            }
+        }
+    }
 }

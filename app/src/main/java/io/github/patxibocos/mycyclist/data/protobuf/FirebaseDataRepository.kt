@@ -79,6 +79,13 @@ internal class FirebaseDataRepository(defaultDispatcher: CoroutineDispatcher) :
     override val teams = _teams
     override val riders = _riders
     override val races = _races
+
+    override suspend fun refresh() {
+        val remoteConfig = Firebase.remoteConfig
+        if (remoteConfig.fetchAndActivate().await()) {
+            emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+        }
+    }
 }
 
 fun RaceOuterClass.Race.toDomain(): Race {

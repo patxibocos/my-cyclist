@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun StageRoute(
@@ -21,10 +21,7 @@ fun StageRoute(
     onRiderSelected: (Rider) -> Unit,
     viewModel: StageViewModel = hiltViewModel()
 ) {
-    val stateViewState by viewModel.stageViewState.rememberFlowWithLifecycle(
-        viewModel.viewModelScope,
-        StageViewState.Empty
-    )
+    val stateViewState by viewModel.stageViewState.rememberFlowWithLifecycle()
     StageScreen(stateViewState, onBackPressed, onRiderSelected)
 }
 
@@ -43,8 +40,13 @@ private fun StageScreen(
             Text(text = isoFormat(stageViewState.stage.startDateTime))
             Text(text = stageViewState.stage.distance.toString())
             stageViewState.ridersResult.forEachIndexed { i, riderResult ->
+                val duration = if (i == 0) {
+                    riderResult.time.seconds.toString()
+                } else {
+                    "+${(riderResult.time - stageViewState.ridersResult.first().time).seconds}"
+                }
                 Text(
-                    text = "${i + 1}. ${riderResult.rider.fullName()}",
+                    text = "${i + 1}. ${riderResult.rider.fullName()} - $duration",
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onRiderSelected(riderResult.rider) }
