@@ -49,6 +49,7 @@ import io.github.patxibocos.mycyclist.data.TeamStatus
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
+import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 import kotlinx.coroutines.launch
 
@@ -109,22 +110,24 @@ private fun TeamsScreen(
                 text = { Text(stringResource(R.string.teams_pro)) }
             )
         }
-        HorizontalPager(
-            count = 2,
-            state = pagerState
-        ) { page ->
-            if (page == 0) {
-                TeamsList(
-                    teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
-                    onTeamSelected = onTeamSelected,
-                    lazyListState = worldTeamsLazyGridState
-                )
-            } else {
-                TeamsList(
-                    teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
-                    onTeamSelected = onTeamSelected,
-                    lazyListState = proTeamsLazyGridState
-                )
+        RefreshableContent {
+            HorizontalPager(
+                count = 2,
+                state = pagerState
+            ) { page ->
+                if (page == 0) {
+                    TeamsList(
+                        teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
+                        onTeamSelected = onTeamSelected,
+                        lazyListState = worldTeamsLazyGridState
+                    )
+                } else {
+                    TeamsList(
+                        teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
+                        onTeamSelected = onTeamSelected,
+                        lazyListState = proTeamsLazyGridState
+                    )
+                }
             }
         }
     }

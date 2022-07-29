@@ -1,9 +1,8 @@
 package io.github.patxibocos.mycyclist.data.protobuf
 
 import android.util.Base64
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
@@ -29,7 +28,10 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.zip.GZIPInputStream
 
-internal class FirebaseDataRepository(defaultDispatcher: CoroutineDispatcher) :
+internal class FirebaseDataRepository(
+    defaultDispatcher: CoroutineDispatcher,
+    private val firebaseRemoteConfig: FirebaseRemoteConfig
+) :
     DataRepository {
 
     companion object {
@@ -50,15 +52,14 @@ internal class FirebaseDataRepository(defaultDispatcher: CoroutineDispatcher) :
 
     init {
         CoroutineScope(defaultDispatcher).launch {
-            val remoteConfig = Firebase.remoteConfig
-            emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+            emitData(firebaseRemoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
             val configSettings = remoteConfigSettings {
                 minimumFetchIntervalInSeconds = 3_600L
             }
-            remoteConfig.setConfigSettingsAsync(configSettings)
+            firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
             try {
-                if (remoteConfig.fetchAndActivate().await()) {
-                    emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+                if (firebaseRemoteConfig.fetchAndActivate().await()) {
+                    emitData(firebaseRemoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
                 }
             } catch (e: FirebaseRemoteConfigException) {
                 return@launch
@@ -81,9 +82,8 @@ internal class FirebaseDataRepository(defaultDispatcher: CoroutineDispatcher) :
     override val races = _races
 
     override suspend fun refresh() {
-        val remoteConfig = Firebase.remoteConfig
-        if (remoteConfig.fetchAndActivate().await()) {
-            emitData(remoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+        if (firebaseRemoteConfig.fetchAndActivate().await()) {
+            emitData(firebaseRemoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
         }
     }
 }

@@ -3,6 +3,7 @@ package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
+import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
@@ -76,28 +78,30 @@ private fun RacesScreen(
     Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.races_title))
         Surface {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                state = lazyListState
-            ) {
-                when (racesViewState) {
-                    RacesViewState.EmptyViewState -> {}
-                    is RacesViewState.SeasonEndedViewState -> {
-                        seasonEnded(racesViewState.pastRaces, onRaceSelected)
-                    }
-                    is RacesViewState.SeasonInProgressViewState -> {
-                        seasonInProgress(
-                            racesViewState.pastRaces,
-                            racesViewState.todayStages,
-                            racesViewState.futureRaces,
-                            onRaceSelected,
-                            onStageSelected
-                        )
-                    }
-                    is RacesViewState.SeasonNotStartedViewState -> {
-                        seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
+            RefreshableContent {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    state = lazyListState
+                ) {
+                    when (racesViewState) {
+                        RacesViewState.EmptyViewState -> {}
+                        is RacesViewState.SeasonEndedViewState -> {
+                            seasonEnded(racesViewState.pastRaces, onRaceSelected)
+                        }
+                        is RacesViewState.SeasonInProgressViewState -> {
+                            seasonInProgress(
+                                racesViewState.pastRaces,
+                                racesViewState.todayStages,
+                                racesViewState.futureRaces,
+                                onRaceSelected,
+                                onStageSelected
+                            )
+                        }
+                        is RacesViewState.SeasonNotStartedViewState -> {
+                            seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
+                        }
                     }
                 }
             }
@@ -114,7 +118,14 @@ private fun LazyListScope.seasonInProgress(
     onStageSelected: (Race, Stage) -> Unit
 ) {
     item {
-        Text(text = "Today", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Today",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(10.dp)
+                .fillMaxWidth()
+        )
     }
     if (todayStages.isEmpty()) {
         item {
@@ -138,7 +149,16 @@ private fun LazyListScope.seasonInProgress(
         }
     }
     if (futureRaces.isNotEmpty()) {
-        stickyHeader { Text(text = "Future races", style = MaterialTheme.typography.titleLarge) }
+        stickyHeader {
+            Text(
+                text = "Future races",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(10.dp)
+                    .fillMaxWidth()
+            )
+        }
         items(
             items = futureRaces,
             key = Race::id,
@@ -148,7 +168,16 @@ private fun LazyListScope.seasonInProgress(
         )
     }
     if (pastRaces.isNotEmpty()) {
-        stickyHeader { Text(text = "Past races", style = MaterialTheme.typography.titleLarge) }
+        stickyHeader {
+            Text(
+                text = "Past races",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(10.dp)
+                    .fillMaxWidth()
+            )
+        }
         items(
             items = pastRaces,
             key = Race::id,

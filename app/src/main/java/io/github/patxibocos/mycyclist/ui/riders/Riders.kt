@@ -63,6 +63,7 @@ import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
+import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
@@ -118,7 +119,7 @@ private fun RidersScreen(
         )
         Surface {
             RidersList(
-                ridersState = ridersViewState.riders,
+                ridersState = ridersViewState,
                 onRiderSelected = {
                     focusManager.clearFocus()
                     onRiderSelected(it)
@@ -262,7 +263,7 @@ private fun SortingMenu(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RidersList(
-    ridersState: RidersViewState.Riders,
+    ridersState: RidersViewState,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit
@@ -274,36 +275,38 @@ private fun RidersList(
             onReselectedScreenConsumed()
         }
     }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        state = lazyListState
-    ) {
-        when (ridersState) {
-            is RidersViewState.Riders.ByLastName -> {
-                ridersState.riders.forEach { (letter, riders) ->
-                    stickyHeader {
-                        Text(text = letter.toString())
-                    }
-                    items(riders, key = Rider::id) { rider ->
-                        RiderRow(rider, onRiderSelected)
-                    }
-                }
-            }
-            is RidersViewState.Riders.ByCountry -> {
-                ridersState.riders.forEach { (country, riders) ->
-                    stickyHeader {
-                        Text(text = country)
-                    }
-                    items(riders, key = Rider::id) { rider ->
-                        RiderRow(rider, onRiderSelected)
+    RefreshableContent {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            state = lazyListState
+        ) {
+            when (ridersState.riders) {
+                is RidersViewState.Riders.ByLastName -> {
+                    ridersState.riders.riders.forEach { (letter, riders) ->
+                        stickyHeader {
+                            Text(text = letter.toString())
+                        }
+                        items(riders, key = Rider::id) { rider ->
+                            RiderRow(rider, onRiderSelected)
+                        }
                     }
                 }
-            }
-            is RidersViewState.Riders.ByUciRanking -> {
-                items(ridersState.riders, key = Rider::id) { rider ->
-                    RiderRow(rider, onRiderSelected)
+                is RidersViewState.Riders.ByCountry -> {
+                    ridersState.riders.riders.forEach { (country, riders) ->
+                        stickyHeader {
+                            Text(text = country)
+                        }
+                        items(riders, key = Rider::id) { rider ->
+                            RiderRow(rider, onRiderSelected)
+                        }
+                    }
+                }
+                is RidersViewState.Riders.ByUciRanking -> {
+                    items(ridersState.riders.riders, key = Rider::id) { rider ->
+                        RiderRow(rider, onRiderSelected)
+                    }
                 }
             }
         }

@@ -43,26 +43,19 @@ class RidersViewModel @Inject constructor(
             _sorting
         ) { riders, query, sorting ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
-            when (sorting) {
-                Sorting.LastName -> RidersViewState(
-                    RidersViewState.Riders.ByLastName(
-                        filteredRiders.groupBy {
-                            it.lastName.first().uppercaseChar()
-                        }
-                    )
+            val groupedRiders = when (sorting) {
+                Sorting.LastName -> RidersViewState.Riders.ByLastName(
+                    filteredRiders.groupBy {
+                        it.lastName.first().uppercaseChar()
+                    }
                 )
-                Sorting.Country -> RidersViewState(
-                    RidersViewState.Riders.ByCountry(
-                        filteredRiders.groupBy { it.country }
-                            .toSortedMap()
-                    )
+                Sorting.Country -> RidersViewState.Riders.ByCountry(
+                    filteredRiders.groupBy { it.country }
+                        .toSortedMap()
                 )
-                Sorting.UciRanking -> RidersViewState(
-                    RidersViewState.Riders.ByUciRanking(
-                        filteredRiders.sortedBy { if (it.uciRankingPosition > 0) it.uciRankingPosition else Int.MAX_VALUE }
-                    )
-                )
+                Sorting.UciRanking -> RidersViewState.Riders.ByUciRanking(filteredRiders.sortedBy { if (it.uciRankingPosition > 0) it.uciRankingPosition else Int.MAX_VALUE })
             }
+            RidersViewState(riders = groupedRiders)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

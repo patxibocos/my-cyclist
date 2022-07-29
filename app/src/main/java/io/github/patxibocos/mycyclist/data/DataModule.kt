@@ -1,5 +1,8 @@
 package io.github.patxibocos.mycyclist.data
 
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +18,13 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideDataRepository(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): DataRepository =
-        FirebaseDataRepository(defaultDispatcher)
+    fun provideDataRepository(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        firebaseRemoteConfig: FirebaseRemoteConfig
+    ): DataRepository =
+        FirebaseDataRepository(defaultDispatcher, firebaseRemoteConfig)
+
+    @Singleton
+    @Provides
+    fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig = Firebase.remoteConfig
 }

@@ -1,14 +1,15 @@
 [versions]
-accompanist = "0.24.13-rc"
+accompanist = "0.25.0"
 compose-ui = "1.2.0"
 compose-compiler = "1.2.0"
-hilt = "2.42"
+hilt = "2.43"
 kotlin = "1.7.0"
 ktlint = "0.46.1"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 android-desugar-jdk = "com.android.tools:desugar_jdk_libs:1.1.5"
 androidx-appcompat = "androidx.appcompat:appcompat:1.4.2"
@@ -25,10 +26,10 @@ androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0"
 androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0"
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.0"
 coil-compose = "io.coil-kt:coil-compose:2.1.0"
-firebase-config = "com.google.firebase:firebase-config-ktx:21.1.0"
+firebase-config = "com.google.firebase:firebase-config-ktx:21.1.1"
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.3"
+kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4"
 material3 = "com.google.android.material:material:1.6.1"
 protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
 
