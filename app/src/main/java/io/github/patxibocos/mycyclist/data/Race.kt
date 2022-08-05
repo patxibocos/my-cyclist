@@ -34,6 +34,7 @@ fun Race.isFinished(): Boolean =
     this.stages.last().result.isAvailable()
 
 private fun today(): LocalDate = LocalDate.now(ZoneId.systemDefault())
+
 fun Race.isActive(): Boolean = this.isPast().not() && this.isFuture().not()
 
 fun Race.isPast(): Boolean = today().isAfter(this.endDate)
@@ -53,7 +54,8 @@ data class Stage(
     val arrival: String,
     val type: StageType?,
     val timeTrial: Boolean,
-    val result: List<RiderResult>
+    val result: List<RiderResult>,
+    val gcResult: List<RiderResult>
 )
 
 enum class StageType {

@@ -143,7 +143,8 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
             else -> null
         },
         timeTrial = this.timeTrial,
-        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain)
+        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain),
+        gcResult = this.gcResultList.map(RaceOuterClass.RiderResult::toDomain),
     )
 }
 

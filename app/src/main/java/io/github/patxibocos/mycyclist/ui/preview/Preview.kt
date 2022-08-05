@@ -48,7 +48,8 @@ val stagePreview: Stage by lazy {
         departure = "Bilbao",
         arrival = "Barcelona",
         timeTrial = false,
-        result = emptyList()
+        result = emptyList(),
+        gcResult = emptyList()
     )
 }
 
