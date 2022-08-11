@@ -18,13 +18,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.ui.races.RaceRoute
 import io.github.patxibocos.mycyclist.ui.races.RacesRoute
 import io.github.patxibocos.mycyclist.ui.riders.RiderRoute
 import io.github.patxibocos.mycyclist.ui.riders.RidersRoute
-import io.github.patxibocos.mycyclist.ui.stages.StageRoute
 import io.github.patxibocos.mycyclist.ui.teams.TeamRoute
 import io.github.patxibocos.mycyclist.ui.teams.TeamsRoute
 
@@ -77,15 +77,9 @@ internal sealed class LeafScreen(
         }
     }
 
-    object Race : LeafScreen("race/{raceId}") {
-        fun createRoute(root: Screen, raceId: String): String {
-            return "${root.route}/race/$raceId"
-        }
-    }
-
-    object Stage : LeafScreen("race/{raceId}/stage/{stageId}") {
-        fun createRoute(root: Screen, raceId: String, stageId: String): String {
-            return "${root.route}/race/$raceId/stage/$stageId"
+    object Race : LeafScreen("race/{raceId}?stage={stageId}") {
+        fun createRoute(root: Screen, raceId: String, stageId: String? = null): String {
+            return "${root.route}/race/$raceId" + (stageId?.let { "?stage=$it" } ?: "")
         }
     }
 }
@@ -162,7 +156,7 @@ private fun NavGraphBuilder.addRidersNavigation(
                 },
                 onStageSelected = { race, stage ->
                     navController.navigate(
-                        LeafScreen.Stage.createRoute(
+                        LeafScreen.Race.createRoute(
                             Screen.Races,
                             race.id,
                             stage.id
@@ -191,7 +185,7 @@ private fun NavGraphBuilder.addRacesNavigation(
                 },
                 onStageSelected = { race, stage ->
                     navController.navigate(
-                        LeafScreen.Stage.createRoute(
+                        LeafScreen.Race.createRoute(
                             Screen.Races,
                             race.id,
                             stage.id
@@ -202,23 +196,11 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onReselectedScreenConsumed = onReselectedScreenConsumed
             )
         }
-        composable(LeafScreen.Race.createRoute(Screen.Races)) {
+        composable(
+            LeafScreen.Race.createRoute(Screen.Races),
+            arguments = listOf(navArgument("stageId") { nullable = true })
+        ) {
             RaceRoute(
-                onStageSelected = { race, stage ->
-                    navController.navigate(
-                        LeafScreen.Stage.createRoute(
-                            Screen.Races,
-                            race.id,
-                            stage.id
-                        )
-                    )
-                },
-                onBackPressed = { navController.navigateUp() }
-            )
-        }
-        composable(LeafScreen.Stage.createRoute(Screen.Races)) {
-            StageRoute(
-                onBackPressed = { navController.navigateUp() },
                 onRiderSelected = { rider ->
                     navController.navigate(
                         LeafScreen.Rider.createRoute(
@@ -226,8 +208,22 @@ private fun NavGraphBuilder.addRacesNavigation(
                             rider.id
                         )
                     )
-                }
+                },
+                onBackPressed = { navController.navigateUp() }
             )
         }
+//        composable(LeafScreen.Stage.createRoute(Screen.Races)) {
+//            StageRoute(
+//                onBackPressed = { navController.navigateUp() },
+//                onRiderSelected = { rider ->
+//                    navController.navigate(
+//                        LeafScreen.Rider.createRoute(
+//                            Screen.Riders,
+//                            rider.id
+//                        )
+//                    )
+//                }
+//            )
+//        }
     }
 }
