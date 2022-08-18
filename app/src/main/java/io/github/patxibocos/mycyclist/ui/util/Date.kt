@@ -10,9 +10,9 @@ fun ddMMMFormat(localDate: LocalDate): String =
 
 fun isoFormat(zonedDateTime: ZonedDateTime): String =
     if (hourIsMissing(zonedDateTime)) {
-        zonedDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM"))
     } else {
-        zonedDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM - HH:mm"))
     }
 
 fun hourIsMissing(zonedDateTime: ZonedDateTime): Boolean =
