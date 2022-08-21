@@ -5,10 +5,11 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.mycyclist.data.DataRepository
+import io.github.patxibocos.mycyclist.data.ParticipantResult
+import io.github.patxibocos.mycyclist.data.ProfileType
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.RiderParticipation
-import io.github.patxibocos.mycyclist.data.RiderResult
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
@@ -101,14 +102,14 @@ fun RaceOuterClass.Race.toDomain(): Race {
         stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
         website = this.website,
         teamParticipations = this.teamsList.map(RaceOuterClass.TeamParticipation::toDomain),
-        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain),
+        result = this.resultList.map(RaceOuterClass.ParticipantResult::toDomain),
     )
 }
 
-fun RaceOuterClass.RiderResult.toDomain(): RiderResult {
-    return RiderResult(
+fun RaceOuterClass.ParticipantResult.toDomain(): ParticipantResult {
+    return ParticipantResult(
         position = this.position,
-        riderId = this.riderId,
+        participantId = this.participantId,
         time = this.time,
     )
 }
@@ -135,17 +136,22 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
             .atZone(ZoneId.systemDefault()),
         departure = this.departure,
         arrival = this.arrival,
-        type = when (this.type) {
-            RaceOuterClass.Stage.Type.TYPE_FLAT -> StageType.FLAT
-            RaceOuterClass.Stage.Type.TYPE_HILLS_FLAT_FINISH -> StageType.HILLS_FLAT_FINISH
-            RaceOuterClass.Stage.Type.TYPE_HILLS_UPHILL_FINISH -> StageType.HILLS_UPHILL_FINISH
-            RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_FLAT_FINISH -> StageType.MOUNTAINS_FLAT_FINISH
-            RaceOuterClass.Stage.Type.TYPE_MOUNTAINS_UPHILL_FINISH -> StageType.MOUNTAINS_UPHILL_FINISH
+        profileType = when (this.profileType) {
+            RaceOuterClass.Stage.ProfileType.PROFILE_TYPE_FLAT -> ProfileType.FLAT
+            RaceOuterClass.Stage.ProfileType.PROFILE_TYPE_HILLS_FLAT_FINISH -> ProfileType.HILLS_FLAT_FINISH
+            RaceOuterClass.Stage.ProfileType.PROFILE_TYPE_HILLS_UPHILL_FINISH -> ProfileType.HILLS_UPHILL_FINISH
+            RaceOuterClass.Stage.ProfileType.PROFILE_TYPE_MOUNTAINS_FLAT_FINISH -> ProfileType.MOUNTAINS_FLAT_FINISH
+            RaceOuterClass.Stage.ProfileType.PROFILE_TYPE_MOUNTAINS_UPHILL_FINISH -> ProfileType.MOUNTAINS_UPHILL_FINISH
             else -> null
         },
-        timeTrial = this.timeTrial,
-        result = this.resultList.map(RaceOuterClass.RiderResult::toDomain),
-        gcResult = this.gcResultList.map(RaceOuterClass.RiderResult::toDomain),
+        stageType = when (this.stageType) {
+            RaceOuterClass.Stage.StageType.STAGE_TYPE_REGULAR -> StageType.REGULAR
+            RaceOuterClass.Stage.StageType.STAGE_TYPE_INDIVIDUAL_TIME_TRIAL -> StageType.INDIVIDUAL_TIME_TRIAL
+            RaceOuterClass.Stage.StageType.STAGE_TYPE_TEAM_TIME_TRIAL -> StageType.TEAM_TIME_TRIAL
+            else -> StageType.REGULAR
+        },
+        result = this.resultList.map(RaceOuterClass.ParticipantResult::toDomain),
+        gcResult = this.gcResultList.map(RaceOuterClass.ParticipantResult::toDomain),
     )
 }
 

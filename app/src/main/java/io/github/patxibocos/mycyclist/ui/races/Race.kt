@@ -25,6 +25,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
@@ -35,6 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 internal fun RaceRoute(
     onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
     onBackPressed: () -> Unit = {},
     viewModel: RaceViewModel = hiltViewModel()
 ) {
@@ -42,6 +44,7 @@ internal fun RaceRoute(
     RaceScreen(
         raceViewState = raceViewState,
         onRiderSelected = onRiderSelected,
+        onTeamSelected = onTeamSelected,
         onResultsModeChanged = viewModel::onResultsModeChanged,
         onStageSelected = viewModel::onStageSelected,
         onBackPressed = onBackPressed
@@ -57,6 +60,7 @@ private fun RaceScreen(
         emptyMap()
     ),
     onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
     onStageSelected: (Int) -> Unit,
     onBackPressed: () -> Unit
@@ -73,6 +77,7 @@ private fun RaceScreen(
                     raceViewState.currentStageIndex,
                     raceViewState.resultsMode,
                     onRiderSelected,
+                    onTeamSelected,
                     onResultsModeChanged,
                     onStageSelected
                 )
@@ -94,6 +99,7 @@ private fun StagesList(
     currentStageIndex: Int,
     resultsMode: ResultsMode,
     onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
     onStageSelected: (Int) -> Unit
 ) {
@@ -127,6 +133,7 @@ private fun StagesList(
             stageResults[stages[page]]!!,
             resultsMode,
             onRiderSelected = onRiderSelected,
+            onTeamSelected = onTeamSelected,
             onResultsModeChanged = onResultsModeChanged
         )
     }
@@ -139,6 +146,7 @@ private fun Stage(
     stageResults: StageResults,
     resultsMode: ResultsMode,
     onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit
 ) {
     Column {
@@ -149,8 +157,8 @@ private fun Stage(
         if (stage.distance > 0) {
             Text(text = "${stage.distance} km")
         }
-        if (stage.type != null) {
-            Text(text = stage.type.toString())
+        if (stage.profileType != null) {
+            Text(text = stage.profileType.toString())
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             ElevatedFilterChip(
@@ -173,23 +181,31 @@ private fun Stage(
             ResultsMode.GcResults -> stageResults.gcResult
         }
         if (results.isNotEmpty()) {
-            results.forEachIndexed { i, riderResult ->
+            results.forEachIndexed { i, participantResult ->
                 val duration = if (i == 0) {
-                    riderResult.time.seconds.toString()
+                    participantResult.time.seconds.toString()
                 } else {
-                    "+${(riderResult.time - results.first().time).seconds}"
+                    "+${(participantResult.time - results.first().time).seconds}"
                 }
-                Text(
-                    text = "${i + 1}. ${riderResult.rider.fullName()} - $duration",
-                    modifier = Modifier
-                        .fillMaxWidth().run {
-                            if (riderResult.rider.id.isNotEmpty()) {
-                                clickable { onRiderSelected(riderResult.rider) }
-                            } else {
-                                this
+                when (participantResult) {
+                    is ParticipantResult.RiderResult -> Text(
+                        text = "${i + 1}. ${participantResult.rider.fullName()} - $duration",
+                        modifier = Modifier
+                            .fillMaxWidth().run {
+                                if (participantResult.rider.id.isNotEmpty()) {
+                                    clickable { onRiderSelected(participantResult.rider) }
+                                } else {
+                                    this
+                                }
                             }
-                        }
-                )
+                    )
+                    is ParticipantResult.TeamResult -> Text(
+                        text = "${i + 1}. ${participantResult.team.name} - $duration",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onTeamSelected(participantResult.team) }
+                    )
+                }
             }
         }
     }

@@ -95,13 +95,13 @@ suspend fun riderResults(
     return withContext(defaultDispatcher) {
         participations.map { it.race }
             .flatMap { race ->
-                val raceResult = race.result.take(3).find { it.riderId == riderId }
+                val raceResult = race.result.take(3).find { it.participantId == riderId }
                     ?.let { Result.RaceResult(race, it.position) }.takeIf { race.isFinished() }
                 if (race.isSingleDay()) {
                     return@flatMap listOfNotNull(raceResult)
                 }
                 val stageResults = race.stages.mapNotNull { stage ->
-                    stage.result.take(3).find { it.riderId == riderId }
+                    stage.result.take(3).find { it.participantId == riderId }
                         ?.let {
                             Result.StageResult(
                                 race,

@@ -15,11 +15,11 @@ data class Race(
     val endDate: LocalDate,
     val website: String,
     val teamParticipations: List<TeamParticipation>,
-    val result: List<RiderResult>
+    val result: List<ParticipantResult>
 )
 
 @Immutable
-data class RiderResult(val position: Int, val riderId: String, val time: Long)
+data class ParticipantResult(val position: Int, val participantId: String, val time: Long)
 
 @Immutable
 data class TeamParticipation(val teamId: String, val riderParticipations: List<RiderParticipation>)
@@ -52,13 +52,13 @@ data class Stage(
     val startDateTime: ZonedDateTime,
     val departure: String,
     val arrival: String,
-    val type: StageType?,
-    val timeTrial: Boolean,
-    val result: List<RiderResult>,
-    val gcResult: List<RiderResult>
+    val profileType: ProfileType?,
+    val stageType: StageType,
+    val result: List<ParticipantResult>,
+    val gcResult: List<ParticipantResult>
 )
 
-enum class StageType {
+enum class ProfileType {
     FLAT,
     HILLS_FLAT_FINISH,
     HILLS_UPHILL_FINISH,
@@ -66,6 +66,12 @@ enum class StageType {
     MOUNTAINS_UPHILL_FINISH
 }
 
-fun List<RiderResult>.isAvailable(): Boolean {
+enum class StageType {
+    REGULAR,
+    INDIVIDUAL_TIME_TRIAL,
+    TEAM_TIME_TRIAL
+}
+
+fun List<ParticipantResult>.isAvailable(): Boolean {
     return this.isNotEmpty()
 }

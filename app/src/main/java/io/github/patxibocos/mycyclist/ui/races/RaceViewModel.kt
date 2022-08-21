@@ -10,6 +10,8 @@ import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.StageType
+import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.data.todayStage
@@ -26,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RaceViewModel @Inject constructor(
-    val dataRepository: DataRepository,
+    private val dataRepository: DataRepository,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
@@ -81,24 +83,34 @@ class RaceViewModel @Inject constructor(
         combine(
             dataRepository.races,
             dataRepository.riders,
+            dataRepository.teams,
             _stageIndex,
             _resultsMode
-        ) { races, riders, stageIndex, resultsMode ->
+        ) { races, riders, teams, stageIndex, resultsMode ->
             val race = races.find { it.id == raceId }!!
             val stageResults = race.stages.associateWith { stage ->
                 StageResults(
-                    result = stage.result.map { riderResult ->
-                        RiderResult(
-                            riders.find { it.id == riderResult.riderId } ?: buildDummyRider(
-                                riderResult.riderId
-                            ),
-                            riderResult.time
-                        )
+                    result = when (stage.stageType) {
+                        StageType.TEAM_TIME_TRIAL -> stage.result.map { participantResult ->
+                            ParticipantResult.TeamResult(
+                                teams.find { it.id == participantResult.participantId }!!,
+                                participantResult.time
+                            )
+                        }
+                        else -> stage.result.map { riderResult ->
+                            ParticipantResult.RiderResult(
+                                riders.find { it.id == riderResult.participantId }
+                                    ?: buildDummyRider(
+                                        riderResult.participantId
+                                    ),
+                                riderResult.time
+                            )
+                        }
                     },
                     gcResult = stage.gcResult.map { riderResult ->
-                        RiderResult(
-                            riders.find { it.id == riderResult.riderId } ?: buildDummyRider(
-                                riderResult.riderId
+                        ParticipantResult.RiderResult(
+                            riders.find { it.id == riderResult.participantId } ?: buildDummyRider(
+                                riderResult.participantId
                             ),
                             riderResult.time
                         )
@@ -168,7 +180,16 @@ data class RaceViewState(
 }
 
 @Immutable
-data class StageResults(val result: List<RiderResult>, val gcResult: List<RiderResult>)
+data class StageResults(
+    val result: List<ParticipantResult>,
+    val gcResult: List<ParticipantResult.RiderResult>
+)
 
 @Immutable
-data class RiderResult(val rider: Rider, val time: Long)
+sealed class ParticipantResult(open val time: Long) {
+    @Immutable
+    data class RiderResult(val rider: Rider, override val time: Long) : ParticipantResult(time)
+
+    @Immutable
+    data class TeamResult(val team: Team, override val time: Long) : ParticipantResult(time)
+}

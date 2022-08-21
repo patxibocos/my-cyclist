@@ -1,5 +1,6 @@
 package io.github.patxibocos.mycyclist.ui.preview
 
+import io.github.patxibocos.mycyclist.data.ProfileType
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
@@ -44,10 +45,10 @@ val stagePreview: Stage by lazy {
         id = "stage-1",
         distance = 123.4f,
         startDateTime = ZonedDateTime.now(),
-        type = StageType.FLAT,
+        profileType = ProfileType.FLAT,
         departure = "Bilbao",
         arrival = "Barcelona",
-        timeTrial = false,
+        stageType = StageType.REGULAR,
         result = emptyList(),
         gcResult = emptyList()
     )
