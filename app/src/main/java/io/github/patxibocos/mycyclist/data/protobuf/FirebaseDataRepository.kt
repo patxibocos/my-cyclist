@@ -83,9 +83,13 @@ internal class FirebaseDataRepository(
     override val races = _races
 
     override suspend fun refresh() {
-        firebaseRemoteConfig.fetch(0).await()
-        if (firebaseRemoteConfig.activate().await()) {
-            emitData(firebaseRemoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+        try {
+            firebaseRemoteConfig.fetch(0).await()
+            if (firebaseRemoteConfig.activate().await()) {
+                emitData(firebaseRemoteConfig.getString(FIREBASE_REMOTE_CONFIG_CYCLING_DATA_KEY))
+            }
+        } catch (_: FirebaseRemoteConfigException) {
+
         }
     }
 }
