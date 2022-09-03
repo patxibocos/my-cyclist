@@ -7,5 +7,5 @@ interface DataRepository {
     val riders: Flow<List<Rider>>
     val races: Flow<List<Race>>
 
-    suspend fun refresh()
+    suspend fun refresh(): Boolean
 }

@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.ui.races.RaceRoute
@@ -37,7 +38,7 @@ internal fun AppNavigation(
     NavHost(
         modifier = Modifier.systemBarsPadding(),
         navController = navController,
-        startDestination = Screen.Riders.route
+        startDestination = Screen.Races.route
     ) {
         addTeamsNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
         addRidersNavigation(navController, reselectedScreen, onReselectedScreenConsumed)
@@ -198,7 +199,12 @@ private fun NavGraphBuilder.addRacesNavigation(
         }
         composable(
             LeafScreen.Race.createRoute(Screen.Races),
-            arguments = listOf(navArgument("stageId") { nullable = true })
+            arguments = listOf(navArgument("stageId") { nullable = true }),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "mycyclist://${LeafScreen.Race.createRoute(Screen.Races)}"
+                }
+            )
         ) {
             RaceRoute(
                 onRiderSelected = { rider ->

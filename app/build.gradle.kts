@@ -30,12 +30,12 @@ protobuf {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "io.github.patxibocos.mycyclist"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -109,6 +109,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.firebase.config)
+    implementation(libs.firebase.messaging)
     implementation(libs.hilt.library)
     implementation(libs.kotlin.coroutines.play.services)
     implementation(libs.material3)

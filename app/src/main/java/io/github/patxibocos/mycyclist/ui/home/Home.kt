@@ -93,7 +93,7 @@ private fun BottomBar(
                 tonalElevation = 2.dp,
                 containerColor = MaterialTheme.colorScheme.surface
             ) {
-                val screens = remember { listOf(Screen.Teams, Screen.Riders, Screen.Races) }
+                val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
                 screens.forEach { screen ->
                     val selected = currentScreen == screen
                     NavigationBarItem(

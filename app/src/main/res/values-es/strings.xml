@@ -18,6 +18,9 @@
 
     <string name="races_title">Carreras</string>
 
+    <string name="notifications_stage_results">%1$s es el ganador de la %2$dª etapa</string>
+    <string name="notifications_race_results">%1$s es el ganador</string>
+
     <plurals name="races_stages">
         <item quantity="one">Carrera de un día</item>
         <item quantity="other">%1$d etapas</item>

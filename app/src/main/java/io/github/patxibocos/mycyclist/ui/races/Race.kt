@@ -181,32 +181,43 @@ private fun Stage(
             ResultsMode.GcResults -> stageResults.gcResult
         }
         if (results.isNotEmpty()) {
-            results.forEachIndexed { i, participantResult ->
-                val duration = if (i == 0) {
-                    participantResult.time.seconds.toString()
-                } else {
-                    "+${(participantResult.time - results.first().time).seconds}"
-                }
-                when (participantResult) {
-                    is ParticipantResult.RiderResult -> Text(
-                        text = "${i + 1}. ${participantResult.rider.fullName()} - $duration",
-                        modifier = Modifier
-                            .fillMaxWidth().run {
-                                if (participantResult.rider.id.isNotEmpty()) {
-                                    clickable { onRiderSelected(participantResult.rider) }
-                                } else {
-                                    this
-                                }
-                            }
-                    )
-                    is ParticipantResult.TeamResult -> Text(
-                        text = "${i + 1}. ${participantResult.team.name} - $duration",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onTeamSelected(participantResult.team) }
-                    )
-                }
-            }
+            ParticipantResults(results, onRiderSelected, onTeamSelected)
+        } else {
+            Text(text = "Results not available yet")
+        }
+    }
+}
+
+@Composable
+private fun ParticipantResults(
+    results: List<ParticipantResult>,
+    onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit
+) {
+    results.forEachIndexed { i, participantResult ->
+        val duration = if (i == 0) {
+            participantResult.time.seconds.toString()
+        } else {
+            "+${(participantResult.time - results.first().time).seconds}"
+        }
+        when (participantResult) {
+            is ParticipantResult.RiderResult -> Text(
+                text = "${i + 1}. ${participantResult.rider.fullName()} - $duration",
+                modifier = Modifier
+                    .fillMaxWidth().run {
+                        if (participantResult.rider.id.isNotEmpty()) {
+                            clickable { onRiderSelected(participantResult.rider) }
+                        } else {
+                            this
+                        }
+                    }
+            )
+            is ParticipantResult.TeamResult -> Text(
+                text = "${i + 1}. ${participantResult.team.name} - $duration",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onTeamSelected(participantResult.team) }
+            )
         }
     }
 }
