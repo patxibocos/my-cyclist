@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -35,10 +36,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.areResultsAvailable
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
+import io.github.patxibocos.mycyclist.ui.util.formatTime
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
@@ -204,7 +207,14 @@ private fun TodayMultiStageRaceStage(
             }
     ) {
         Text("${race.name} - Stage $stageNumber")
-        // Show stage Top 3 results if available
+        Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
+        Text(formatTime(stage.startDateTime))
+        if (stage.areResultsAvailable()) {
+            // Show a button to go to results
+            Button(onClick = { onStageSelected(race, stage) }) {
+                Text("See results")
+            }
+        }
     }
 }
 

@@ -12,6 +12,8 @@ import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
+import io.github.patxibocos.mycyclist.data.indexOfLastStageWithResults
+import io.github.patxibocos.mycyclist.data.isFinished
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.data.todayStage
@@ -52,6 +54,7 @@ class RaceViewModel @Inject constructor(
             // If stageId is not provided:
             //   Is past race -> set last stage as current stage + set GC view as current view
             //   Today is happening any of the stages -> set today's stage as current stage + set Stage view as current view
+            //   Today is rest day -> set yesterday's stage as current stage + set GC view as current view
             //   Else -> set first stage as current stage + set Stage view as current stage
             // Otherwise
             //   Set given stage as current stage + set Stage view as current view
@@ -60,13 +63,17 @@ class RaceViewModel @Inject constructor(
                 resultsMode = ResultsMode.StageResults
             } else {
                 when {
-                    (race.isPast()) -> {
+                    race.isPast() -> {
                         stageIndex = race.stages.size - 1
                         resultsMode = ResultsMode.GcResults
                     }
-                    (race.todayStage() != null) -> {
+                    race.todayStage() != null -> {
                         stageIndex = race.todayStage()!!.second
                         resultsMode = ResultsMode.StageResults
+                    }
+                    !race.isFinished() -> {
+                        stageIndex = race.indexOfLastStageWithResults()
+                        resultsMode = ResultsMode.GcResults
                     }
                     else -> {
                         stageIndex = 0

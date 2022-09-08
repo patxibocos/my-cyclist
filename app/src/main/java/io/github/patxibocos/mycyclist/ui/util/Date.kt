@@ -15,6 +15,9 @@ fun isoFormat(zonedDateTime: ZonedDateTime): String =
         zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM - HH:mm"))
     }
 
+fun formatTime(zonedDateTime: ZonedDateTime): String =
+    zonedDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+
 fun hourIsMissing(zonedDateTime: ZonedDateTime): Boolean =
     with(zonedDateTime.withZoneSameInstant(ZoneOffset.UTC)) {
         hour == 0 && minute == 0 && second == 0

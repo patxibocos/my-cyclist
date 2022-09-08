@@ -45,6 +45,8 @@ fun Race.todayStage(): Pair<Stage, Int>? =
     this.stages.find { it.startDateTime.toLocalDate() == today() }
         ?.let { it to this.stages.indexOf(it) }
 
+fun Race.indexOfLastStageWithResults(): Int = this.stages.indexOfLast { it.result.isNotEmpty() }
+
 @Immutable
 data class Stage(
     val id: String,
@@ -57,6 +59,8 @@ data class Stage(
     val result: List<ParticipantResult>,
     val gcResult: List<ParticipantResult>
 )
+
+fun Stage.areResultsAvailable() = this.result.isNotEmpty()
 
 enum class ProfileType {
     FLAT,
