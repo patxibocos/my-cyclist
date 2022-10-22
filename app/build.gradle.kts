@@ -1,8 +1,4 @@
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 
 plugins {
     id("com.android.application")
@@ -10,12 +6,12 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
-    id("com.google.protobuf") version "0.8.18"
+    id("com.google.protobuf") version "0.9.1"
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.19.4"
+        artifact = "com.google.protobuf:protoc:3.21.8"
     }
 
     generateProtoTasks {
@@ -70,22 +66,6 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     namespace = "io.github.patxibocos.mycyclist"
-}
-
-// FIXME Related to https://issuetracker.google.com/issues/223240936
-androidComponents {
-    onVariants(selector().all()) {
-        val capitalizedVariantName = it.name.substring(0, 1).toUpperCase() + it.name.substring(1)
-        afterEvaluate {
-            tasks.named("map${capitalizedVariantName}SourceSetPaths").configure {
-                dependsOn("process${capitalizedVariantName}GoogleServices")
-            }
-        }
-    }
-}
-
-protobuf {
-
 }
 
 dependencies {
