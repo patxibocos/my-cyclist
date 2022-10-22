@@ -69,6 +69,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
+    namespace = "io.github.patxibocos.mycyclist"
 }
 
 // FIXME Related to https://issuetracker.google.com/issues/223240936

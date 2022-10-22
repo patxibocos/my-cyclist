@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -131,7 +132,7 @@ private fun RidersScreen(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun TopAppBar(
     topBarState: TopBarState,
@@ -293,6 +294,7 @@ private fun RidersList(
                         }
                     }
                 }
+
                 is RidersViewState.Riders.ByCountry -> {
                     ridersState.riders.riders.forEach { (country, riders) ->
                         stickyHeader {
@@ -303,6 +305,7 @@ private fun RidersList(
                         }
                     }
                 }
+
                 is RidersViewState.Riders.ByUciRanking -> {
                     items(ridersState.riders.riders, key = Rider::id) { rider ->
                         RiderRow(rider, onRiderSelected)

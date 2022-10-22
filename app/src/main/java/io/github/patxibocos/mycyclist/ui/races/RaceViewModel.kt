@@ -13,7 +13,7 @@ import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.indexOfLastStageWithResults
-import io.github.patxibocos.mycyclist.data.isFinished
+import io.github.patxibocos.mycyclist.data.isActive
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.data.todayStage
@@ -71,7 +71,7 @@ class RaceViewModel @Inject constructor(
                         stageIndex = race.todayStage()!!.second
                         resultsMode = ResultsMode.StageResults
                     }
-                    !race.isFinished() -> {
+                    race.isActive() -> {
                         stageIndex = race.indexOfLastStageWithResults()
                         resultsMode = ResultsMode.GcResults
                     }
