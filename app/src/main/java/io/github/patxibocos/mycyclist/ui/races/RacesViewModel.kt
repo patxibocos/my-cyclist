@@ -11,51 +11,80 @@ import io.github.patxibocos.mycyclist.data.isFuture
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
 import io.github.patxibocos.mycyclist.data.todayStage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 @HiltViewModel
-class RacesViewModel @Inject constructor(dataRepository: DataRepository) :
+class RacesViewModel @Inject constructor(private val dataRepository: DataRepository) :
     ViewModel() {
 
-    val racesViewState: StateFlow<RacesViewState> = dataRepository.races.map { races ->
-        val minStartDate = races.first().startDate
-        val maxEndDate = races.last().endDate
-        val today = LocalDate.now(ZoneId.systemDefault())
-        when {
-            today.isBefore(minStartDate) -> RacesViewState.SeasonNotStartedViewState(races)
-            today.isAfter(maxEndDate) -> RacesViewState.SeasonEndedViewState(races)
-            else -> {
-                val todayStages = races.filter(Race::isActive).map { race ->
-                    val todayStage = race.todayStage()
-                    when {
-                        race.isSingleDay() -> TodayStage.SingleDayRace(race, race.stages.first())
-                        todayStage != null -> TodayStage.MultiStageRace(
-                            race,
-                            todayStage.first,
-                            todayStage.second + 1
-                        )
-                        else -> TodayStage.RestDay(race)
-                    }
-                }
-                RacesViewState.SeasonInProgressViewState(
-                    todayStages = todayStages,
-                    pastRaces = races.filter(Race::isPast).reversed(),
-                    futureRaces = races.filter(Race::isFuture)
+    private val _refreshing = MutableStateFlow(false)
+
+    val racesViewState: StateFlow<RacesViewState> =
+        combine(dataRepository.races, _refreshing) { races, refreshing ->
+            val minStartDate = races.first().startDate
+            val maxEndDate = races.last().endDate
+            val today = LocalDate.now(ZoneId.systemDefault())
+            when {
+                today.isBefore(minStartDate) -> RacesViewState.SeasonNotStartedViewState(
+                    races,
+                    refreshing
                 )
+
+                today.isAfter(maxEndDate) -> RacesViewState.SeasonEndedViewState(
+                    races,
+                    refreshing
+                )
+
+                else -> {
+                    val todayStages = races.filter(Race::isActive).map { race ->
+                        val todayStage = race.todayStage()
+                        when {
+                            race.isSingleDay() -> TodayStage.SingleDayRace(
+                                race,
+                                race.stages.first()
+                            )
+
+                            todayStage != null -> TodayStage.MultiStageRace(
+                                race,
+                                todayStage.first,
+                                todayStage.second + 1
+                            )
+
+                            else -> TodayStage.RestDay(race)
+                        }
+                    }
+                    RacesViewState.SeasonInProgressViewState(
+                        todayStages = todayStages,
+                        pastRaces = races.filter(Race::isPast).reversed(),
+                        futureRaces = races.filter(Race::isFuture),
+                        isRefreshing = refreshing
+                    )
+                }
             }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = RacesViewState.Empty
+        )
+
+    fun onRefreshed() {
+        viewModelScope.launch {
+            _refreshing.value = true
+            delay(500 - measureTimeMillis { dataRepository.refresh() })
+            _refreshing.value = false
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = RacesViewState.Empty
-    )
+    }
 }
 
 @Immutable
@@ -67,21 +96,27 @@ sealed class TodayStage(open val race: Race) {
 }
 
 @Immutable
-sealed interface RacesViewState {
+sealed class RacesViewState(open val isRefreshing: Boolean) {
+
     @Immutable
-    data class SeasonNotStartedViewState(val futureRaces: List<Race>) : RacesViewState
+    data class SeasonNotStartedViewState(
+        val futureRaces: List<Race>,
+        override val isRefreshing: Boolean
+    ) : RacesViewState(isRefreshing)
 
     @Immutable
     data class SeasonInProgressViewState(
         val pastRaces: List<Race>,
         val todayStages: List<TodayStage>,
-        val futureRaces: List<Race>
-    ) : RacesViewState
+        val futureRaces: List<Race>,
+        override val isRefreshing: Boolean
+    ) : RacesViewState(isRefreshing)
 
     @Immutable
-    data class SeasonEndedViewState(val pastRaces: List<Race>) : RacesViewState
+    data class SeasonEndedViewState(val pastRaces: List<Race>, override val isRefreshing: Boolean) :
+        RacesViewState(isRefreshing)
 
-    object EmptyViewState : RacesViewState
+    object EmptyViewState : RacesViewState(false)
     companion object {
         val Empty = EmptyViewState
     }

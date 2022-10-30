@@ -85,7 +85,8 @@ internal fun RidersRoute(
         onSortingSelected = viewModel::onSorted,
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
-        onToggled = viewModel::onToggled
+        onToggled = viewModel::onToggled,
+        onRefreshed = viewModel::onRefreshed
     )
 }
 
@@ -99,7 +100,8 @@ private fun RidersScreen(
                     riderPreview
                 )
             )
-        )
+        ),
+        isRefreshing = false
     ),
     topBarState: TopBarState = TopBarState("", false, Sorting.LastName),
     onRiderSearched: (String) -> Unit = {},
@@ -107,7 +109,8 @@ private fun RidersScreen(
     onSortingSelected: (Sorting) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
     onReselectedScreenConsumed: () -> Unit = {},
-    onToggled: () -> Unit = {}
+    onToggled: () -> Unit = {},
+    onRefreshed: () -> Unit = {}
 ) {
     Column {
         val focusManager = LocalFocusManager.current
@@ -126,7 +129,8 @@ private fun RidersScreen(
                     onRiderSelected(it)
                 },
                 screenReselected = reselectedScreen,
-                onReselectedScreenConsumed = onReselectedScreenConsumed
+                onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onRefreshed = onRefreshed
             )
         }
     }
@@ -267,7 +271,8 @@ private fun RidersList(
     ridersState: RidersViewState,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit
+    onReselectedScreenConsumed: () -> Unit,
+    onRefreshed: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = screenReselected.value) {
@@ -276,7 +281,7 @@ private fun RidersList(
             onReselectedScreenConsumed()
         }
     }
-    RefreshableContent {
+    RefreshableContent(isRefreshing = ridersState.isRefreshing, onRefreshed = onRefreshed) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),

@@ -8,10 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -48,13 +45,13 @@ fun SmallTopAppBar(title: String, onBackPressed: () -> Unit) {
 
 @Composable
 fun RefreshableContent(
-    viewModel: RefreshViewModel = hiltViewModel(),
+    isRefreshing: Boolean,
+    onRefreshed: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    val isRefreshing by viewModel.state.collectAsState()
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
-        onRefresh = viewModel::onRefreshed
+        onRefresh = onRefreshed
     ) {
         content()
     }

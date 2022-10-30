@@ -7,18 +7,21 @@ import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Rider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 class RidersViewModel @Inject constructor(
-    dataRepository: DataRepository,
+    private val dataRepository: DataRepository,
     @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
 ) :
     ViewModel() {
@@ -26,6 +29,7 @@ class RidersViewModel @Inject constructor(
     private val _search = MutableStateFlow("")
     private val _searching = MutableStateFlow(false)
     private val _sorting = MutableStateFlow(Sorting.UciRanking)
+    private val _refreshing = MutableStateFlow(false)
 
     val topBarState: StateFlow<TopBarState> =
         combine(_search, _searching, _sorting) { search, searching, sorting ->
@@ -40,8 +44,9 @@ class RidersViewModel @Inject constructor(
         combine(
             dataRepository.riders,
             _search,
-            _sorting
-        ) { riders, query, sorting ->
+            _sorting,
+            _refreshing
+        ) { riders, query, sorting, refreshing ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
             val groupedRiders = when (sorting) {
                 Sorting.LastName -> RidersViewState.Riders.ByLastName(
@@ -49,13 +54,15 @@ class RidersViewModel @Inject constructor(
                         it.lastName.first().uppercaseChar()
                     }
                 )
+
                 Sorting.Country -> RidersViewState.Riders.ByCountry(
                     filteredRiders.groupBy { it.country }
                         .toSortedMap()
                 )
+
                 Sorting.UciRanking -> RidersViewState.Riders.ByUciRanking(filteredRiders.sortedBy { if (it.uciRankingPosition > 0) it.uciRankingPosition else Int.MAX_VALUE })
             }
-            RidersViewState(riders = groupedRiders)
+            RidersViewState(riders = groupedRiders, isRefreshing = refreshing)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -76,6 +83,14 @@ class RidersViewModel @Inject constructor(
             _search.value = ""
         }
     }
+
+    fun onRefreshed() {
+        viewModelScope.launch {
+            _refreshing.value = true
+            delay(500 - measureTimeMillis { dataRepository.refresh() })
+            _refreshing.value = false
+        }
+    }
 }
 
 enum class Sorting {
@@ -85,7 +100,7 @@ enum class Sorting {
 }
 
 @Immutable
-data class RidersViewState(val riders: Riders) {
+data class RidersViewState(val riders: Riders, val isRefreshing: Boolean) {
 
     @Immutable
     sealed class Riders {
@@ -100,7 +115,7 @@ data class RidersViewState(val riders: Riders) {
     }
 
     companion object {
-        val Empty = RidersViewState(Riders.ByUciRanking(emptyList()))
+        val Empty = RidersViewState(Riders.ByUciRanking(emptyList()), false)
     }
 }
 

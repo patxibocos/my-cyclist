@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,7 +58,8 @@ internal fun RacesRoute(
         onRaceSelected = onRaceSelected,
         onStageSelected = onStageSelected,
         reselectedScreen = reselectedScreen,
-        onReselectedScreenConsumed = onReselectedScreenConsumed
+        onReselectedScreenConsumed = onReselectedScreenConsumed,
+        onRefreshed = viewModel::onRefreshed
     )
 }
 
@@ -69,7 +69,8 @@ private fun RacesScreen(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
-    onReselectedScreenConsumed: () -> Unit
+    onReselectedScreenConsumed: () -> Unit,
+    onRefreshed: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = reselectedScreen.value) {
@@ -81,7 +82,7 @@ private fun RacesScreen(
     Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.races_title))
         Surface {
-            RefreshableContent {
+            RefreshableContent(racesViewState.isRefreshing, onRefreshed) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -93,6 +94,7 @@ private fun RacesScreen(
                         is RacesViewState.SeasonEndedViewState -> {
                             seasonEnded(racesViewState.pastRaces, onRaceSelected)
                         }
+
                         is RacesViewState.SeasonInProgressViewState -> {
                             seasonInProgress(
                                 racesViewState.pastRaces,
@@ -102,6 +104,7 @@ private fun RacesScreen(
                                 onStageSelected
                             )
                         }
+
                         is RacesViewState.SeasonNotStartedViewState -> {
                             seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
                         }
@@ -143,6 +146,7 @@ private fun LazyListScope.seasonInProgress(
                 todayStage.stageNumber,
                 onStageSelected
             )
+
             is TodayStage.RestDay -> TodayRestDayStage(todayStage.race, onRaceSelected)
             is TodayStage.SingleDayRace -> TodaySingleDayRaceStage(
                 todayStage.race,
@@ -191,7 +195,6 @@ private fun LazyListScope.seasonInProgress(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TodayMultiStageRaceStage(
     race: Race,
@@ -218,7 +221,6 @@ private fun TodayMultiStageRaceStage(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TodayRestDayStage(race: Race, onRaceSelected: (Race) -> Unit) {
     Card(
@@ -230,7 +232,6 @@ private fun TodayRestDayStage(race: Race, onRaceSelected: (Race) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TodaySingleDayRaceStage(race: Race, stage: Stage, onRaceSelected: (Race) -> Unit) {
     Card(
@@ -271,7 +272,6 @@ private fun LazyListScope.seasonNotStarted(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RaceRow(
     race: Race,

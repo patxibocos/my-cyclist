@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -65,7 +64,8 @@ internal fun TeamsRoute(
         teamsViewState = teamsViewState,
         onTeamSelected = onTeamSelected,
         reselectedScreen = reselectedScreen,
-        onReselectedScreenConsumed = onReselectedScreenConsumed
+        onReselectedScreenConsumed = onReselectedScreenConsumed,
+        onRefreshed = viewModel::onRefreshed
     )
 }
 
@@ -73,10 +73,11 @@ internal fun TeamsRoute(
 @Preview
 @Composable
 private fun TeamsScreen(
-    teamsViewState: TeamsViewState = TeamsViewState(listOf(teamPreview)),
+    teamsViewState: TeamsViewState = TeamsViewState(listOf(teamPreview), false),
     onTeamSelected: (Team) -> Unit = {},
     reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {}
+    onReselectedScreenConsumed: () -> Unit = {},
+    onRefreshed: () -> Unit = {}
 ) {
     val worldTeamsLazyGridState = rememberLazyGridState()
     val proTeamsLazyGridState = rememberLazyGridState()
@@ -110,7 +111,7 @@ private fun TeamsScreen(
                 text = { Text(stringResource(R.string.teams_pro)) }
             )
         }
-        RefreshableContent {
+        RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
             HorizontalPager(
                 count = 2,
                 state = pagerState
@@ -153,7 +154,6 @@ private fun TeamsList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TeamRow(
     team: Team,
