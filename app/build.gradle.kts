@@ -73,9 +73,10 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
-    implementation(libs.accompanist.swiperefresh)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.compose.material3.material3)
     implementation(libs.androidx.compose.material.material.icons.extended)
@@ -102,5 +103,5 @@ dependencies {
 
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(composeBom)
 }
