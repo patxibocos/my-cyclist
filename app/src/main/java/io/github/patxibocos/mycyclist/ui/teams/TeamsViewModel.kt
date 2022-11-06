@@ -27,7 +27,7 @@ class TeamsViewModel @Inject constructor(private val dataRepository: DataReposit
             TeamsViewState(teams = teams, isRefreshing = refreshing)
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = TeamsViewState.Empty
         )
 

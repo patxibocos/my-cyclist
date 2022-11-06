@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,7 +14,6 @@ import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.data.Result
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun RiderRoute(
@@ -23,7 +23,7 @@ internal fun RiderRoute(
     onBackPressed: () -> Unit,
     viewModel: RiderViewModel = hiltViewModel()
 ) {
-    val riderViewState by viewModel.riderViewState.rememberFlowWithLifecycle()
+    val riderViewState by viewModel.riderViewState.collectAsState()
     RiderScreen(
         riderViewState = riderViewState,
         onTeamSelected = onTeamSelected,

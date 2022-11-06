@@ -39,6 +39,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,7 +67,6 @@ import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun RidersRoute(
@@ -75,8 +75,8 @@ internal fun RidersRoute(
     onReselectedScreenConsumed: () -> Unit = {},
     viewModel: RidersViewModel = hiltViewModel()
 ) {
-    val ridersViewState by viewModel.ridersState.rememberFlowWithLifecycle()
-    val topBarState by viewModel.topBarState.rememberFlowWithLifecycle()
+    val ridersViewState by viewModel.ridersState.collectAsState()
+    val topBarState by viewModel.topBarState.collectAsState()
     RidersScreen(
         ridersViewState = ridersViewState,
         topBarState = topBarState,

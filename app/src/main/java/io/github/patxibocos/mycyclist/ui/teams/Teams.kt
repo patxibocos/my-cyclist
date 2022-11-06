@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,7 +50,6 @@ import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,7 +59,7 @@ internal fun TeamsRoute(
     onReselectedScreenConsumed: () -> Unit = {},
     viewModel: TeamsViewModel = hiltViewModel()
 ) {
-    val teamsViewState by viewModel.teamsViewState.rememberFlowWithLifecycle()
+    val teamsViewState by viewModel.teamsViewState.collectAsState()
     TeamsScreen(
         teamsViewState = teamsViewState,
         onTeamSelected = onTeamSelected,

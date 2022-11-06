@@ -31,7 +31,7 @@ class TeamViewModel @Inject constructor(
             TeamViewState(team, teamRiders)
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = TeamViewState.Empty
         )
 }

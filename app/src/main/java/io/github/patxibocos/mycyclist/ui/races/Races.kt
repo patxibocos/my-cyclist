@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,6 @@ import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.ddMMMFormat
 import io.github.patxibocos.mycyclist.ui.util.formatTime
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun RacesRoute(
@@ -52,7 +52,7 @@ internal fun RacesRoute(
     onReselectedScreenConsumed: () -> Unit,
     viewModel: RacesViewModel = hiltViewModel()
 ) {
-    val racesViewState by viewModel.racesViewState.rememberFlowWithLifecycle()
+    val racesViewState by viewModel.racesViewState.collectAsState()
     RacesScreen(
         racesViewState = racesViewState,
         onRaceSelected = onRaceSelected,

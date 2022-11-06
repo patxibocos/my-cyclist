@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,7 +18,6 @@ import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.preview.teamPreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 
 @Composable
 internal fun TeamRoute(
@@ -25,7 +25,7 @@ internal fun TeamRoute(
     onBackPressed: () -> Unit = {},
     viewModel: TeamViewModel = hiltViewModel()
 ) {
-    val teamViewState by viewModel.teamViewState.rememberFlowWithLifecycle()
+    val teamViewState by viewModel.teamViewState.collectAsState()
     TeamScreen(
         teamViewState = teamViewState,
         onRiderSelected = onRiderSelected,

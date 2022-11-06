@@ -127,7 +127,7 @@ class RaceViewModel @Inject constructor(
             RaceViewState(race, stageIndex, resultsMode, stageResults)
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = RaceViewState.Empty
         )
 

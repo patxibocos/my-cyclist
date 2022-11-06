@@ -62,7 +62,7 @@ class RiderViewModel @Inject constructor(
             )
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = RiderViewState.Empty
         )
 }

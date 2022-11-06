@@ -14,6 +14,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,7 +30,6 @@ import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
-import io.github.patxibocos.mycyclist.ui.util.rememberFlowWithLifecycle
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -40,7 +40,7 @@ internal fun RaceRoute(
     onBackPressed: () -> Unit = {},
     viewModel: RaceViewModel = hiltViewModel()
 ) {
-    val raceViewState by viewModel.raceViewState.rememberFlowWithLifecycle()
+    val raceViewState by viewModel.raceViewState.collectAsState()
     RaceScreen(
         raceViewState = raceViewState,
         onRiderSelected = onRiderSelected,

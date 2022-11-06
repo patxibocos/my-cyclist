@@ -36,7 +36,7 @@ class RidersViewModel @Inject constructor(
             TopBarState(search, searching, sorting)
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = TopBarState.Empty
         )
 
@@ -65,7 +65,7 @@ class RidersViewModel @Inject constructor(
             RidersViewState(riders = groupedRiders, isRefreshing = refreshing)
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = RidersViewState.Empty
         )
 

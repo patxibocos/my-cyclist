@@ -74,7 +74,7 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(),
             initialValue = RacesViewState.Empty
         )
 
