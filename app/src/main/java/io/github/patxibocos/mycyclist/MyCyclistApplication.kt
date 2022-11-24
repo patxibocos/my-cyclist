@@ -21,14 +21,18 @@ class MyCyclistApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        setupCoil()
+        createNotificationChannel()
+        subscribeToTopic()
+    }
+
+    private fun setupCoil() {
         Coil.setImageLoader {
             ImageLoader.Builder(this)
                 .dispatcher(defaultDispatcher)
                 .crossfade(true)
                 .build()
         }
-        createNotificationChannel()
-        subscribeToTopic()
     }
 
     private fun subscribeToTopic() {

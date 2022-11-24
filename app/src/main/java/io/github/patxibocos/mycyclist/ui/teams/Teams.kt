@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -82,6 +84,7 @@ private fun TeamsScreen(
     val worldTeamsLazyGridState = rememberLazyGridState()
     val proTeamsLazyGridState = rememberLazyGridState()
     val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = reselectedScreen.value) {
         if (reselectedScreen.value == Screen.Teams) {
             if (pagerState.currentPage == 0) {
@@ -94,40 +97,43 @@ private fun TeamsScreen(
     }
     Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.teams_title))
-        val coroutineScope = rememberCoroutineScope()
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ) {
-            Tab(
-                selected = pagerState.currentPage == 0,
-                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
-                text = { Text(stringResource(R.string.teams_world)) }
-            )
-            Tab(
-                selected = pagerState.currentPage == 1,
-                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
-                text = { Text(stringResource(R.string.teams_pro)) }
-            )
-        }
-        RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
-            HorizontalPager(
-                count = 2,
-                state = pagerState
-            ) { page ->
-                if (page == 0) {
-                    TeamsList(
-                        teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
-                        onTeamSelected = onTeamSelected,
-                        lazyListState = worldTeamsLazyGridState
-                    )
-                } else {
-                    TeamsList(
-                        teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
-                        onTeamSelected = onTeamSelected,
-                        lazyListState = proTeamsLazyGridState
-                    )
+        Surface {
+            RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
+                Column {
+                    TabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ) {
+                        Tab(
+                            selected = pagerState.currentPage == 0,
+                            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
+                            text = { Text(stringResource(R.string.teams_world)) }
+                        )
+                        Tab(
+                            selected = pagerState.currentPage == 1,
+                            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
+                            text = { Text(stringResource(R.string.teams_pro)) }
+                        )
+                    }
+                    HorizontalPager(
+                        count = 2,
+                        state = pagerState
+                    ) { page ->
+                        if (page == 0) {
+                            TeamsList(
+                                teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
+                                onTeamSelected = onTeamSelected,
+                                lazyListState = worldTeamsLazyGridState
+                            )
+                        } else {
+                            TeamsList(
+                                teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
+                                onTeamSelected = onTeamSelected,
+                                lazyListState = proTeamsLazyGridState
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -150,6 +156,9 @@ private fun TeamsList(
     ) {
         items(teams) { team ->
             TeamRow(team, onTeamSelected)
+        }
+        item {
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }

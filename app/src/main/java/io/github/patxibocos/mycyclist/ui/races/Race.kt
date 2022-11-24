@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -51,6 +52,7 @@ internal fun RaceRoute(
     )
 }
 
+@Preview
 @Composable
 private fun RaceScreen(
     raceViewState: RaceViewState = RaceViewState(
@@ -59,11 +61,11 @@ private fun RaceScreen(
         ResultsMode.StageResults,
         emptyMap()
     ),
-    onRiderSelected: (Rider) -> Unit,
-    onTeamSelected: (Team) -> Unit,
-    onResultsModeChanged: (ResultsMode) -> Unit,
-    onStageSelected: (Int) -> Unit,
-    onBackPressed: () -> Unit
+    onRiderSelected: (Rider) -> Unit = {},
+    onTeamSelected: (Team) -> Unit = {},
+    onResultsModeChanged: (ResultsMode) -> Unit = {},
+    onStageSelected: (Int) -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
     Column {
         SmallTopAppBar(title = raceViewState.race?.name.toString(), onBackPressed)
@@ -212,6 +214,7 @@ private fun ParticipantResults(
                         }
                     }
             )
+
             is ParticipantResult.TeamResult -> Text(
                 text = "${i + 1}. ${participantResult.team.name} - $duration",
                 modifier = Modifier
