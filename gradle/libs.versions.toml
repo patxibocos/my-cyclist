@@ -1,10 +1,10 @@
 [versions]
-accompanist = "0.27.0"
+accompanist = "0.28.0"
 compose-compiler = "1.3.2"
-compose-bom = "2022.10.00"
+compose-bom = "2022.12.00"
 hilt = "2.44"
 kotlin = "1.7.20"
-ktlint = "0.47.1"
+ktlint = "0.48.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -13,8 +13,8 @@ accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-
 android-desugar-jdk = "com.android.tools:desugar_jdk_libs:2.0.0"
 androidx-appcompat = "androidx.appcompat:appcompat:1.6.0-rc01"
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-androidx-compose-material3-material3 = "androidx.compose.material3:material3:1.0.0"
-androidx-compose-material-material-icons-extended = "androidx.compose.material:material-icons-extended:1.3.0"
+androidx-compose-material3-material3 = "androidx.compose.material3:material3:1.0.1"
+androidx-compose-material-material-icons-extended = "androidx.compose.material:material-icons-extended:1.3.1"
 androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-ui-text = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -24,10 +24,10 @@ androidx-core = "androidx.core:core-ktx:1.9.0"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.2"
+androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.3"
 coil-compose = "io.coil-kt:coil-compose:2.2.2"
 firebase-config = "com.google.firebase:firebase-config-ktx:21.2.0"
-firebase-messaging = "com.google.firebase:firebase-messaging-ktx:23.1.0"
+firebase-messaging = "com.google.firebase:firebase-messaging-ktx:23.1.1"
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4"
@@ -35,10 +35,10 @@ material3 = "com.google.android.material:material:1.7.0"
 protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
 
 androidx-test-junit = "androidx.test.ext:junit:1.1.3"
-androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.4.0"
+androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.5.0"
 junit = "junit:junit:4.13.2"
 
-android-plugin-gradle = "com.android.tools.build:gradle:8.0.0-alpha08"
+android-plugin-gradle = "com.android.tools.build:gradle:8.0.0-alpha10"
 google-services = "com.google.gms:google-services:4.3.14"
 kotlin-plugin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hilt-plugin-gradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
