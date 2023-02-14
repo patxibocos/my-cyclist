@@ -59,23 +59,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.home.Screen
-import io.github.patxibocos.mycyclist.ui.preview.riderPreview
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 
 @Composable
 internal fun RidersRoute(
-    onRiderSelected: (Rider) -> Unit = {},
-    reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {},
-    viewModel: RidersViewModel = hiltViewModel()
+    onRiderSelected: (Rider) -> Unit,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
+    viewModel: RidersViewModel = hiltViewModel(),
 ) {
     val ridersViewState by viewModel.ridersState.collectAsState()
     val topBarState by viewModel.topBarState.collectAsState()
@@ -88,31 +86,21 @@ internal fun RidersRoute(
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
         onToggled = viewModel::onToggled,
-        onRefreshed = viewModel::onRefreshed
+        onRefreshed = viewModel::onRefreshed,
     )
 }
 
-@Preview
 @Composable
 private fun RidersScreen(
-    ridersViewState: RidersViewState = RidersViewState(
-        riders = RidersViewState.Riders.ByLastName(
-            mapOf(
-                riderPreview.lastName.first() to listOf(
-                    riderPreview
-                )
-            )
-        ),
-        isRefreshing = false
-    ),
-    topBarState: TopBarState = TopBarState("", false, Sorting.LastName),
-    onRiderSearched: (String) -> Unit = {},
-    onRiderSelected: (Rider) -> Unit = {},
-    onSortingSelected: (Sorting) -> Unit = {},
-    reselectedScreen: State<Screen?> = mutableStateOf(null),
-    onReselectedScreenConsumed: () -> Unit = {},
-    onToggled: () -> Unit = {},
-    onRefreshed: () -> Unit = {}
+    ridersViewState: RidersViewState,
+    topBarState: TopBarState,
+    onRiderSearched: (String) -> Unit,
+    onRiderSelected: (Rider) -> Unit,
+    onSortingSelected: (Sorting) -> Unit,
+    reselectedScreen: State<Screen?>,
+    onReselectedScreenConsumed: () -> Unit,
+    onToggled: () -> Unit,
+    onRefreshed: () -> Unit,
 ) {
     Column {
         val focusManager = LocalFocusManager.current
@@ -121,7 +109,7 @@ private fun RidersScreen(
             focusManager,
             onSortingSelected,
             onRiderSearched,
-            onToggled = onToggled
+            onToggled = onToggled,
         )
         Surface {
             RidersList(
@@ -132,7 +120,7 @@ private fun RidersScreen(
                 },
                 screenReselected = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
-                onRefreshed = onRefreshed
+                onRefreshed = onRefreshed,
             )
         }
     }
@@ -145,40 +133,40 @@ private fun TopAppBar(
     focusManager: FocusManager,
     onSortingSelected: (Sorting) -> Unit,
     onSearched: (String) -> Unit,
-    onToggled: () -> Unit
+    onToggled: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ),
         title = {
             AnimatedContent(topBarState.searching) {
                 if (it) {
                     TextField(
                         value = topBarState.search,
-                        onValueChange = {
-                            onSearched(it)
+                        onValueChange = { search ->
+                            onSearched(search)
                         },
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
                         },
                         colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent
+                            containerColor = Color.Transparent,
                         ),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Words,
                             autoCorrect = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Search
+                            imeAction = ImeAction.Search,
                         ),
                         keyboardActions = KeyboardActions(onSearch = {
                             focusManager.clearFocus()
                         }),
                         singleLine = true,
                         maxLines = 1,
-                        modifier = Modifier.focusRequester(focusRequester)
+                        modifier = Modifier.focusRequester(focusRequester),
                     )
                     if (showKeyboard) {
                         showKeyboard = false
@@ -219,10 +207,10 @@ private fun TopAppBar(
                         sortingOptionsVisible = false
                         onSortingSelected(sorting)
                     },
-                    onDismissed = { sortingOptionsVisible = false }
+                    onDismissed = { sortingOptionsVisible = false },
                 )
             }
-        }
+        },
     )
 }
 
@@ -231,11 +219,11 @@ private fun SortingMenu(
     expanded: Boolean,
     selectedSorting: Sorting,
     onSortingSelected: (Sorting) -> Unit,
-    onDismissed: () -> Unit
+    onDismissed: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = onDismissed
+        onDismissRequest = onDismissed,
     ) {
         DropdownMenuItem(
             onClick = {
@@ -244,7 +232,7 @@ private fun SortingMenu(
             enabled = selectedSorting != Sorting.UciRanking,
             text = {
                 Text(stringResource(R.string.riders_sort_uci_ranking))
-            }
+            },
         )
         DropdownMenuItem(
             onClick = {
@@ -253,7 +241,7 @@ private fun SortingMenu(
             enabled = selectedSorting != Sorting.LastName,
             text = {
                 Text(stringResource(R.string.riders_sort_name))
-            }
+            },
         )
         DropdownMenuItem(
             onClick = {
@@ -262,7 +250,7 @@ private fun SortingMenu(
             enabled = selectedSorting != Sorting.Country,
             text = {
                 Text(stringResource(R.string.riders_sort_country))
-            }
+            },
         )
     }
 }
@@ -274,7 +262,7 @@ private fun RidersList(
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    onRefreshed: () -> Unit
+    onRefreshed: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = screenReselected.value) {
@@ -288,7 +276,7 @@ private fun RidersList(
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(5.dp),
-            state = lazyListState
+            state = lazyListState,
         ) {
             when (ridersState.riders) {
                 is RidersViewState.Riders.ByLastName -> {
@@ -329,7 +317,7 @@ private fun RidersList(
 @Composable
 private fun RiderRow(
     rider: Rider,
-    onRiderSelected: (Rider) -> Unit
+    onRiderSelected: (Rider) -> Unit,
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -342,17 +330,17 @@ private fun RiderRow(
                     .clip(CircleShape),
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Crop,
-                contentDescription = null
+                contentDescription = null,
             )
             Box(
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
+                    .align(Alignment.CenterVertically),
             ) {
                 Text(
                     text = "${rider.lastName.uppercase()} ${rider.firstName}",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
                 Country(countryCode = rider.country, modifier = Modifier.align(Alignment.CenterEnd))
             }
@@ -365,6 +353,6 @@ private fun Country(countryCode: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = "${getCountryEmoji(countryCode)} $countryCode",
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.bodyLarge,
     )
 }

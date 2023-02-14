@@ -20,7 +20,7 @@ class DataModule {
     @Provides
     fun provideDataRepository(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
-        firebaseRemoteConfig: FirebaseRemoteConfig
+        firebaseRemoteConfig: FirebaseRemoteConfig,
     ): DataRepository =
         FirebaseDataRepository(defaultDispatcher, firebaseRemoteConfig)
 

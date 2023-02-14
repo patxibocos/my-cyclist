@@ -20,7 +20,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -28,7 +27,6 @@ import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
-import io.github.patxibocos.mycyclist.ui.preview.racePreview
 import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.isoFormat
 import kotlinx.coroutines.launch
@@ -39,7 +37,7 @@ internal fun RaceRoute(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onBackPressed: () -> Unit = {},
-    viewModel: RaceViewModel = hiltViewModel()
+    viewModel: RaceViewModel = hiltViewModel(),
 ) {
     val raceViewState by viewModel.raceViewState.collectAsState()
     RaceScreen(
@@ -48,24 +46,18 @@ internal fun RaceRoute(
         onTeamSelected = onTeamSelected,
         onResultsModeChanged = viewModel::onResultsModeChanged,
         onStageSelected = viewModel::onStageSelected,
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
-@Preview
 @Composable
 private fun RaceScreen(
-    raceViewState: RaceViewState = RaceViewState(
-        racePreview,
-        0,
-        ResultsMode.StageResults,
-        emptyMap()
-    ),
-    onRiderSelected: (Rider) -> Unit = {},
-    onTeamSelected: (Team) -> Unit = {},
-    onResultsModeChanged: (ResultsMode) -> Unit = {},
-    onStageSelected: (Int) -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    raceViewState: RaceViewState,
+    onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
+    onResultsModeChanged: (ResultsMode) -> Unit,
+    onStageSelected: (Int) -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     Column {
         SmallTopAppBar(title = raceViewState.race?.name.toString(), onBackPressed)
@@ -81,7 +73,7 @@ private fun RaceScreen(
                     onRiderSelected,
                     onTeamSelected,
                     onResultsModeChanged,
-                    onStageSelected
+                    onStageSelected,
                 )
             }
         }
@@ -103,14 +95,14 @@ private fun StagesList(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
-    onStageSelected: (Int) -> Unit
+    onStageSelected: (Int) -> Unit,
 ) {
     val pagerState = rememberPagerState(currentStageIndex)
     val coroutineScope = rememberCoroutineScope()
     ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         stages.forEachIndexed { index, _ ->
             Tab(
@@ -118,7 +110,7 @@ private fun StagesList(
                 onClick = {
                     onStageSelected(index)
                     coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                }
+                },
             ) {
                 Text(text = "Stage ${index + 1}")
             }
@@ -128,7 +120,7 @@ private fun StagesList(
         modifier = Modifier.fillMaxSize(),
         state = pagerState,
         count = stages.size,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
     ) { page ->
         Stage(
             stage = stages[page],
@@ -136,7 +128,7 @@ private fun StagesList(
             resultsMode,
             onRiderSelected = onRiderSelected,
             onTeamSelected = onTeamSelected,
-            onResultsModeChanged = onResultsModeChanged
+            onResultsModeChanged = onResultsModeChanged,
         )
     }
 }
@@ -149,7 +141,7 @@ private fun Stage(
     resultsMode: ResultsMode,
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
-    onResultsModeChanged: (ResultsMode) -> Unit
+    onResultsModeChanged: (ResultsMode) -> Unit,
 ) {
     Column {
         Text(text = isoFormat(stage.startDateTime))
@@ -168,14 +160,14 @@ private fun Stage(
                 onClick = { onResultsModeChanged(ResultsMode.StageResults) },
                 label = {
                     Text(text = ResultsMode.StageResults.toString())
-                }
+                },
             )
             ElevatedFilterChip(
                 selected = resultsMode == ResultsMode.GcResults,
                 onClick = { onResultsModeChanged(ResultsMode.GcResults) },
                 label = {
                     Text(text = ResultsMode.GcResults.toString())
-                }
+                },
             )
         }
         val results = when (resultsMode) {
@@ -194,7 +186,7 @@ private fun Stage(
 private fun ParticipantResults(
     results: List<ParticipantResult>,
     onRiderSelected: (Rider) -> Unit,
-    onTeamSelected: (Team) -> Unit
+    onTeamSelected: (Team) -> Unit,
 ) {
     results.forEachIndexed { i, participantResult ->
         val duration = if (i == 0) {
@@ -212,14 +204,14 @@ private fun ParticipantResults(
                         } else {
                             this
                         }
-                    }
+                    },
             )
 
             is ParticipantResult.TeamResult -> Text(
                 text = "${i + 1}. ${participantResult.team.name} - $duration",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onTeamSelected(participantResult.team) }
+                    .clickable { onTeamSelected(participantResult.team) },
             )
         }
     }

@@ -12,11 +12,11 @@ data class Team(
     val bike: String,
     val jersey: String,
     val website: String,
-    val riderIds: List<String>
+    val riderIds: List<String>,
 )
 
 @Immutable
 enum class TeamStatus {
     WORLD_TEAM,
-    PRO_TEAM
+    PRO_TEAM,
 }

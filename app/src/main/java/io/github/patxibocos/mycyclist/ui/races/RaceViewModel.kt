@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RaceViewModel @Inject constructor(
     private val dataRepository: DataRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) :
     ViewModel() {
 
@@ -92,7 +92,7 @@ class RaceViewModel @Inject constructor(
             dataRepository.riders,
             dataRepository.teams,
             _stageIndex,
-            _resultsMode
+            _resultsMode,
         ) { races, riders, teams, stageIndex, resultsMode ->
             val race = races.find { it.id == raceId }!!
             val stageResults = race.stages.associateWith { stage ->
@@ -101,34 +101,34 @@ class RaceViewModel @Inject constructor(
                         StageType.TEAM_TIME_TRIAL -> stage.result.map { participantResult ->
                             ParticipantResult.TeamResult(
                                 teams.find { it.id == participantResult.participantId }!!,
-                                participantResult.time
+                                participantResult.time,
                             )
                         }
                         else -> stage.result.map { riderResult ->
                             ParticipantResult.RiderResult(
                                 riders.find { it.id == riderResult.participantId }
                                     ?: buildDummyRider(
-                                        riderResult.participantId
+                                        riderResult.participantId,
                                     ),
-                                riderResult.time
+                                riderResult.time,
                             )
                         }
                     },
                     gcResult = stage.gcResult.map { riderResult ->
                         ParticipantResult.RiderResult(
                             riders.find { it.id == riderResult.participantId } ?: buildDummyRider(
-                                riderResult.participantId
+                                riderResult.participantId,
                             ),
-                            riderResult.time
+                            riderResult.time,
                         )
-                    }
+                    },
                 )
             }
             RaceViewState(race, stageIndex, resultsMode, stageResults)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RaceViewState.Empty
+            initialValue = RaceViewState.Empty,
         )
 
     fun onStageSelected(stageIndex: Int) {
@@ -159,14 +159,14 @@ private fun buildDummyRider(riderId: String): Rider {
         birthPlace = "",
         weight = 0,
         height = 0,
-        uciRankingPosition = 0
+        uciRankingPosition = 0,
     )
 }
 
 @Immutable
 enum class ResultsMode {
     StageResults,
-    GcResults
+    GcResults,
 }
 
 @Immutable
@@ -174,14 +174,14 @@ data class RaceViewState(
     val race: Race?,
     val currentStageIndex: Int,
     val resultsMode: ResultsMode,
-    val stageResults: Map<Stage, StageResults>
+    val stageResults: Map<Stage, StageResults>,
 ) {
     companion object {
         val Empty = RaceViewState(
             race = null,
             currentStageIndex = 0,
             resultsMode = ResultsMode.StageResults,
-            stageResults = emptyMap()
+            stageResults = emptyMap(),
         )
     }
 }
@@ -189,7 +189,7 @@ data class RaceViewState(
 @Immutable
 data class StageResults(
     val result: List<ParticipantResult>,
-    val gcResult: List<ParticipantResult.RiderResult>
+    val gcResult: List<ParticipantResult.RiderResult>,
 )
 
 @Immutable

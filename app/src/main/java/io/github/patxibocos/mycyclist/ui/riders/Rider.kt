@@ -21,7 +21,7 @@ internal fun RiderRoute(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     onBackPressed: () -> Unit,
-    viewModel: RiderViewModel = hiltViewModel()
+    viewModel: RiderViewModel = hiltViewModel(),
 ) {
     val riderViewState by viewModel.riderViewState.collectAsState()
     RiderScreen(
@@ -29,7 +29,7 @@ internal fun RiderRoute(
         onTeamSelected = onTeamSelected,
         onRaceSelected = onRaceSelected,
         onStageSelected = onStageSelected,
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
@@ -39,7 +39,7 @@ private fun RiderScreen(
     onTeamSelected: (Team) -> Unit,
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     Column {
         SmallTopAppBar(title = riderViewState.rider?.lastName.toString(), onBackPressed)
@@ -52,14 +52,14 @@ private fun RiderScreen(
                 text = riderViewState.team.name,
                 modifier = Modifier.clickable {
                     onTeamSelected(riderViewState.team)
-                }
+                },
             )
             riderViewState.currentParticipation?.let { currentParticipation ->
                 Text(
                     text = "Currently running ${currentParticipation.race.name}",
                     modifier = Modifier.clickable {
                         onRaceSelected(riderViewState.currentParticipation.race)
-                    }
+                    },
                 )
             }
             riderViewState.results.forEach { lastResult ->
@@ -68,13 +68,13 @@ private fun RiderScreen(
                         text = "${lastResult.position} on ${lastResult.race.name}",
                         modifier = Modifier.clickable {
                             onRaceSelected(lastResult.race)
-                        }
+                        },
                     )
                     is Result.StageResult -> Text(
                         text = "${lastResult.position} on stage ${lastResult.stageNumber} of ${lastResult.race.name}",
                         modifier = Modifier.clickable {
                             onStageSelected(lastResult.race, lastResult.stage)
-                        }
+                        },
                     )
                 }
             }

@@ -28,7 +28,7 @@ import javax.inject.Inject
 class RiderViewModel @Inject constructor(
     dataRepository: DataRepository,
     savedStateHandle: SavedStateHandle,
-    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) :
     ViewModel() {
 
@@ -38,19 +38,19 @@ class RiderViewModel @Inject constructor(
         combine(
             dataRepository.teams,
             dataRepository.riders,
-            dataRepository.races
+            dataRepository.races,
         ) { teams, riders, races ->
             val rider = riders.find { it.id == riderId }
             val team = teams.find { it.riderIds.contains(riderId) }
             val (pastParticipations, currentParticipation, futureParticipations) = riderParticipations(
                 defaultDispatcher,
                 riderId,
-                races
+                races,
             )
             val results = riderResults(
                 defaultDispatcher,
                 riderId,
-                pastParticipations + listOfNotNull(currentParticipation)
+                pastParticipations + listOfNotNull(currentParticipation),
             )
             RiderViewState(
                 rider,
@@ -58,19 +58,19 @@ class RiderViewModel @Inject constructor(
                 currentParticipation,
                 pastParticipations,
                 futureParticipations,
-                results
+                results,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RiderViewState.Empty
+            initialValue = RiderViewState.Empty,
         )
 }
 
 suspend fun riderParticipations(
     defaultDispatcher: CoroutineDispatcher,
     riderId: String,
-    races: List<Race>
+    races: List<Race>,
 ): Triple<List<Participation>, Participation?, List<Participation>> {
     return withContext(defaultDispatcher) {
         val participations = races.mapNotNull { race ->
@@ -90,7 +90,7 @@ suspend fun riderParticipations(
 suspend fun riderResults(
     defaultDispatcher: CoroutineDispatcher,
     riderId: String,
-    participations: List<Participation>
+    participations: List<Participation>,
 ): List<Result> {
     return withContext(defaultDispatcher) {
         participations.map { it.race }
@@ -107,7 +107,7 @@ suspend fun riderResults(
                                 race,
                                 stage,
                                 race.stages.indexOf(stage) + 1,
-                                it.position
+                                it.position,
                             )
                         }
                 }
@@ -123,7 +123,7 @@ data class RiderViewState(
     val currentParticipation: Participation?,
     val pastParticipations: List<Participation>,
     val futureParticipations: List<Participation>,
-    val results: List<Result>
+    val results: List<Result>,
 ) {
     companion object {
         val Empty = RiderViewState(
@@ -132,7 +132,7 @@ data class RiderViewState(
             currentParticipation = null,
             pastParticipations = emptyList(),
             futureParticipations = emptyList(),
-            results = emptyList()
+            results = emptyList(),
         )
     }
 }

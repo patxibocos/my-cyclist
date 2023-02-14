@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TeamViewModel @Inject constructor(
     dataRepository: DataRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) :
     ViewModel() {
 
@@ -32,14 +32,14 @@ class TeamViewModel @Inject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = TeamViewState.Empty
+            initialValue = TeamViewState.Empty,
         )
 }
 
 @Immutable
 data class TeamViewState(
     val team: Team?,
-    val riders: List<Rider>
+    val riders: List<Rider>,
 ) {
     companion object {
         val Empty = TeamViewState(team = null, riders = emptyList())

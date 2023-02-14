@@ -22,7 +22,7 @@ import kotlin.system.measureTimeMillis
 @HiltViewModel
 class RidersViewModel @Inject constructor(
     private val dataRepository: DataRepository,
-    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) :
     ViewModel() {
 
@@ -37,7 +37,7 @@ class RidersViewModel @Inject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = TopBarState.Empty
+            initialValue = TopBarState.Empty,
         )
 
     val ridersState: StateFlow<RidersViewState> =
@@ -45,19 +45,19 @@ class RidersViewModel @Inject constructor(
             dataRepository.riders,
             _search,
             _sorting,
-            _refreshing
+            _refreshing,
         ) { riders, query, sorting, refreshing ->
             val filteredRiders = searchRiders(defaultDispatcher, riders, query)
             val groupedRiders = when (sorting) {
                 Sorting.LastName -> RidersViewState.Riders.ByLastName(
                     filteredRiders.groupBy {
                         it.lastName.first().uppercaseChar()
-                    }
+                    },
                 )
 
                 Sorting.Country -> RidersViewState.Riders.ByCountry(
                     filteredRiders.groupBy { it.country }
-                        .toSortedMap()
+                        .toSortedMap(),
                 )
 
                 Sorting.UciRanking -> RidersViewState.Riders.ByUciRanking(filteredRiders.sortedBy { if (it.uciRankingPosition > 0) it.uciRankingPosition else Int.MAX_VALUE })
@@ -66,7 +66,7 @@ class RidersViewModel @Inject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RidersViewState.Empty
+            initialValue = RidersViewState.Empty,
         )
 
     fun onSearched(query: String) {
@@ -96,7 +96,7 @@ class RidersViewModel @Inject constructor(
 enum class Sorting {
     LastName,
     Country,
-    UciRanking
+    UciRanking,
 }
 
 @Immutable
@@ -123,7 +123,7 @@ data class RidersViewState(val riders: Riders, val isRefreshing: Boolean) {
 data class TopBarState(
     val search: String,
     val searching: Boolean,
-    val sorting: Sorting
+    val sorting: Sorting,
 ) {
     companion object {
         val Empty = TopBarState(search = "", searching = false, sorting = Sorting.UciRanking)
@@ -133,7 +133,7 @@ data class TopBarState(
 suspend fun searchRiders(
     defaultDispatcher: CoroutineDispatcher,
     riders: List<Rider>,
-    query: String
+    query: String,
 ): List<Rider> = withContext(defaultDispatcher) {
     if (query.isBlank()) {
         return@withContext riders
@@ -144,7 +144,7 @@ suspend fun searchRiders(
         querySplits.all { q ->
             rider.firstName.contains(
                 q,
-                ignoreCase = true
+                ignoreCase = true,
             ) || rider.lastName.contains(q, ignoreCase = true)
         }
     }

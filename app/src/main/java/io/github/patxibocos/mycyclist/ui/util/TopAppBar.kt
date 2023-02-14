@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.Color
 fun CenterAlignedTopAppBar(title: String) {
     androidx.compose.material3.CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ),
         title = {
             Text(text = title)
-        }
+        },
     )
 }
 
@@ -35,7 +35,7 @@ fun CenterAlignedTopAppBar(title: String) {
 fun SmallTopAppBar(title: String, onBackPressed: () -> Unit) {
     androidx.compose.material3.TopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ),
         title = {
             Text(text = title)
@@ -44,7 +44,7 @@ fun SmallTopAppBar(title: String, onBackPressed: () -> Unit) {
             IconButton(onClick = onBackPressed) {
                 Icon(Icons.Filled.ArrowBack, null)
             }
-        }
+        },
     )
 }
 
@@ -53,7 +53,7 @@ fun SmallTopAppBar(title: String, onBackPressed: () -> Unit) {
 fun RefreshableContent(
     isRefreshing: Boolean,
     onRefreshed: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val state = rememberPullRefreshState(isRefreshing, onRefreshed)
     Box(Modifier.pullRefresh(state)) {

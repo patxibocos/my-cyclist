@@ -48,7 +48,7 @@ class MyCyclistApplication : Application() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 channelName,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_DEFAULT,
             ).apply {
                 description = "Notifications"
             }

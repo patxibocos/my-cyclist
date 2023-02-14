@@ -38,12 +38,12 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
             when {
                 today.isBefore(minStartDate) -> RacesViewState.SeasonNotStartedViewState(
                     races,
-                    refreshing
+                    refreshing,
                 )
 
                 today.isAfter(maxEndDate) -> RacesViewState.SeasonEndedViewState(
                     races,
-                    refreshing
+                    refreshing,
                 )
 
                 else -> {
@@ -52,13 +52,13 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
                         when {
                             race.isSingleDay() -> TodayStage.SingleDayRace(
                                 race,
-                                race.stages.first()
+                                race.stages.first(),
                             )
 
                             todayStage != null -> TodayStage.MultiStageRace(
                                 race,
                                 todayStage.first,
-                                todayStage.second + 1
+                                todayStage.second + 1,
                             )
 
                             else -> TodayStage.RestDay(race)
@@ -68,14 +68,14 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
                         todayStages = todayStages,
                         pastRaces = races.filter(Race::isPast).reversed(),
                         futureRaces = races.filter(Race::isFuture),
-                        isRefreshing = refreshing
+                        isRefreshing = refreshing,
                     )
                 }
             }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RacesViewState.Empty
+            initialValue = RacesViewState.Empty,
         )
 
     fun onRefreshed() {
@@ -101,7 +101,7 @@ sealed class RacesViewState(open val isRefreshing: Boolean) {
     @Immutable
     data class SeasonNotStartedViewState(
         val futureRaces: List<Race>,
-        override val isRefreshing: Boolean
+        override val isRefreshing: Boolean,
     ) : RacesViewState(isRefreshing)
 
     @Immutable
@@ -109,7 +109,7 @@ sealed class RacesViewState(open val isRefreshing: Boolean) {
         val pastRaces: List<Race>,
         val todayStages: List<TodayStage>,
         val futureRaces: List<Race>,
-        override val isRefreshing: Boolean
+        override val isRefreshing: Boolean,
     ) : RacesViewState(isRefreshing)
 
     @Immutable

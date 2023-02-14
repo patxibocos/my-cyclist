@@ -63,7 +63,7 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
             sendNotification(
                 uri = "mycyclist://$destination".toUri(),
                 title = race.name,
-                text = notificationMessage
+                text = notificationMessage,
             )
         }
         super.onMessageReceived(message)
@@ -83,14 +83,14 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
                 Intent.ACTION_VIEW,
                 uri,
                 application,
-                MainActivity::class.java
+                MainActivity::class.java,
             )
         val resultsPendingIntent: PendingIntent =
             PendingIntent.getActivity(
                 application,
                 Random.nextInt(),
                 activityActionIntent,
-                FLAG_IMMUTABLE
+                FLAG_IMMUTABLE,
             )
         val notification =
             NotificationCompat.Builder(this@MyCyclistFirebaseMessagingService, CHANNEL_ID)

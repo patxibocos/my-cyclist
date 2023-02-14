@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
         if (isGranted) {
             // FCM SDK (and your app) can post notifications.
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                 // FCM SDK (and your app) can post notifications.
             } else if (shouldShowRequestPermissionRationale(
                     this,
-                    Manifest.permission.POST_NOTIFICATIONS
+                    Manifest.permission.POST_NOTIFICATIONS,
                 )
             ) {
                 // TODO: display an educational UI explaining to the user the features that will be enabled

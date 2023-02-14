@@ -28,7 +28,7 @@ class TeamsViewModel @Inject constructor(private val dataRepository: DataReposit
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = TeamsViewState.Empty
+            initialValue = TeamsViewState.Empty,
         )
 
     fun onRefreshed() {

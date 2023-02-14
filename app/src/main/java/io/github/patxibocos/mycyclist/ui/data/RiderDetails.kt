@@ -17,6 +17,6 @@ sealed class Result(open val race: Race, open val position: Int) {
         override val race: Race,
         val stage: Stage,
         val stageNumber: Int,
-        override val position: Int
+        override val position: Int,
     ) : Result(race, position)
 }

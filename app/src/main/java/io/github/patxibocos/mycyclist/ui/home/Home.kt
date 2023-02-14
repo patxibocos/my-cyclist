@@ -61,14 +61,14 @@ fun Home() {
             BottomBar(navController, showBottomBar) { screen ->
                 reselectedScreen.value = screen
             }
-        }
+        },
     ) {
         AppNavigation(
             navController = navController,
             reselectedScreen = reselectedScreen,
             onReselectedScreenConsumed = {
                 reselectedScreen.value = null
-            }
+            },
         )
     }
 }
@@ -77,7 +77,7 @@ fun Home() {
 private fun BottomBar(
     navController: NavController,
     showBottomBar: MutableState<Boolean>,
-    screenReselected: (Screen) -> Unit
+    screenReselected: (Screen) -> Unit,
 ) {
     val currentScreen by navController.currentScreenAsState(onNavigatedToRootScreen = {
         showBottomBar.value = true
@@ -85,15 +85,15 @@ private fun BottomBar(
     AnimatedVisibility(
         visible = showBottomBar.value && currentScreen != null,
         enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it })
+        exit = slideOutVertically(targetOffsetY = { it }),
     ) {
         Surface(
             modifier = Modifier.navigationBarsPadding(),
-            color = Color.Transparent
+            color = Color.Transparent,
         ) {
             NavigationBar(
                 tonalElevation = 2.dp,
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface,
             ) {
                 val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
                 screens.forEach { screen ->
@@ -106,7 +106,7 @@ private fun BottomBar(
                                 } else {
                                     screen.unselectedIcon
                                 },
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         },
                         label = { Text(stringResource(screen.label)) },
@@ -122,7 +122,7 @@ private fun BottomBar(
                                     saveState = true
                                 }
                             }
-                        }
+                        },
                     )
                 }
             }

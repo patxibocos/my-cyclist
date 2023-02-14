@@ -52,7 +52,7 @@ internal fun RacesRoute(
     onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    viewModel: RacesViewModel = hiltViewModel()
+    viewModel: RacesViewModel = hiltViewModel(),
 ) {
     val racesViewState by viewModel.racesViewState.collectAsState()
     RacesScreen(
@@ -61,7 +61,7 @@ internal fun RacesRoute(
         onStageSelected = onStageSelected,
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
-        onRefreshed = viewModel::onRefreshed
+        onRefreshed = viewModel::onRefreshed,
     )
 }
 
@@ -72,7 +72,7 @@ private fun RacesScreen(
     onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    onRefreshed: () -> Unit
+    onRefreshed: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = reselectedScreen.value) {
@@ -89,7 +89,7 @@ private fun RacesScreen(
                     modifier = Modifier
                         .fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(5.dp),
-                    state = lazyListState
+                    state = lazyListState,
                 ) {
                     when (racesViewState) {
                         RacesViewState.EmptyViewState -> {}
@@ -103,7 +103,7 @@ private fun RacesScreen(
                                 racesViewState.todayStages,
                                 racesViewState.futureRaces,
                                 onRaceSelected,
-                                onStageSelected
+                                onStageSelected,
                             )
                         }
 
@@ -126,7 +126,7 @@ private fun LazyListScope.seasonInProgress(
     todayStages: List<TodayStage>,
     futureRaces: List<Race>,
     onRaceSelected: (Race) -> Unit,
-    onStageSelected: (Race, Stage) -> Unit
+    onStageSelected: (Race, Stage) -> Unit,
 ) {
     item {
         Text(
@@ -135,7 +135,7 @@ private fun LazyListScope.seasonInProgress(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(10.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
     }
     if (todayStages.isEmpty()) {
@@ -149,14 +149,14 @@ private fun LazyListScope.seasonInProgress(
                 todayStage.race,
                 todayStage.stage,
                 todayStage.stageNumber,
-                onStageSelected
+                onStageSelected,
             )
 
             is TodayStage.RestDay -> TodayRestDayStage(todayStage.race, onRaceSelected)
             is TodayStage.SingleDayRace -> TodaySingleDayRaceStage(
                 todayStage.race,
                 todayStage.stage,
-                onRaceSelected
+                onRaceSelected,
             )
         }
     }
@@ -168,7 +168,7 @@ private fun LazyListScope.seasonInProgress(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .padding(10.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
         }
         items(
@@ -176,7 +176,7 @@ private fun LazyListScope.seasonInProgress(
             key = Race::id,
             itemContent = { race ->
                 RaceRow(race, onRaceSelected)
-            }
+            },
         )
     }
     if (pastRaces.isNotEmpty()) {
@@ -187,7 +187,7 @@ private fun LazyListScope.seasonInProgress(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .padding(10.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
         }
         items(
@@ -195,7 +195,7 @@ private fun LazyListScope.seasonInProgress(
             key = Race::id,
             itemContent = { race ->
                 RaceRow(race, onRaceSelected)
-            }
+            },
         )
     }
 }
@@ -205,14 +205,14 @@ private fun TodayMultiStageRaceStage(
     race: Race,
     stage: Stage,
     stageNumber: Int,
-    onStageSelected: (Race, Stage) -> Unit
+    onStageSelected: (Race, Stage) -> Unit,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 onStageSelected(race, stage)
-            }
+            },
     ) {
         Text("${race.name} - Stage $stageNumber")
         Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
@@ -231,7 +231,7 @@ private fun TodayRestDayStage(race: Race, onRaceSelected: (Race) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onRaceSelected(race) }
+            .clickable { onRaceSelected(race) },
     ) {
         Text("Rest day - ${race.name}")
     }
@@ -242,7 +242,7 @@ private fun TodaySingleDayRaceStage(race: Race, stage: Stage, onRaceSelected: (R
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onRaceSelected(race) }
+            .clickable { onRaceSelected(race) },
     ) {
         Text(text = race.name)
     }
@@ -264,7 +264,7 @@ private fun LazyListScope.seasonEnded(pastRaces: List<Race>, onRaceSelected: (Ra
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.seasonNotStarted(
     futureRaces: List<Race>,
-    onRaceSelected: (Race) -> Unit
+    onRaceSelected: (Race) -> Unit,
 ) {
     item {
         Text(text = "Season has not started")
@@ -280,22 +280,22 @@ private fun LazyListScope.seasonNotStarted(
 @Composable
 private fun RaceRow(
     race: Race,
-    onRaceSelected: (Race) -> Unit
+    onRaceSelected: (Race) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .clickable { onRaceSelected(race) }
+            .clickable { onRaceSelected(race) },
     ) {
         Text(
             text = "${getCountryEmoji(race.country)} ${race.name}",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
         Row {
             Card(
                 border = BorderStroke(2.dp, Color.White),
-                modifier = Modifier.padding(end = 10.dp)
+                modifier = Modifier.padding(end = 10.dp),
             ) {
                 val (day, month) = ddMMMFormat(race.startDate)
                     .uppercase()
@@ -304,11 +304,11 @@ private fun RaceRow(
                     Text(
                         text = day,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                     Text(
                         text = month,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     )
                 }
             }
@@ -316,8 +316,8 @@ private fun RaceRow(
                 text = LocalContext.current.resources.getQuantityString(
                     R.plurals.races_stages,
                     race.stages.size,
-                    race.stages.size
-                )
+                    race.stages.size,
+                ),
             )
         }
     }

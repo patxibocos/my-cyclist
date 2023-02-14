@@ -20,7 +20,7 @@ val teamPreview: Team by lazy {
         bike = "Canyon",
         jersey = "",
         website = "https://github.com/patxibocos/",
-        riderIds = emptyList()
+        riderIds = emptyList(),
     )
 }
 
@@ -36,7 +36,7 @@ val riderPreview: Rider by lazy {
         weight = 70,
         height = 185,
         photo = "https://avatars.githubusercontent.com/u/4415614",
-        uciRankingPosition = 1
+        uciRankingPosition = 1,
     )
 }
 
@@ -50,7 +50,7 @@ val stagePreview: Stage by lazy {
         arrival = "Barcelona",
         stageType = StageType.REGULAR,
         result = emptyList(),
-        gcResult = emptyList()
+        gcResult = emptyList(),
     )
 }
 
@@ -64,6 +64,6 @@ val racePreview: Race by lazy {
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),
-        result = emptyList()
+        result = emptyList(),
     )
 }
