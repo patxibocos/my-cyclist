@@ -59,8 +59,6 @@ val racePreview: Race by lazy {
         id = "vuelta-a-espana",
         name = "La Vuelta ciclista a España",
         country = "ES",
-        startDate = LocalDate.now(),
-        endDate = LocalDate.now(),
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),

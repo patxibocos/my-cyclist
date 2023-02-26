@@ -11,8 +11,6 @@ data class Race(
     val name: String,
     val stages: List<Stage>,
     val country: String,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
     val website: String,
     val teamParticipations: List<TeamParticipation>,
     val result: List<ParticipantResult>,
@@ -27,19 +25,24 @@ data class TeamParticipation(val teamId: String, val riderParticipations: List<R
 @Immutable
 data class RiderParticipation(val riderId: String, val number: Int)
 
-fun Race.isSingleDay(): Boolean =
-    startDate == endDate
+fun Race.isSingleDay(): Boolean = this.stages.size == 1
 
 fun Race.isFinished(): Boolean =
     this.stages.last().result.isAvailable()
+
+fun Race.startDate(): LocalDate =
+    this.stages.first().startDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDate()
+
+fun Race.endDate(): LocalDate =
+    this.stages.last().startDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDate()
 
 private fun today(): LocalDate = LocalDate.now(ZoneId.systemDefault())
 
 fun Race.isActive(): Boolean = this.isPast().not() && this.isFuture().not()
 
-fun Race.isPast(): Boolean = today().isAfter(this.endDate)
+fun Race.isPast(): Boolean = today().isAfter(this.endDate())
 
-fun Race.isFuture(): Boolean = today().isBefore(this.startDate)
+fun Race.isFuture(): Boolean = today().isBefore(this.startDate())
 
 fun Race.todayStage(): Pair<Stage, Int>? =
     this.stages.find { it.startDateTime.toLocalDate() == today() }

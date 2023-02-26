@@ -100,10 +100,6 @@ fun RaceOuterClass.Race.toDomain(): Race {
         id = this.id,
         name = this.name,
         country = this.country,
-        startDate = Instant.ofEpochSecond(this.startDate.seconds).atZone(ZoneId.systemDefault())
-            .toLocalDate(),
-        endDate = Instant.ofEpochSecond(this.endDate.seconds).atZone(ZoneId.systemDefault())
-            .toLocalDate(),
         stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
         website = this.website,
         teamParticipations = this.teamsList.map(RaceOuterClass.TeamParticipation::toDomain),

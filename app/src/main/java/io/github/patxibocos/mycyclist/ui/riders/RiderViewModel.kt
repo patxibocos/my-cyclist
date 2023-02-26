@@ -9,8 +9,10 @@ import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
+import io.github.patxibocos.mycyclist.data.endDate
 import io.github.patxibocos.mycyclist.data.isFinished
 import io.github.patxibocos.mycyclist.data.isSingleDay
+import io.github.patxibocos.mycyclist.data.startDate
 import io.github.patxibocos.mycyclist.ui.data.Participation
 import io.github.patxibocos.mycyclist.ui.data.Result
 import kotlinx.coroutines.CoroutineDispatcher
@@ -80,9 +82,9 @@ suspend fun riderParticipations(
         }
         val today = LocalDate.now(ZoneId.systemDefault())
         val currentParticipation =
-            participations.find { it.race.startDate <= today && it.race.endDate >= today }
-        val pastParticipations = participations.filter { it.race.endDate < today }
-        val futureParticipations = participations.filter { it.race.startDate > today }
+            participations.find { it.race.startDate() <= today && it.race.endDate() >= today }
+        val pastParticipations = participations.filter { it.race.endDate() < today }
+        val futureParticipations = participations.filter { it.race.startDate() > today }
         Triple(pastParticipations, currentParticipation, futureParticipations)
     }
 }

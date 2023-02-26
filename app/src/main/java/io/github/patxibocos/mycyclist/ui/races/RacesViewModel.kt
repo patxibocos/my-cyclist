@@ -6,10 +6,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.endDate
 import io.github.patxibocos.mycyclist.data.isActive
 import io.github.patxibocos.mycyclist.data.isFuture
 import io.github.patxibocos.mycyclist.data.isPast
 import io.github.patxibocos.mycyclist.data.isSingleDay
+import io.github.patxibocos.mycyclist.data.startDate
 import io.github.patxibocos.mycyclist.data.todayStage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +34,8 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
 
     val racesViewState: StateFlow<RacesViewState> =
         combine(dataRepository.races, _refreshing) { races, refreshing ->
-            val minStartDate = races.first().startDate
-            val maxEndDate = races.last().endDate
+            val minStartDate = races.first().startDate()
+            val maxEndDate = races.last().endDate()
             val today = LocalDate.now(ZoneId.systemDefault())
             when {
                 today.isBefore(minStartDate) -> RacesViewState.SeasonNotStartedViewState(
