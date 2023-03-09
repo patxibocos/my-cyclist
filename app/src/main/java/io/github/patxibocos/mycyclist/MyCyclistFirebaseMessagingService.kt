@@ -93,14 +93,14 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
                 FLAG_IMMUTABLE,
             )
         val notification =
-            NotificationCompat.Builder(this@MyCyclistFirebaseMessagingService, CHANNEL_ID)
+            NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.btn_star)
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(resultsPendingIntent)
                 .build()
-        with(NotificationManagerCompat.from(this@MyCyclistFirebaseMessagingService)) {
+        with(NotificationManagerCompat.from(this)) {
             notify(Random.nextInt(), notification)
         }
     }

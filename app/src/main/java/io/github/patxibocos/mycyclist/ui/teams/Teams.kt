@@ -92,7 +92,14 @@ private fun TeamsScreen(
         }
     }
     Column {
-        CenterAlignedTopAppBar(title = stringResource(R.string.teams_title))
+        CenterAlignedTopAppBar(title = stringResource(R.string.teams_title)) {
+            if (pagerState.currentPage == 0) {
+                worldTeamsLazyGridState.scrollToItem(0)
+            } else {
+                proTeamsLazyGridState.scrollToItem(0)
+            }
+            onReselectedScreenConsumed()
+        }
         Surface {
             RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
                 Column {

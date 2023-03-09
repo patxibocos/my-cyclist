@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -45,6 +47,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +62,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -67,6 +71,7 @@ import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun RidersRoute(
@@ -102,6 +107,7 @@ private fun RidersScreen(
     onToggled: () -> Unit,
     onRefreshed: () -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
     Column {
         val focusManager = LocalFocusManager.current
         TopAppBar(
@@ -110,6 +116,9 @@ private fun RidersScreen(
             onSortingSelected,
             onRiderSearched,
             onToggled = onToggled,
+            onClicked = {
+                lazyListState.scrollToItem(0)
+            },
         )
         Surface {
             RidersList(
@@ -119,6 +128,7 @@ private fun RidersScreen(
                     onRiderSelected(it)
                 },
                 screenReselected = reselectedScreen,
+                lazyListState = lazyListState,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
                 onRefreshed = onRefreshed,
             )
@@ -134,6 +144,7 @@ private fun TopAppBar(
     onSortingSelected: (Sorting) -> Unit,
     onSearched: (String) -> Unit,
     onToggled: () -> Unit,
+    onClicked: suspend () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
@@ -142,6 +153,8 @@ private fun TopAppBar(
             containerColor = Color.Transparent,
         ),
         title = {
+            val interactionSource = remember { MutableInteractionSource() }
+            val coroutineScope = rememberCoroutineScope()
             AnimatedContent(topBarState.searching) {
                 if (it) {
                     TextField(
@@ -178,7 +191,20 @@ private fun TopAppBar(
                     LaunchedEffect(Unit) {
                         focusManager.clearFocus()
                     }
-                    Text(text = stringResource(R.string.riders_title))
+                    Text(
+                        text = stringResource(R.string.riders_title),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null,
+                            ) {
+                                coroutineScope.launch {
+                                    onClicked()
+                                }
+                            }
+                            .fillMaxWidth(),
+                    )
                 }
             }
         },
@@ -261,10 +287,10 @@ private fun RidersList(
     ridersState: RidersViewState,
     onRiderSelected: (Rider) -> Unit,
     screenReselected: State<Screen?>,
+    lazyListState: LazyListState,
     onReselectedScreenConsumed: () -> Unit,
     onRefreshed: () -> Unit,
 ) {
-    val lazyListState = rememberLazyListState()
     LaunchedEffect(key1 = screenReselected.value) {
         if (screenReselected.value == Screen.Riders) {
             lazyListState.scrollToItem(0)

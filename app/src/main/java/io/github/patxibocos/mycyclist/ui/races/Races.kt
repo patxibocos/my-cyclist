@@ -84,7 +84,9 @@ private fun RacesScreen(
         }
     }
     Column {
-        CenterAlignedTopAppBar(title = stringResource(R.string.races_title))
+        CenterAlignedTopAppBar(title = stringResource(R.string.races_title)) {
+            lazyListState.scrollToItem(0)
+        }
         Surface {
             RefreshableContent(racesViewState.isRefreshing, onRefreshed) {
                 LazyColumn(
