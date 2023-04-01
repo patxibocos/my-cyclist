@@ -34,7 +34,7 @@ internal fun RiderRoute(
 }
 
 @Composable
-private fun RiderScreen(
+internal fun RiderScreen(
     riderViewState: RiderViewState,
     onTeamSelected: (Team) -> Unit,
     onRaceSelected: (Race) -> Unit,

@@ -31,7 +31,7 @@ internal fun TeamRoute(
 }
 
 @Composable
-private fun TeamScreen(
+internal fun TeamScreen(
     teamViewState: TeamViewState,
     onRiderSelected: (Rider) -> Unit,
     onBackPressed: () -> Unit,

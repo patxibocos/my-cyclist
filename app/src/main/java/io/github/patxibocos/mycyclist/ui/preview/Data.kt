@@ -10,7 +10,7 @@ import io.github.patxibocos.mycyclist.data.TeamStatus
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-private val teamPreview: Team by lazy {
+internal val teamPreview: Team by lazy {
     Team(
         id = "cycling-team",
         name = "Cycling Team",
@@ -24,7 +24,7 @@ private val teamPreview: Team by lazy {
     )
 }
 
-private val riderPreview: Rider by lazy {
+internal val riderPreview: Rider by lazy {
     Rider(
         id = "patxi-bocos",
         firstName = "Patxi",
@@ -54,7 +54,7 @@ private val stagePreview: Stage by lazy {
     )
 }
 
-private val racePreview: Race by lazy {
+internal val racePreview: Race by lazy {
     Race(
         id = "vuelta-a-espana",
         name = "La Vuelta ciclista a España",
