@@ -1,6 +1,7 @@
 /* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.teams
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +20,8 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -40,9 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
@@ -68,7 +68,7 @@ internal fun TeamsRoute(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TeamsScreen(
     teamsViewState: TeamsViewState,
@@ -120,7 +120,7 @@ private fun TeamsScreen(
                         )
                     }
                     HorizontalPager(
-                        count = 2,
+                        pageCount = 2,
                         state = pagerState,
                     ) { page ->
                         if (page == 0) {

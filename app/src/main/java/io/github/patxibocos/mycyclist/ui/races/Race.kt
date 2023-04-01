@@ -1,12 +1,15 @@
 /* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.races
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,9 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
@@ -85,7 +85,7 @@ private fun SingleStage(stage: Stage) {
     Text(text = isoFormat(stage.startDateTime))
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StagesList(
     stages: List<Stage>,
@@ -97,7 +97,7 @@ private fun StagesList(
     onResultsModeChanged: (ResultsMode) -> Unit,
     onStageSelected: (Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState(currentStageIndex)
+    val pagerState = rememberPagerState(initialPage = currentStageIndex)
     val coroutineScope = rememberCoroutineScope()
     ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -119,7 +119,7 @@ private fun StagesList(
     HorizontalPager(
         modifier = Modifier.fillMaxSize(),
         state = pagerState,
-        count = stages.size,
+        pageCount = stages.size,
         verticalAlignment = Alignment.Top,
     ) { page ->
         Stage(
