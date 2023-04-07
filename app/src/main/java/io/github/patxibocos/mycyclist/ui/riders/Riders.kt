@@ -155,7 +155,7 @@ private fun TopAppBar(
         title = {
             val interactionSource = remember { MutableInteractionSource() }
             val coroutineScope = rememberCoroutineScope()
-            AnimatedContent(topBarState.searching) {
+            AnimatedContent(topBarState.searching, label = "RidersTopAppBarAnimatedContent") {
                 if (it) {
                     TextField(
                         value = topBarState.search,
