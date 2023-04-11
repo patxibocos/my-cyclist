@@ -248,6 +248,14 @@ private fun TodaySingleDayRaceStage(race: Race, stage: Stage, onRaceSelected: (R
             .clickable { onRaceSelected(race) },
     ) {
         Text(text = race.name)
+        Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
+        Text(formatTime(stage.startDateTime))
+        if (stage.areResultsAvailable()) {
+            // Show a button to go to results
+            Button(onClick = { onRaceSelected(race) }) {
+                Text("See results")
+            }
+        }
     }
 }
 

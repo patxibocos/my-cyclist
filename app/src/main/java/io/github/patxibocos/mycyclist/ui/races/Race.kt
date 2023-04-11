@@ -63,7 +63,9 @@ internal fun RaceScreen(
         SmallTopAppBar(title = raceViewState.race?.name.toString(), onBackPressed)
         if (raceViewState.race != null) {
             if (raceViewState.race.stages.size == 1) {
-                SingleStage(raceViewState.race.stages.first())
+                val stage = raceViewState.race.stages.first()
+                val stageResults = raceViewState.stageResults[stage]!!
+                SingleStage(stage, stageResults, onRiderSelected, onTeamSelected)
             } else {
                 StagesList(
                     raceViewState.race.stages,
@@ -81,8 +83,14 @@ internal fun RaceScreen(
 }
 
 @Composable
-private fun SingleStage(stage: Stage) {
-    Text(text = isoFormat(stage.startDateTime))
+private fun SingleStage(
+    stage: Stage,
+    stageResults: StageResults,
+    onRiderSelected: (Rider) -> Unit,
+    onTeamSelected: (Team) -> Unit,
+) {
+    StageData(stage)
+    ParticipantResults(stageResults.gcResult, onRiderSelected, onTeamSelected)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -133,6 +141,20 @@ private fun StagesList(
     }
 }
 
+@Composable
+private fun StageData(stage: Stage) {
+    Text(text = isoFormat(stage.startDateTime))
+    if (stage.departure.isNotEmpty() && stage.arrival.isNotEmpty()) {
+        Text(text = "${stage.departure} - ${stage.arrival}")
+    }
+    if (stage.distance > 0) {
+        Text(text = "${stage.distance} km")
+    }
+    if (stage.profileType != null) {
+        Text(text = stage.profileType.toString())
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Stage(
@@ -143,17 +165,8 @@ private fun Stage(
     onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
 ) {
-    Column {
-        Text(text = isoFormat(stage.startDateTime))
-        if (stage.departure.isNotEmpty() && stage.arrival.isNotEmpty()) {
-            Text(text = "${stage.departure} - ${stage.arrival}")
-        }
-        if (stage.distance > 0) {
-            Text(text = "${stage.distance} km")
-        }
-        if (stage.profileType != null) {
-            Text(text = stage.profileType.toString())
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        StageData(stage)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             ElevatedFilterChip(
                 selected = resultsMode == ResultsMode.StageResults,
@@ -174,11 +187,7 @@ private fun Stage(
             ResultsMode.StageResults -> stageResults.result
             ResultsMode.GcResults -> stageResults.gcResult
         }
-        if (results.isNotEmpty()) {
-            ParticipantResults(results, onRiderSelected, onTeamSelected)
-        } else {
-            Text(text = "Results not available yet")
-        }
+        ParticipantResults(results, onRiderSelected, onTeamSelected)
     }
 }
 
@@ -188,6 +197,10 @@ private fun ParticipantResults(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
 ) {
+    if (results.isEmpty()) {
+        Text(text = "Results not available yet")
+        return
+    }
     results.forEachIndexed { i, participantResult ->
         val duration = if (i == 0) {
             participantResult.time.seconds.toString()
