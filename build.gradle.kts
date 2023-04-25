@@ -30,5 +30,7 @@ subprojects {
             target("*.gradle.kts")
             ktlint(libs.versions.ktlint.get())
         }
+        // https://github.com/diffplug/spotless/issues/1644
+        lineEndings = com.diffplug.spotless.LineEnding.PLATFORM_NATIVE
     }
 }
