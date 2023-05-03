@@ -1,6 +1,6 @@
 [versions]
 compose-compiler = "1.4.6"
-compose-bom = "2023.04.01"
+compose-bom = "2023.05.00"
 firebase-bom = "32.0.0"
 hilt = "2.46"
 kotlin = "1.8.20"
