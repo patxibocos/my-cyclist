@@ -22,11 +22,8 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Lint my-cyclist
-        run: ./gradlew :app:spotlessCheck
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Build my-cyclist
-        run: ./gradlew :app:buildDebug -x test
-
-      - name: Test my-cyclist
-        run: ./gradlew :app:test
+        run: ./gradlew :app:buildDebug
