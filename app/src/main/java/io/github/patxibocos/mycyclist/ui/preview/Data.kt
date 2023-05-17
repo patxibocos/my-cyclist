@@ -7,6 +7,8 @@ import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
+import io.github.patxibocos.mycyclist.ui.races.ParticipantResult
+import io.github.patxibocos.mycyclist.ui.races.StageResults
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -63,5 +65,19 @@ internal val racePreview: Race by lazy {
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),
         result = emptyList(),
+    )
+}
+
+internal val stageResultsPreview: Map<Stage, StageResults> by lazy {
+    mapOf(
+        stagePreview to StageResults(
+            result = listOf(
+                ParticipantResult.RiderResult(
+                    riderPreview,
+                    0,
+                ),
+            ),
+            gcResult = listOf(ParticipantResult.RiderResult(riderPreview, 0)),
+        ),
     )
 }

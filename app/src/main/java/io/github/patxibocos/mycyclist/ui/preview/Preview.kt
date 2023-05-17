@@ -72,7 +72,7 @@ fun RacePreview() {
                 race = racePreview,
                 currentStageIndex = 0,
                 resultsMode = ResultsMode.StageResults,
-                stageResults = emptyMap(),
+                stageResults = stageResultsPreview,
             ),
             onRiderSelected = {},
             onTeamSelected = {},
