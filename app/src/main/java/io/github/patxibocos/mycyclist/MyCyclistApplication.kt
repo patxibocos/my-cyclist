@@ -3,7 +3,6 @@ package io.github.patxibocos.mycyclist
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import coil.Coil
 import coil.ImageLoader
 import com.google.firebase.ktx.Firebase
@@ -40,23 +39,19 @@ class MyCyclistApplication : Application() {
     }
 
     private fun createNotificationChannel() {
-        // If the Android Version is greater than Oreo,
-        // then create the NotificationChannel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "notifications-channel"
+        val channelName = "notifications-channel"
 
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                channelName,
-                NotificationManager.IMPORTANCE_DEFAULT,
-            ).apply {
-                description = "Notifications"
-            }
-
-            // Register the channel
-            val notificationManager: NotificationManager =
-                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            channelName,
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = "Notifications"
         }
+
+        // Register the channel
+        val notificationManager: NotificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }

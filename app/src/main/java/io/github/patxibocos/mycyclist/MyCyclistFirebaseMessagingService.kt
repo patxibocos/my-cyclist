@@ -48,22 +48,32 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
             }
             val (race, stage) = getRaceAndStage(message.data) ?: return@launch
             val winner = stage.result.first().participantId
-            val winnerName = if (stage.stageType == StageType.TEAM_TIME_TRIAL) {
+            val stageWinnerName = if (stage.stageType == StageType.TEAM_TIME_TRIAL) {
                 requireNotNull(dataRepository.teams.first().find { it.id == winner }).name
             } else {
                 requireNotNull(dataRepository.riders.first().find { it.id == winner }).fullName()
             }
+            val gcFirstName = requireNotNull(
+                dataRepository.riders.first()
+                    .find { it.id == stage.gcResult.first().participantId },
+            ).fullName()
             val stageNumber = race.stages.indexOfFirst { it.id == stage.id } + 1
             val destination = LeafScreen.Race.createRoute(Screen.Races, race.id, stage.id)
-            val notificationMessage = if (race.isSingleDay()) {
-                getString(R.string.notifications_race_results, winnerName)
+            val notificationText: String
+            val notificationSubtext: String?
+            if (race.isSingleDay()) {
+                notificationText = getString(R.string.notifications_race_results, stageWinnerName)
+                notificationSubtext = null
             } else {
-                getString(R.string.notifications_stage_results, winnerName, stageNumber)
+                notificationText =
+                    getString(R.string.notifications_stage_results, stageWinnerName, stageNumber)
+                notificationSubtext = getString(R.string.notifications_gc_results, gcFirstName)
             }
             sendNotification(
                 uri = "mycyclist://$destination".toUri(),
                 title = race.name,
-                text = notificationMessage,
+                text = notificationText,
+                subtext = notificationSubtext,
             )
         }
         super.onMessageReceived(message)
@@ -77,7 +87,7 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
         return race to stage
     }
 
-    private fun sendNotification(uri: Uri, title: String, text: String) {
+    private fun sendNotification(uri: Uri, title: String, text: String, subtext: String?) {
         val activityActionIntent =
             Intent(
                 Intent.ACTION_VIEW,
@@ -98,6 +108,7 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentText(text)
+                .setSubText(subtext)
                 .setContentIntent(resultsPendingIntent)
                 .build()
         with(NotificationManagerCompat.from(this)) {
