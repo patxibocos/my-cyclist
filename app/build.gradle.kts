@@ -11,7 +11,7 @@ plugins {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.23.3"
+        artifact = "com.google.protobuf:protoc:3.23.2"
     }
 
     generateProtoTasks {

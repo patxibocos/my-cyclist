@@ -42,13 +42,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
+import io.github.patxibocos.mycyclist.ui.util.RemoteImage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -200,8 +200,8 @@ private fun TeamRow(
                     bottom.linkTo(jerseyImage.bottom)
                 },
             )
-            AsyncImage(
-                model = team.jersey,
+            RemoteImage(
+                url = team.jersey,
                 modifier = Modifier
                     .constrainAs(jerseyImage) {
                         top.linkTo(parent.top)
@@ -213,7 +213,6 @@ private fun TeamRow(
                     .padding(2.dp)
                     .size(75.dp)
                     .clip(CircleShape),
-                contentDescription = null,
             )
             Text(
                 text = team.name,

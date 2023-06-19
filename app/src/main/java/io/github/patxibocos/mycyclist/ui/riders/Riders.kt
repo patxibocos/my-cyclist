@@ -65,11 +65,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.RefreshableContent
+import io.github.patxibocos.mycyclist.ui.util.RemoteImage
 import io.github.patxibocos.mycyclist.ui.util.getCountryEmoji
 import kotlinx.coroutines.launch
 
@@ -347,8 +347,8 @@ private fun RiderRow(
 ) {
     Column(modifier = Modifier.clickable { onRiderSelected(rider) }) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            AsyncImage(
-                model = rider.photo,
+            RemoteImage(
+                url = rider.photo,
                 modifier = Modifier
                     .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
                     .padding(2.dp)
@@ -356,7 +356,6 @@ private fun RiderRow(
                     .clip(CircleShape),
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Crop,
-                contentDescription = null,
             )
             Box(
                 modifier = Modifier
