@@ -51,8 +51,20 @@ private val stagePreview: Stage by lazy {
         departure = "Bilbao",
         arrival = "Barcelona",
         stageType = StageType.REGULAR,
-        result = emptyList(),
-        gcResult = emptyList(),
+        stageResults = io.github.patxibocos.mycyclist.data.StageResults(
+            time = emptyList(),
+            youth = emptyList(),
+            teams = emptyList(),
+            kom = emptyList(),
+            points = emptyList(),
+        ),
+        generalResults = io.github.patxibocos.mycyclist.data.GeneralResults(
+            time = emptyList(),
+            youth = emptyList(),
+            teams = emptyList(),
+            kom = emptyList(),
+            points = emptyList(),
+        ),
     )
 }
 
@@ -64,7 +76,6 @@ internal val racePreview: Race by lazy {
         website = "https://www.lavuelta.es/",
         stages = listOf(stagePreview),
         teamParticipations = emptyList(),
-        result = emptyList(),
     )
 }
 

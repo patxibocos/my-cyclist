@@ -10,8 +10,8 @@ import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.endDate
-import io.github.patxibocos.mycyclist.data.isFinished
 import io.github.patxibocos.mycyclist.data.isSingleDay
+import io.github.patxibocos.mycyclist.data.result
 import io.github.patxibocos.mycyclist.data.startDate
 import io.github.patxibocos.mycyclist.ui.data.Participation
 import io.github.patxibocos.mycyclist.ui.data.Result
@@ -97,13 +97,13 @@ suspend fun riderResults(
     return withContext(defaultDispatcher) {
         participations.map { it.race }
             .flatMap { race ->
-                val raceResult = race.result.take(3).find { it.participantId == riderId }
-                    ?.let { Result.RaceResult(race, it.position) }.takeIf { race.isFinished() }
+                val raceResult = race.result()?.take(3)?.find { it.participantId == riderId }
+                    ?.let { Result.RaceResult(race, it.position) }
                 if (race.isSingleDay()) {
                     return@flatMap listOfNotNull(raceResult)
                 }
                 val stageResults = race.stages.mapNotNull { stage ->
-                    stage.result.take(3).find { it.participantId == riderId }
+                    stage.stageResults.time.take(3).find { it.participantId == riderId }
                         ?.let {
                             Result.StageResult(
                                 race,

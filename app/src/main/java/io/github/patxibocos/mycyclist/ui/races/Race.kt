@@ -90,7 +90,7 @@ private fun SingleStage(
     onTeamSelected: (Team) -> Unit,
 ) {
     StageData(stage)
-    ParticipantResults(stageResults.gcResult, onRiderSelected, onTeamSelected)
+    ParticipantResults(stageResults.result, onRiderSelected, onTeamSelected)
 }
 
 @OptIn(ExperimentalFoundationApi::class)

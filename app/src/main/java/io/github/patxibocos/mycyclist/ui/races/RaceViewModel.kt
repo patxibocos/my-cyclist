@@ -67,14 +67,17 @@ class RaceViewModel @Inject constructor(
                         stageIndex = race.stages.size - 1
                         resultsMode = ResultsMode.GcResults
                     }
+
                     race.todayStage() != null -> {
                         stageIndex = race.todayStage()!!.second
                         resultsMode = ResultsMode.StageResults
                     }
+
                     race.isActive() -> {
                         stageIndex = race.indexOfLastStageWithResults()
                         resultsMode = ResultsMode.GcResults
                     }
+
                     else -> {
                         stageIndex = 0
                         resultsMode = ResultsMode.StageResults
@@ -98,13 +101,14 @@ class RaceViewModel @Inject constructor(
             val stageResults = race.stages.associateWith { stage ->
                 StageResults(
                     result = when (stage.stageType) {
-                        StageType.TEAM_TIME_TRIAL -> stage.result.map { participantResult ->
+                        StageType.TEAM_TIME_TRIAL -> stage.stageResults.time.map { participantResult ->
                             ParticipantResult.TeamResult(
                                 teams.find { it.id == participantResult.participantId }!!,
                                 participantResult.time,
                             )
                         }
-                        else -> stage.result.map { riderResult ->
+
+                        else -> stage.stageResults.time.map { riderResult ->
                             ParticipantResult.RiderResult(
                                 riders.find { it.id == riderResult.participantId }
                                     ?: buildDummyRider(
@@ -114,7 +118,7 @@ class RaceViewModel @Inject constructor(
                             )
                         }
                     },
-                    gcResult = stage.gcResult.map { riderResult ->
+                    gcResult = stage.generalResults.time.map { riderResult ->
                         ParticipantResult.RiderResult(
                             riders.find { it.id == riderResult.participantId } ?: buildDummyRider(
                                 riderResult.participantId,

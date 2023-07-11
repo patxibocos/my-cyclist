@@ -5,12 +5,17 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import io.github.patxibocos.mycyclist.data.DataRepository
-import io.github.patxibocos.mycyclist.data.ParticipantResult
+import io.github.patxibocos.mycyclist.data.GeneralResults
+import io.github.patxibocos.mycyclist.data.ParticipantResultPoints
+import io.github.patxibocos.mycyclist.data.ParticipantResultTime
+import io.github.patxibocos.mycyclist.data.Place
+import io.github.patxibocos.mycyclist.data.PlaceResult
 import io.github.patxibocos.mycyclist.data.ProfileType
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.RiderParticipation
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.StageResults
 import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamParticipation
@@ -103,15 +108,38 @@ fun RaceOuterClass.Race.toDomain(): Race {
         stages = this.stagesList.map(RaceOuterClass.Stage::toDomain),
         website = this.website,
         teamParticipations = this.teamsList.map(RaceOuterClass.TeamParticipation::toDomain),
-        result = this.resultList.map(RaceOuterClass.ParticipantResult::toDomain),
     )
 }
 
-fun RaceOuterClass.ParticipantResult.toDomain(): ParticipantResult {
-    return ParticipantResult(
+fun RaceOuterClass.ParticipantResultTime.toDomain(): ParticipantResultTime {
+    return ParticipantResultTime(
         position = this.position,
         participantId = this.participantId,
         time = this.time,
+    )
+}
+
+fun RaceOuterClass.ParticipantResultPoints.toDomain(): ParticipantResultPoints {
+    return ParticipantResultPoints(
+        position = this.position,
+        participant = this.participantId,
+        points = this.points,
+    )
+}
+
+fun RaceOuterClass.PlacePoints.toDomain(): PlaceResult {
+    return PlaceResult(
+        place = Place(
+            name = this.place.name,
+            distance = this.place.distance,
+        ),
+        points = this.pointsList.map {
+            ParticipantResultPoints(
+                position = it.position,
+                participant = it.participantId,
+                points = it.points
+            )
+        }
     )
 }
 
@@ -151,8 +179,28 @@ fun RaceOuterClass.Stage.toDomain(): Stage {
             RaceOuterClass.Stage.StageType.STAGE_TYPE_TEAM_TIME_TRIAL -> StageType.TEAM_TIME_TRIAL
             else -> StageType.REGULAR
         },
-        result = this.resultList.map(RaceOuterClass.ParticipantResult::toDomain),
-        gcResult = this.gcResultList.map(RaceOuterClass.ParticipantResult::toDomain),
+        stageResults = this.stageResults.toDomain(),
+        generalResults = this.generalResults.toDomain(),
+    )
+}
+
+fun RaceOuterClass.StageResults.toDomain(): StageResults {
+    return StageResults(
+        time = this.timeList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        youth = this.youthList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        teams = this.teamsList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        kom = this.komList.map(RaceOuterClass.PlacePoints::toDomain),
+        points = this.pointsList.map(RaceOuterClass.PlacePoints::toDomain),
+    )
+}
+
+fun RaceOuterClass.GeneralResults.toDomain(): GeneralResults {
+    return GeneralResults(
+        time = this.timeList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        youth = this.youthList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        teams = this.teamsList.map(RaceOuterClass.ParticipantResultTime::toDomain),
+        kom = this.komList.map(RaceOuterClass.ParticipantResultPoints::toDomain),
+        points = this.pointsList.map(RaceOuterClass.ParticipantResultPoints::toDomain),
     )
 }
 
