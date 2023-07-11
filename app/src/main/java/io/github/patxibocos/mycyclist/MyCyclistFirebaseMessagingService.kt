@@ -47,7 +47,7 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
                 return@launch
             }
             val (race, stage) = getRaceAndStage(message.data) ?: return@launch
-            val winner = stage.result.first().participantId
+            val winner = stage.stageResults.time.first().participantId
             val stageWinnerName = if (stage.stageType == StageType.TEAM_TIME_TRIAL) {
                 requireNotNull(dataRepository.teams.first().find { it.id == winner }).name
             } else {
@@ -55,7 +55,7 @@ class MyCyclistFirebaseMessagingService : FirebaseMessagingService() {
             }
             val gcFirstName = requireNotNull(
                 dataRepository.riders.first()
-                    .find { it.id == stage.gcResult.first().participantId },
+                    .find { it.id == stage.generalResults.time.first().participantId },
             ).fullName()
             val stageNumber = race.stages.indexOfFirst { it.id == stage.id } + 1
             val destination = LeafScreen.Race.createRoute(Screen.Races, race.id, stage.id)

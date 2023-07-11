@@ -1,7 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.races
 
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +22,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
@@ -67,14 +64,17 @@ class RaceViewModel @Inject constructor(
                         stageIndex = race.stages.size - 1
                         resultsMode = ResultsMode.GcResults
                     }
+
                     race.todayStage() != null -> {
                         stageIndex = race.todayStage()!!.second
                         resultsMode = ResultsMode.StageResults
                     }
+
                     race.isActive() -> {
                         stageIndex = race.indexOfLastStageWithResults()
                         resultsMode = ResultsMode.GcResults
                     }
+
                     else -> {
                         stageIndex = 0
                         resultsMode = ResultsMode.StageResults
@@ -98,27 +98,23 @@ class RaceViewModel @Inject constructor(
             val stageResults = race.stages.associateWith { stage ->
                 StageResults(
                     result = when (stage.stageType) {
-                        StageType.TEAM_TIME_TRIAL -> stage.result.map { participantResult ->
+                        StageType.TEAM_TIME_TRIAL -> stage.stageResults.time.map { participantResult ->
                             ParticipantResult.TeamResult(
                                 teams.find { it.id == participantResult.participantId }!!,
                                 participantResult.time,
                             )
                         }
-                        else -> stage.result.map { riderResult ->
+
+                        else -> stage.stageResults.time.map { riderResult ->
                             ParticipantResult.RiderResult(
-                                riders.find { it.id == riderResult.participantId }
-                                    ?: buildDummyRider(
-                                        riderResult.participantId,
-                                    ),
+                                riders.find { it.id == riderResult.participantId }!!,
                                 riderResult.time,
                             )
                         }
                     },
-                    gcResult = stage.gcResult.map { riderResult ->
+                    gcResult = stage.generalResults.time.map { riderResult ->
                         ParticipantResult.RiderResult(
-                            riders.find { it.id == riderResult.participantId } ?: buildDummyRider(
-                                riderResult.participantId,
-                            ),
+                            riders.find { it.id == riderResult.participantId }!!,
                             riderResult.time,
                         )
                     },
@@ -142,25 +138,6 @@ class RaceViewModel @Inject constructor(
             _resultsMode.emit(resultsMode)
         }
     }
-}
-
-private fun buildDummyRider(riderId: String): Rider {
-    val splits = riderId.split("-")
-    val firstName = splits.first().capitalize(Locale.current)
-    val lastName = splits.drop(1).joinToString(" ") { it.capitalize(Locale.current) }
-    return Rider(
-        id = "", // Leaving this empty intentionally so we now this is a dummy rider
-        firstName = firstName,
-        lastName = lastName,
-        photo = "",
-        country = "",
-        website = "",
-        birthDate = LocalDate.MIN,
-        birthPlace = "",
-        weight = 0,
-        height = 0,
-        uciRankingPosition = 0,
-    )
 }
 
 @Immutable

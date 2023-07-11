@@ -13,11 +13,19 @@ data class Race(
     val country: String,
     val website: String,
     val teamParticipations: List<TeamParticipation>,
-    val result: List<ParticipantResult>,
 )
 
 @Immutable
-data class ParticipantResult(val position: Int, val participantId: String, val time: Long)
+data class ParticipantResultTime(val position: Int, val participantId: String, val time: Long)
+
+@Immutable
+data class ParticipantResultPoints(val position: Int, val participant: String, val points: Int)
+
+@Immutable
+data class PlaceResult(val place: Place, val points: List<ParticipantResultPoints>)
+
+@Immutable
+data class Place(val name: String, val distance: Float)
 
 @Immutable
 data class TeamParticipation(val teamId: String, val riderParticipations: List<RiderParticipation>)
@@ -26,9 +34,6 @@ data class TeamParticipation(val teamId: String, val riderParticipations: List<R
 data class RiderParticipation(val riderId: String, val number: Int)
 
 fun Race.isSingleDay(): Boolean = this.stages.size == 1
-
-fun Race.isFinished(): Boolean =
-    this.stages.last().result.isAvailable()
 
 fun Race.startDate(): LocalDate =
     this.stages.first().startDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDate()
@@ -48,7 +53,11 @@ fun Race.todayStage(): Pair<Stage, Int>? =
     this.stages.find { it.startDateTime.toLocalDate() == today() }
         ?.let { it to this.stages.indexOf(it) }
 
-fun Race.indexOfLastStageWithResults(): Int = this.stages.indexOfLast { it.result.isNotEmpty() }
+fun Race.indexOfLastStageWithResults(): Int =
+    this.stages.indexOfLast { it.stageResults.time.isNotEmpty() }
+
+fun Race.result(): List<ParticipantResultTime>? =
+    this.stages.last().generalResults.time.takeIf { it.isAvailable() }
 
 @Immutable
 data class Stage(
@@ -59,11 +68,29 @@ data class Stage(
     val arrival: String,
     val profileType: ProfileType?,
     val stageType: StageType,
-    val result: List<ParticipantResult>,
-    val gcResult: List<ParticipantResult>,
+    val stageResults: StageResults,
+    val generalResults: GeneralResults,
 )
 
-fun Stage.areResultsAvailable() = this.result.isNotEmpty()
+@Immutable
+data class StageResults(
+    val time: List<ParticipantResultTime>,
+    val youth: List<ParticipantResultTime>,
+    val teams: List<ParticipantResultTime>,
+    val kom: List<PlaceResult>,
+    val points: List<PlaceResult>,
+)
+
+@Immutable
+data class GeneralResults(
+    val time: List<ParticipantResultTime>,
+    val youth: List<ParticipantResultTime>,
+    val teams: List<ParticipantResultTime>,
+    val kom: List<ParticipantResultPoints>,
+    val points: List<ParticipantResultPoints>,
+)
+
+fun Stage.areResultsAvailable() = this.stageResults.time.isNotEmpty()
 
 enum class ProfileType {
     FLAT,
@@ -79,6 +106,6 @@ enum class StageType {
     TEAM_TIME_TRIAL,
 }
 
-fun List<ParticipantResult>.isAvailable(): Boolean {
+fun List<ParticipantResultTime>.isAvailable(): Boolean {
     return this.isNotEmpty()
 }
