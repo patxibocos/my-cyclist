@@ -43,7 +43,7 @@ class RaceViewModel @Inject constructor(
             val race = dataRepository.races.first().find { it.id == raceId }!!
             if (race.isSingleDay()) {
                 _stageIndex.emit(0)
-                _resultsMode.emit(ResultsMode.GcResults)
+                _resultsMode.emit(ResultsMode.GeneralResults)
                 return@launch
             }
             val stageIndex: Int
@@ -62,7 +62,7 @@ class RaceViewModel @Inject constructor(
                 when {
                     race.isPast() -> {
                         stageIndex = race.stages.size - 1
-                        resultsMode = ResultsMode.GcResults
+                        resultsMode = ResultsMode.GeneralResults
                     }
 
                     race.todayStage() != null -> {
@@ -72,7 +72,7 @@ class RaceViewModel @Inject constructor(
 
                     race.isActive() -> {
                         stageIndex = race.indexOfLastStageWithResults()
-                        resultsMode = ResultsMode.GcResults
+                        resultsMode = ResultsMode.GeneralResults
                     }
 
                     else -> {
@@ -143,7 +143,7 @@ class RaceViewModel @Inject constructor(
 @Immutable
 enum class ResultsMode {
     StageResults,
-    GcResults,
+    GeneralResults,
 }
 
 @Immutable

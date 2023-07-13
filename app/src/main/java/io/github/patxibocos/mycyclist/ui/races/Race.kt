@@ -176,16 +176,16 @@ private fun Stage(
                 },
             )
             ElevatedFilterChip(
-                selected = resultsMode == ResultsMode.GcResults,
-                onClick = { onResultsModeChanged(ResultsMode.GcResults) },
+                selected = resultsMode == ResultsMode.GeneralResults,
+                onClick = { onResultsModeChanged(ResultsMode.GeneralResults) },
                 label = {
-                    Text(text = ResultsMode.GcResults.toString())
+                    Text(text = ResultsMode.GeneralResults.toString())
                 },
             )
         }
         val results = when (resultsMode) {
             ResultsMode.StageResults -> stageResults.result
-            ResultsMode.GcResults -> stageResults.gcResult
+            ResultsMode.GeneralResults -> stageResults.gcResult
         }
         ParticipantResults(results, onRiderSelected, onTeamSelected)
     }
