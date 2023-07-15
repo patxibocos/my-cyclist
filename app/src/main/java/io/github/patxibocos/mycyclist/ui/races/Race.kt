@@ -17,9 +17,11 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +47,7 @@ internal fun RaceRoute(
         onRiderSelected = onRiderSelected,
         onTeamSelected = onTeamSelected,
         onResultsModeChanged = viewModel::onResultsModeChanged,
+        onClassificationTypeChanged = viewModel::onClassificationTypeChanged,
         onStageSelected = viewModel::onStageSelected,
         onBackPressed = onBackPressed,
     )
@@ -56,6 +59,7 @@ internal fun RaceScreen(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
+    onClassificationTypeChanged: (ClassificationType) -> Unit,
     onStageSelected: (Int) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -64,18 +68,19 @@ internal fun RaceScreen(
         if (raceViewState.race != null) {
             if (raceViewState.race.stages.size == 1) {
                 val stage = raceViewState.race.stages.first()
-                val stageResults = raceViewState.stageResults[stage]!!
-                SingleStage(stage, stageResults, onRiderSelected, onTeamSelected)
+                SingleStage(stage, raceViewState.results, onRiderSelected, onTeamSelected)
             } else {
                 StagesList(
-                    raceViewState.race.stages,
-                    raceViewState.stageResults,
-                    raceViewState.currentStageIndex,
-                    raceViewState.resultsMode,
-                    onRiderSelected,
-                    onTeamSelected,
-                    onResultsModeChanged,
-                    onStageSelected,
+                    stages = raceViewState.race.stages,
+                    stageResults = raceViewState.results,
+                    currentStageIndex = raceViewState.currentStageIndex,
+                    resultsMode = raceViewState.resultsMode,
+                    classificationType = raceViewState.classificationType,
+                    onRiderSelected = onRiderSelected,
+                    onTeamSelected = onTeamSelected,
+                    onResultsModeChanged = onResultsModeChanged,
+                    onClassificationTypeChanged = onClassificationTypeChanged,
+                    onStageSelected = onStageSelected,
                 )
             }
         }
@@ -85,24 +90,26 @@ internal fun RaceScreen(
 @Composable
 private fun SingleStage(
     stage: Stage,
-    stageResults: StageResults,
+    results: Results,
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
 ) {
     StageData(stage)
-    ParticipantResults(stageResults.result, onRiderSelected, onTeamSelected)
+    Results(results, onRiderSelected, onTeamSelected)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StagesList(
     stages: List<Stage>,
-    stageResults: Map<Stage, StageResults>,
+    stageResults: Results,
     currentStageIndex: Int,
     resultsMode: ResultsMode,
+    classificationType: ClassificationType,
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onResultsModeChanged: (ResultsMode) -> Unit,
+    onClassificationTypeChanged: (ClassificationType) -> Unit,
     onStageSelected: (Int) -> Unit,
 ) {
     val pagerState = rememberPagerState(initialPage = currentStageIndex)
@@ -124,19 +131,24 @@ private fun StagesList(
             }
         }
     }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect(onStageSelected)
+    }
     HorizontalPager(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         state = pagerState,
         pageCount = stages.size,
         verticalAlignment = Alignment.Top,
     ) { page ->
         Stage(
             stage = stages[page],
-            stageResults[stages[page]]!!,
-            resultsMode,
+            stageResults = stageResults,
+            resultsMode = resultsMode,
+            classificationType = classificationType,
+            onResultsModeChanged = onResultsModeChanged,
+            onClassificationTypeChanged = onClassificationTypeChanged,
             onRiderSelected = onRiderSelected,
             onTeamSelected = onTeamSelected,
-            onResultsModeChanged = onResultsModeChanged,
         )
     }
 }
@@ -159,73 +171,119 @@ private fun StageData(stage: Stage) {
 @Composable
 private fun Stage(
     stage: Stage,
-    stageResults: StageResults,
+    stageResults: Results,
     resultsMode: ResultsMode,
+    classificationType: ClassificationType,
+    onResultsModeChanged: (ResultsMode) -> Unit,
+    onClassificationTypeChanged: (ClassificationType) -> Unit,
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
-    onResultsModeChanged: (ResultsMode) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         StageData(stage)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             ElevatedFilterChip(
-                selected = resultsMode == ResultsMode.StageResults,
-                onClick = { onResultsModeChanged(ResultsMode.StageResults) },
+                selected = resultsMode == ResultsMode.Stage,
+                onClick = { onResultsModeChanged(ResultsMode.Stage) },
                 label = {
-                    Text(text = ResultsMode.StageResults.toString())
+                    Text(text = ResultsMode.Stage.toString())
                 },
             )
             ElevatedFilterChip(
-                selected = resultsMode == ResultsMode.GeneralResults,
-                onClick = { onResultsModeChanged(ResultsMode.GeneralResults) },
+                selected = resultsMode == ResultsMode.General,
+                onClick = { onResultsModeChanged(ResultsMode.General) },
                 label = {
-                    Text(text = ResultsMode.GeneralResults.toString())
+                    Text(text = ResultsMode.General.toString())
                 },
             )
         }
-        val results = when (resultsMode) {
-            ResultsMode.StageResults -> stageResults.result
-            ResultsMode.GeneralResults -> stageResults.gcResult
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            ClassificationType.values().forEach {
+                ElevatedFilterChip(
+                    selected = classificationType == it,
+                    onClick = { onClassificationTypeChanged(it) },
+                    label = {
+                        Text(text = it.toString())
+                    },
+                )
+            }
         }
-        ParticipantResults(results, onRiderSelected, onTeamSelected)
+        Results(stageResults, onRiderSelected, onTeamSelected)
     }
 }
 
 @Composable
-private fun ParticipantResults(
-    results: List<ParticipantResult>,
+private fun Results(
+    results: Results,
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
 ) {
-    if (results.isEmpty()) {
-        Text(text = "Results not available yet")
-        return
+    when (results) {
+        is Results.RidersPointResult -> RidersPointResult(results, onRiderSelected)
+        Results.RidersPointsPerPlaceResult -> RidersPointsPerPlaceResult(results, onRiderSelected)
+        is Results.RidersTimeResult -> RidersTimeResult(results, onRiderSelected)
+        is Results.TeamsTimeResult -> TeamsTimeResult(results, onTeamSelected)
     }
-    results.forEachIndexed { i, participantResult ->
-        val duration = if (i == 0) {
-            participantResult.time.seconds.toString()
-        } else {
-            "+${(participantResult.time - results.first().time).seconds}"
-        }
-        when (participantResult) {
-            is ParticipantResult.RiderResult -> Text(
-                text = "${i + 1}. ${participantResult.rider.fullName()} - $duration",
-                modifier = Modifier
-                    .fillMaxWidth().run {
-                        if (participantResult.rider.id.isNotEmpty()) {
-                            clickable { onRiderSelected(participantResult.rider) }
-                        } else {
-                            this
-                        }
-                    },
-            )
+}
 
-            is ParticipantResult.TeamResult -> Text(
-                text = "${i + 1}. ${participantResult.team.name} - $duration",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onTeamSelected(participantResult.team) },
-            )
+@Composable
+private fun RidersPointResult(
+    results: Results.RidersPointResult,
+    onRiderSelected: (Rider) -> Unit,
+) {
+    results.riders.forEachIndexed { i, (rider, points) ->
+        Text(
+            text = "${i + 1}. ${rider.fullName()} - $points",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onRiderSelected(rider) },
+        )
+    }
+}
+
+@Composable
+private fun RidersPointsPerPlaceResult(
+    results: Results,
+    onRiderSelected: (Rider) -> Unit,
+) {
+}
+
+@Composable
+private fun RidersTimeResult(
+    results: Results.RidersTimeResult,
+    onRiderSelected: (Rider) -> Unit,
+) {
+    results.riders.forEachIndexed { i, (rider, time) ->
+        val duration = if (i == 0) {
+            time.seconds.toString()
+        } else {
+            "+${(time - results.riders.first().time).seconds}"
         }
+        Text(
+            text = "${i + 1}. ${rider.fullName()} - $duration",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onRiderSelected(rider) },
+        )
+    }
+}
+
+@Composable
+private fun TeamsTimeResult(
+    results: Results.TeamsTimeResult,
+    onTeamSelected: (Team) -> Unit,
+) {
+    results.teams.forEachIndexed { i, (team, time) ->
+        val duration = if (i == 0) {
+            time.seconds.toString()
+        } else {
+            "+${(time - results.teams.first().time).seconds}"
+        }
+        Text(
+            text = "${i + 1}. ${team.name} - $duration",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onTeamSelected(team) },
+        )
     }
 }

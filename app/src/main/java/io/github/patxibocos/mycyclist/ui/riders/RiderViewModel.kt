@@ -69,7 +69,7 @@ class RiderViewModel @Inject constructor(
         )
 }
 
-suspend fun riderParticipations(
+private suspend fun riderParticipations(
     defaultDispatcher: CoroutineDispatcher,
     riderId: String,
     races: List<Race>,
@@ -89,7 +89,7 @@ suspend fun riderParticipations(
     }
 }
 
-suspend fun riderResults(
+private suspend fun riderResults(
     defaultDispatcher: CoroutineDispatcher,
     riderId: String,
     participations: List<Participation>,

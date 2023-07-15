@@ -7,9 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.patxibocos.mycyclist.ui.races.ClassificationType
 import io.github.patxibocos.mycyclist.ui.races.RaceScreen
 import io.github.patxibocos.mycyclist.ui.races.RaceViewState
+import io.github.patxibocos.mycyclist.ui.races.Results
 import io.github.patxibocos.mycyclist.ui.races.ResultsMode
+import io.github.patxibocos.mycyclist.ui.races.RiderTimeResult
 import io.github.patxibocos.mycyclist.ui.riders.RiderScreen
 import io.github.patxibocos.mycyclist.ui.riders.RiderViewState
 import io.github.patxibocos.mycyclist.ui.teams.TeamScreen
@@ -71,12 +74,14 @@ fun RacePreview() {
             raceViewState = RaceViewState(
                 race = racePreview,
                 currentStageIndex = 0,
-                resultsMode = ResultsMode.StageResults,
-                stageResults = stageResultsPreview,
+                resultsMode = ResultsMode.Stage,
+                classificationType = ClassificationType.Time,
+                results = Results.RidersTimeResult(listOf(RiderTimeResult(riderPreview, 0L))),
             ),
             onRiderSelected = {},
             onTeamSelected = {},
             onResultsModeChanged = {},
+            onClassificationTypeChanged = {},
             onStageSelected = {},
             onBackPressed = {},
         )
