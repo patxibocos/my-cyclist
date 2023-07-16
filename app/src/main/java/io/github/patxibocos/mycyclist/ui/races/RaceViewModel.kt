@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.DefaultDispatcher
 import io.github.patxibocos.mycyclist.data.DataRepository
+import io.github.patxibocos.mycyclist.data.Place
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
@@ -181,7 +182,17 @@ private suspend fun stageResults(
             }
 
             ClassificationType.Points -> when (resultsMode) {
-                ResultsMode.Stage -> Results.RidersPointsPerPlaceResult
+                ResultsMode.Stage -> Results.RidersPointsPerPlaceResult(
+                    stage.stageResults.points.associate {
+                        it.place to it.points.map { riderResult ->
+                            RiderPointsResult(
+                                riders.find { rider -> rider.id == riderResult.participant }!!,
+                                riderResult.points,
+                            )
+                        }
+                    },
+                )
+
                 ResultsMode.General -> Results.RidersPointResult(
                     stage.generalResults.points.map { participantResult ->
                         RiderPointsResult(
@@ -193,7 +204,17 @@ private suspend fun stageResults(
             }
 
             ClassificationType.Kom -> when (resultsMode) {
-                ResultsMode.Stage -> Results.RidersPointsPerPlaceResult
+                ResultsMode.Stage -> Results.RidersPointsPerPlaceResult(
+                    stage.stageResults.kom.associate {
+                        it.place to it.points.map { riderResult ->
+                            RiderPointsResult(
+                                riders.find { rider -> rider.id == riderResult.participant }!!,
+                                riderResult.points,
+                            )
+                        }
+                    },
+                )
+
                 ResultsMode.General -> Results.RidersPointResult(
                     stage.generalResults.kom.map { participantResult ->
                         RiderPointsResult(
@@ -285,7 +306,8 @@ sealed interface Results {
     data class TeamsTimeResult(val teams: List<TeamTimeResult>) : Results
     data class RidersTimeResult(val riders: List<RiderTimeResult>) : Results
     data class RidersPointResult(val riders: List<RiderPointsResult>) : Results
-    object RidersPointsPerPlaceResult : Results
+    data class RidersPointsPerPlaceResult(val perPlaceResult: Map<Place, List<RiderPointsResult>>) :
+        Results
 }
 
 @Immutable

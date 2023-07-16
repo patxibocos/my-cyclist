@@ -6,10 +6,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +29,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
@@ -218,11 +223,21 @@ private fun Results(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
 ) {
-    when (results) {
-        is Results.RidersPointResult -> RidersPointResult(results, onRiderSelected)
-        Results.RidersPointsPerPlaceResult -> RidersPointsPerPlaceResult(results, onRiderSelected)
-        is Results.RidersTimeResult -> RidersTimeResult(results, onRiderSelected)
-        is Results.TeamsTimeResult -> TeamsTimeResult(results, onTeamSelected)
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        when (results) {
+            is Results.RidersPointResult -> RidersPointResult(results, onRiderSelected)
+            is Results.RidersPointsPerPlaceResult -> RidersPointsPerPlaceResult(
+                results,
+                onRiderSelected,
+            )
+
+            is Results.RidersTimeResult -> RidersTimeResult(results, onRiderSelected)
+            is Results.TeamsTimeResult -> TeamsTimeResult(results, onTeamSelected)
+        }
     }
 }
 
@@ -243,9 +258,21 @@ private fun RidersPointResult(
 
 @Composable
 private fun RidersPointsPerPlaceResult(
-    results: Results,
+    results: Results.RidersPointsPerPlaceResult,
     onRiderSelected: (Rider) -> Unit,
 ) {
+    results.perPlaceResult.forEach { (place, riders) ->
+        Text(text = "${place.name} - ${place.distance}")
+        riders.forEachIndexed { i, (rider, points) ->
+            Text(
+                text = "${i + 1}. ${rider.fullName()} - $points",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onRiderSelected(rider) },
+            )
+        }
+        Divider(thickness = 8.dp)
+    }
 }
 
 @Composable
