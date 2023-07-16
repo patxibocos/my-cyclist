@@ -106,15 +106,17 @@ class RaceViewModel @Inject constructor(
             ) { resultsMode, classificationType -> resultsMode to classificationType },
         ) { races, riders, teams, stageIndex, (resultsMode, classificationType) ->
             val race = races.find { it.id == raceId }!!
-            val results = stageResults(
-                defaultDispatcher,
-                race.stages[stageIndex],
-                resultsMode,
-                classificationType,
-                riders,
-                teams,
-            )
-            RaceViewState(race, stageIndex, resultsMode, classificationType, results)
+            val stagesResults = race.stages.associateWith { stage ->
+                stageResults(
+                    defaultDispatcher,
+                    stage,
+                    resultsMode,
+                    classificationType,
+                    riders,
+                    teams,
+                )
+            }
+            RaceViewState(race, stageIndex, resultsMode, classificationType, stagesResults)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -289,7 +291,7 @@ data class RaceViewState(
     val currentStageIndex: Int,
     val resultsMode: ResultsMode,
     val classificationType: ClassificationType,
-    val results: Results,
+    val stagesResults: Map<Stage, Results>,
 ) {
     companion object {
         val Empty = RaceViewState(
@@ -297,7 +299,7 @@ data class RaceViewState(
             currentStageIndex = 0,
             resultsMode = ResultsMode.Stage,
             classificationType = ClassificationType.Time,
-            results = Results.RidersTimeResult(emptyList()),
+            stagesResults = emptyMap(),
         )
     }
 }

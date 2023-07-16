@@ -21,11 +21,9 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,11 +71,16 @@ internal fun RaceScreen(
         if (raceViewState.race != null) {
             if (raceViewState.race.stages.size == 1) {
                 val stage = raceViewState.race.stages.first()
-                SingleStage(stage, raceViewState.results, onRiderSelected, onTeamSelected)
+                SingleStage(
+                    stage,
+                    raceViewState.stagesResults[stage]!!,
+                    onRiderSelected,
+                    onTeamSelected,
+                )
             } else {
                 StagesList(
                     stages = raceViewState.race.stages,
-                    stageResults = raceViewState.results,
+                    stagesResults = raceViewState.stagesResults,
                     currentStageIndex = raceViewState.currentStageIndex,
                     resultsMode = raceViewState.resultsMode,
                     classificationType = raceViewState.classificationType,
@@ -107,7 +110,7 @@ private fun SingleStage(
 @Composable
 private fun StagesList(
     stages: List<Stage>,
-    stageResults: Results,
+    stagesResults: Map<Stage, Results>,
     currentStageIndex: Int,
     resultsMode: ResultsMode,
     classificationType: ClassificationType,
@@ -136,18 +139,16 @@ private fun StagesList(
             }
         }
     }
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect(onStageSelected)
-    }
     HorizontalPager(
         modifier = Modifier.fillMaxWidth(),
         state = pagerState,
         pageCount = stages.size,
         verticalAlignment = Alignment.Top,
     ) { page ->
+        val stage = stages[page]
         Stage(
-            stage = stages[page],
-            stageResults = stageResults,
+            stage = stage,
+            stageResults = stagesResults[stage]!!,
             resultsMode = resultsMode,
             classificationType = classificationType,
             onResultsModeChanged = onResultsModeChanged,
