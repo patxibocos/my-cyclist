@@ -90,8 +90,6 @@ data class GeneralResults(
     val points: List<ParticipantResultPoints>,
 )
 
-fun Stage.areResultsAvailable() = this.stageResults.time.isNotEmpty()
-
 enum class ProfileType {
     FLAT,
     HILLS_FLAT_FINISH,
@@ -108,4 +106,8 @@ enum class StageType {
 
 fun List<ParticipantResultTime>.isAvailable(): Boolean {
     return this.isNotEmpty()
+}
+
+fun Race.firstStage(): Stage {
+    return this.stages.first()
 }

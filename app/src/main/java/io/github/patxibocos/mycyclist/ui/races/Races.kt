@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,7 +37,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.mycyclist.R
 import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Stage
-import io.github.patxibocos.mycyclist.data.areResultsAvailable
 import io.github.patxibocos.mycyclist.data.startDate
 import io.github.patxibocos.mycyclist.ui.home.Screen
 import io.github.patxibocos.mycyclist.ui.util.CenterAlignedTopAppBar
@@ -152,15 +150,18 @@ private fun LazyListScope.seasonInProgress(
                 todayStage.race,
                 todayStage.stage,
                 todayStage.stageNumber,
+                todayStage.results,
                 onStageSelected,
             )
 
-            is TodayStage.RestDay -> TodayRestDayStage(todayStage.race, onRaceSelected)
             is TodayStage.SingleDayRace -> TodaySingleDayRaceStage(
                 todayStage.race,
                 todayStage.stage,
+                todayStage.results,
                 onRaceSelected,
             )
+
+            is TodayStage.RestDay -> TodayRestDayStage(todayStage.race, onRaceSelected)
         }
     }
     if (futureRaces.isNotEmpty()) {
@@ -208,6 +209,7 @@ private fun TodayMultiStageRaceStage(
     race: Race,
     stage: Stage,
     stageNumber: Int,
+    results: TodayResults,
     onStageSelected: (Race, Stage) -> Unit,
 ) {
     Card(
@@ -220,10 +222,41 @@ private fun TodayMultiStageRaceStage(
         Text("${race.name} - Stage $stageNumber")
         Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
         Text(formatTime(stage.startDateTime))
-        if (stage.areResultsAvailable()) {
-            // Show a button to go to results
-            Button(onClick = { onStageSelected(race, stage) }) {
-                Text("See results")
+        Results(results)
+    }
+}
+
+@Composable
+private fun TodaySingleDayRaceStage(
+    race: Race,
+    stage: Stage,
+    results: TodayResults,
+    onRaceSelected: (Race) -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onRaceSelected(race) },
+    ) {
+        Text(text = race.name)
+        Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
+        Text(formatTime(stage.startDateTime))
+        Results(results)
+    }
+}
+
+@Composable
+private fun Results(results: TodayResults) {
+    when (results) {
+        is TodayResults.Riders -> {
+            results.riders.forEachIndexed { index, rider ->
+                Text("${index + 1}. ${rider.rider.fullName()}")
+            }
+        }
+
+        is TodayResults.Teams -> {
+            results.teams.forEachIndexed { index, team ->
+                Text("${index + 1}. ${team.team.name}")
             }
         }
     }
@@ -237,25 +270,6 @@ private fun TodayRestDayStage(race: Race, onRaceSelected: (Race) -> Unit) {
             .clickable { onRaceSelected(race) },
     ) {
         Text("Rest day - ${race.name}")
-    }
-}
-
-@Composable
-private fun TodaySingleDayRaceStage(race: Race, stage: Stage, onRaceSelected: (Race) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onRaceSelected(race) },
-    ) {
-        Text(text = race.name)
-        Text("🏳 ${stage.departure} - ${stage.arrival} 🏁")
-        Text(formatTime(stage.startDateTime))
-        if (stage.areResultsAvailable()) {
-            // Show a button to go to results
-            Button(onClick = { onRaceSelected(race) }) {
-                Text("See results")
-            }
-        }
     }
 }
 

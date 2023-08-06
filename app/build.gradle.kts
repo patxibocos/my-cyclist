@@ -7,6 +7,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.protobuf") version "0.9.4"
+    id("app.cash.paparazzi")
 }
 
 protobuf {
@@ -26,12 +27,12 @@ protobuf {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.github.patxibocos.mycyclist"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

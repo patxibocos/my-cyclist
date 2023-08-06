@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import io.github.patxibocos.mycyclist.ui.races.ClassificationType
 import io.github.patxibocos.mycyclist.ui.races.RaceScreen
 import io.github.patxibocos.mycyclist.ui.races.RaceViewState
+import io.github.patxibocos.mycyclist.ui.races.Results
 import io.github.patxibocos.mycyclist.ui.races.ResultsMode
 import io.github.patxibocos.mycyclist.ui.riders.RiderScreen
 import io.github.patxibocos.mycyclist.ui.riders.RiderViewState
@@ -74,7 +75,11 @@ fun RacePreview() {
                 currentStageIndex = 0,
                 resultsMode = ResultsMode.Stage,
                 classificationType = ClassificationType.Time,
-                stagesResults = emptyMap(),
+                stagesResults = mapOf(
+                    racePreview.stages.first() to Results.RidersTimeResult(
+                        emptyList(),
+                    ),
+                ),
             ),
             onRiderSelected = {},
             onTeamSelected = {},

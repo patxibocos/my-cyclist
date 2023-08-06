@@ -304,10 +304,18 @@ data class RaceViewState(
     }
 }
 
+@Immutable
 sealed interface Results {
+    @Immutable
     data class TeamsTimeResult(val teams: List<TeamTimeResult>) : Results
+
+    @Immutable
     data class RidersTimeResult(val riders: List<RiderTimeResult>) : Results
+
+    @Immutable
     data class RidersPointResult(val riders: List<RiderPointsResult>) : Results
+
+    @Immutable
     data class RidersPointsPerPlaceResult(val perPlaceResult: Map<Place, List<RiderPointsResult>>) :
         Results
 }

@@ -1,13 +1,15 @@
 [versions]
-compose-compiler = "1.4.8"
+compose-compiler = "1.5.0"
 compose-bom = "2023.06.01"
 firebase-bom = "32.2.2"
 hilt = "2.47"
-kotlin = "1.8.22"
+kotlin = "1.9.0"
 ktlint = "0.49.1"
+paparazzi = "1.3.1"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "6.20.0" }
+paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 [libraries]
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -42,3 +44,4 @@ android-plugin-gradle = "com.android.tools.build:gradle:8.2.0-alpha15"
 google-services = "com.google.gms:google-services:4.3.15"
 kotlin-plugin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hilt-plugin-gradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+paparazzi-plugin-gradle = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref = "paparazzi" }

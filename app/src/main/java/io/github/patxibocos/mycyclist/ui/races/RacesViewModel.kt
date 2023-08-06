@@ -5,8 +5,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.patxibocos.mycyclist.data.DataRepository
 import io.github.patxibocos.mycyclist.data.Race
+import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
+import io.github.patxibocos.mycyclist.data.StageType
+import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.endDate
+import io.github.patxibocos.mycyclist.data.firstStage
 import io.github.patxibocos.mycyclist.data.isActive
 import io.github.patxibocos.mycyclist.data.isFuture
 import io.github.patxibocos.mycyclist.data.isPast
@@ -33,7 +37,12 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
     private val _refreshing = MutableStateFlow(false)
 
     val racesViewState: StateFlow<RacesViewState> =
-        combine(dataRepository.races, _refreshing) { races, refreshing ->
+        combine(
+            dataRepository.races,
+            dataRepository.teams,
+            dataRepository.riders,
+            _refreshing,
+        ) { races, teams, riders, refreshing ->
             val minStartDate = races.first().startDate()
             val maxEndDate = races.last().endDate()
             val today = LocalDate.now(ZoneId.systemDefault())
@@ -53,14 +62,16 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
                         val todayStage = race.todayStage()
                         when {
                             race.isSingleDay() -> TodayStage.SingleDayRace(
-                                race,
-                                race.stages.first(),
+                                race = race,
+                                stage = race.firstStage(),
+                                results = stageResults(race.firstStage(), riders, teams),
                             )
 
                             todayStage != null -> TodayStage.MultiStageRace(
-                                race,
-                                todayStage.first,
-                                todayStage.second + 1,
+                                race = race,
+                                stage = todayStage.first,
+                                stageNumber = todayStage.second + 1,
+                                results = stageResults(todayStage.first, riders, teams),
                             )
 
                             else -> TodayStage.RestDay(race)
@@ -92,8 +103,18 @@ class RacesViewModel @Inject constructor(private val dataRepository: DataReposit
 @Immutable
 sealed class TodayStage(open val race: Race) {
     data class RestDay(override val race: Race) : TodayStage(race)
-    data class SingleDayRace(override val race: Race, val stage: Stage) : TodayStage(race)
-    data class MultiStageRace(override val race: Race, val stage: Stage, val stageNumber: Int) :
+    data class SingleDayRace(
+        override val race: Race,
+        val stage: Stage,
+        val results: TodayResults,
+    ) : TodayStage(race)
+
+    data class MultiStageRace(
+        override val race: Race,
+        val stage: Stage,
+        val stageNumber: Int,
+        val results: TodayResults,
+    ) :
         TodayStage(race)
 }
 
@@ -118,8 +139,35 @@ sealed class RacesViewState(open val isRefreshing: Boolean) {
     data class SeasonEndedViewState(val pastRaces: List<Race>, override val isRefreshing: Boolean) :
         RacesViewState(isRefreshing)
 
-    object EmptyViewState : RacesViewState(false)
+    data object EmptyViewState : RacesViewState(false)
     companion object {
         val Empty = EmptyViewState
+    }
+}
+
+sealed interface TodayResults {
+    data class Teams(val teams: List<TeamTimeResult>) : TodayResults
+    data class Riders(val riders: List<RiderTimeResult>) : TodayResults
+}
+
+private fun stageResults(stage: Stage, riders: List<Rider>, teams: List<Team>): TodayResults {
+    return when (stage.stageType) {
+        StageType.REGULAR, StageType.INDIVIDUAL_TIME_TRIAL -> TodayResults.Riders(
+            stage.stageResults.time.take(3).map { participantResult ->
+                RiderTimeResult(
+                    riders.find { it.id == participantResult.participantId }!!,
+                    participantResult.time,
+                )
+            },
+        )
+
+        StageType.TEAM_TIME_TRIAL -> TodayResults.Teams(
+            stage.stageResults.time.take(3).map { participantResult ->
+                TeamTimeResult(
+                    teams.find { it.id == participantResult.participantId }!!,
+                    participantResult.time,
+                )
+            },
+        )
     }
 }

@@ -10,6 +10,7 @@ buildscript {
         classpath(libs.kotlin.plugin.gradle)
         classpath(libs.hilt.plugin.gradle)
         classpath(libs.google.services)
+        classpath(libs.paparazzi.plugin.gradle)
     }
 }
 

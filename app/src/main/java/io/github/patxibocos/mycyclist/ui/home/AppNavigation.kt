@@ -52,9 +52,9 @@ internal sealed class Screen(
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector,
 ) {
-    object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group, Icons.Filled.Group)
-    object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face, Icons.Filled.Face)
-    object Races : Screen("races", R.string.screen_races, Icons.Outlined.Flag, Icons.Filled.Flag)
+    data object Teams : Screen("teams", R.string.screen_teams, Icons.Outlined.Group, Icons.Filled.Group)
+    data object Riders : Screen("riders", R.string.screen_riders, Icons.Outlined.Face, Icons.Filled.Face)
+    data object Races : Screen("races", R.string.screen_races, Icons.Outlined.Flag, Icons.Filled.Flag)
 }
 
 internal sealed class LeafScreen(
@@ -62,23 +62,23 @@ internal sealed class LeafScreen(
 ) {
     fun createRoute(root: Screen) = "${root.route}/$route"
 
-    object Teams : LeafScreen("teams")
-    object Riders : LeafScreen("riders")
-    object Races : LeafScreen("races")
+    data object Teams : LeafScreen("teams")
+    data object Riders : LeafScreen("riders")
+    data object Races : LeafScreen("races")
 
-    object Team : LeafScreen("team/{teamId}") {
+    data object Team : LeafScreen("team/{teamId}") {
         fun createRoute(root: Screen, teamId: String): String {
             return "${root.route}/team/$teamId"
         }
     }
 
-    object Rider : LeafScreen("rider/{riderId}") {
+    data object Rider : LeafScreen("rider/{riderId}") {
         fun createRoute(root: Screen, riderId: String): String {
             return "${root.route}/rider/$riderId"
         }
     }
 
-    object Race : LeafScreen("race/{raceId}?stage={stageId}") {
+    data object Race : LeafScreen("race/{raceId}?stage={stageId}") {
         fun createRoute(root: Screen, raceId: String, stageId: String? = null): String {
             return "${root.route}/race/$raceId" + (stageId?.let { "?stage=$it" } ?: "")
         }
