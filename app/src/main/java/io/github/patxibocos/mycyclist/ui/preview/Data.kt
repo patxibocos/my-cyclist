@@ -8,6 +8,8 @@ import io.github.patxibocos.mycyclist.data.StageType
 import io.github.patxibocos.mycyclist.data.Team
 import io.github.patxibocos.mycyclist.data.TeamStatus
 import java.time.LocalDate
+import java.time.Month
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 internal val teamPreview: Team by lazy {
@@ -31,7 +33,7 @@ internal val riderPreview: Rider by lazy {
         lastName = "Bocos",
         country = "ES",
         website = "https://github.com/patxibocos/",
-        birthDate = LocalDate.now(),
+        birthDate = LocalDate.of(2020, Month.JANUARY, 31),
         birthPlace = "Barakaldo",
         weight = 70,
         height = 185,
@@ -44,7 +46,7 @@ private val stagePreview: Stage by lazy {
     Stage(
         id = "stage-1",
         distance = 123.4f,
-        startDateTime = ZonedDateTime.now(),
+        startDateTime = ZonedDateTime.of(2020, 1, 31, 13, 59, 59, 0, ZoneId.of("Europe/Madrid")),
         profileType = ProfileType.FLAT,
         departure = "Bilbao",
         arrival = "Barcelona",

@@ -29,5 +29,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build my-cyclist
+      - name: Build
         run: ./gradlew :app:buildDebug
+
+      - name: Test
+        run: ./gradlew :app:test
+
+      - name: Snapshot test
+        id: snapshots
+        run: ./gradlew :app:verifyPaparazziDebug
+
+      - name: Report snapshot failures
+        if: ${{ failure() && steps.snapshots.conclusion == 'failure' }}
+        run: echo "TEST"
+
