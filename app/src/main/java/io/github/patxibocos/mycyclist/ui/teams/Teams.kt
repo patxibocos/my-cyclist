@@ -79,7 +79,7 @@ private fun TeamsScreen(
 ) {
     val worldTeamsLazyGridState = rememberLazyGridState()
     val proTeamsLazyGridState = rememberLazyGridState()
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = reselectedScreen.value) {
         if (reselectedScreen.value == Screen.Teams) {
@@ -120,7 +120,6 @@ private fun TeamsScreen(
                         )
                     }
                     HorizontalPager(
-                        pageCount = 2,
                         state = pagerState,
                     ) { page ->
                         if (page == 0) {

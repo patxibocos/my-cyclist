@@ -120,7 +120,8 @@ private fun StagesList(
     onClassificationTypeChanged: (ClassificationType) -> Unit,
     onStageSelected: (Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState(initialPage = currentStageIndex)
+    val pagerState =
+        rememberPagerState(initialPage = currentStageIndex, pageCount = { stages.size })
     val coroutineScope = rememberCoroutineScope()
     ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -142,7 +143,6 @@ private fun StagesList(
     HorizontalPager(
         modifier = Modifier.fillMaxWidth(),
         state = pagerState,
-        pageCount = stages.size,
         verticalAlignment = Alignment.Top,
     ) { page ->
         val stage = stages[page]
