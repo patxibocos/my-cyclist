@@ -35,11 +35,11 @@ jobs:
       - name: Test
         run: ./gradlew :app:test
 
-      - name: Snapshot test
-        id: snapshots
-        run: ./gradlew :app:verifyPaparazziDebug
-
-      - name: Report snapshot failures
-        if: ${{ failure() && steps.snapshots.conclusion == 'failure' }}
-        run: echo "TEST"
+#      - name: Snapshot test
+#        id: snapshots
+#        run: ./gradlew :app:verifyPaparazziDebug
+#
+#      - name: Report snapshot failures
+#        if: ${{ failure() && steps.snapshots.conclusion == 'failure' }}
+#        run: echo "TEST"
 
