@@ -1,0 +1,13 @@
+name: ci
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  update-snapshots:
+    name: PR commented
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/record-snapshots' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello"
