@@ -6,8 +6,36 @@ on:
 
 jobs:
   update-snapshots:
-    name: PR commented
+    name: Update snapshots
     if: ${{ github.event.issue.pull_request && github.event.comment.body == '/record-snapshots' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello"
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      # https://github.com/actions/runner-images/issues/7506
+      - name: Accept Android SDK license
+        run: echo "y" | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0-rc3"
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Remove old screenshots
+        run: rm -rf app/src/test/snapshots
+
+      - name: Snapshot test
+        id: snapshots
+        run: ./gradlew :app:recordPaparazziDebug
+
+      - name: Update snapshots
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'app/src/test/snapshots/*'
+          committer_name: Patxi Bocos
+          committer_email: patxi952@gmail.com
