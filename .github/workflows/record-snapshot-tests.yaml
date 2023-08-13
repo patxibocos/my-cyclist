@@ -48,3 +48,4 @@ jobs:
           git add app/src/test/snapshots/*
           git commit -m 'Update snapshots'
           git push
+
