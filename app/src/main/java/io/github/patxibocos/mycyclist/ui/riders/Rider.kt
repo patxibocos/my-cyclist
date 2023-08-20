@@ -42,7 +42,10 @@ internal fun RiderScreen(
     onBackPressed: () -> Unit,
 ) {
     Column {
-        SmallTopAppBar(title = riderViewState.rider?.lastName.toString(), onBackPressed)
+        SmallTopAppBar(
+            title = { Text(text = riderViewState.rider?.lastName.toString()) },
+            onBackPressed,
+        )
         if (riderViewState.rider != null && riderViewState.team != null) {
             Text(text = riderViewState.rider.lastName)
             if (riderViewState.rider.uciRankingPosition > 0) {
@@ -70,6 +73,7 @@ internal fun RiderScreen(
                             onRaceSelected(lastResult.race)
                         },
                     )
+
                     is Result.StageResult -> Text(
                         text = "${lastResult.position} on stage ${lastResult.stageNumber} of ${lastResult.race.name}",
                         modifier = Modifier.clickable {

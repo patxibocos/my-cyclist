@@ -13,6 +13,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import io.github.patxibocos.mycyclist.data.Race
 import io.github.patxibocos.mycyclist.data.Rider
 import io.github.patxibocos.mycyclist.data.Stage
 import io.github.patxibocos.mycyclist.data.Team
@@ -41,6 +43,7 @@ import kotlin.time.Duration.Companion.seconds
 internal fun RaceRoute(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
+    onParticipationsClicked: (Race) -> Unit,
     onBackPressed: () -> Unit = {},
     viewModel: RaceViewModel = hiltViewModel(),
 ) {
@@ -52,6 +55,7 @@ internal fun RaceRoute(
         onResultsModeChanged = viewModel::onResultsModeChanged,
         onClassificationTypeChanged = viewModel::onClassificationTypeChanged,
         onStageSelected = viewModel::onStageSelected,
+        onParticipationsClicked = onParticipationsClicked,
         onBackPressed = onBackPressed,
     )
 }
@@ -64,11 +68,15 @@ internal fun RaceScreen(
     onResultsModeChanged: (ResultsMode) -> Unit,
     onClassificationTypeChanged: (ClassificationType) -> Unit,
     onStageSelected: (Int) -> Unit,
+    onParticipationsClicked: (Race) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Column {
-        SmallTopAppBar(title = raceViewState.race?.name.toString(), onBackPressed)
+        SmallTopAppBar(title = { Text(text = raceViewState.race?.name.toString()) }, onBackPressed)
         if (raceViewState.race != null) {
+            Button(onClick = { onParticipationsClicked(raceViewState.race) }) {
+                Text(text = "Participants")
+            }
             if (raceViewState.race.stages.size == 1) {
                 val stage = raceViewState.race.stages.first()
                 SingleStage(

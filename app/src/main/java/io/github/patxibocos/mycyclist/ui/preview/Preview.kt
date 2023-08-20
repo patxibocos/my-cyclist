@@ -86,6 +86,7 @@ fun RacePreview() {
             onResultsModeChanged = {},
             onClassificationTypeChanged = {},
             onStageSelected = {},
+            onParticipationsClicked = {},
             onBackPressed = {},
         )
     }

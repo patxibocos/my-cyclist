@@ -3,6 +3,7 @@ package io.github.patxibocos.mycyclist.ui.util
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -51,19 +52,25 @@ fun CenterAlignedTopAppBar(title: String, onClicked: suspend () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SmallTopAppBar(title: String, onBackPressed: () -> Unit) {
+fun SmallTopAppBar(
+    title: @Composable () -> Unit,
+    onBackPressed: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
     androidx.compose.material3.TopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent,
         ),
-        title = {
-            Text(text = title)
-        },
+        title = title,
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
-                Icon(Icons.Filled.ArrowBack, null)
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    null,
+                )
             }
         },
+        actions = actions,
     )
 }
 

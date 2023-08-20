@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import io.github.patxibocos.mycyclist.R
+import io.github.patxibocos.mycyclist.ui.races.RaceParticipationsRoute
 import io.github.patxibocos.mycyclist.ui.races.RaceRoute
 import io.github.patxibocos.mycyclist.ui.races.RacesRoute
 import io.github.patxibocos.mycyclist.ui.riders.RiderRoute
@@ -81,6 +82,12 @@ internal sealed class LeafScreen(
     data object Race : LeafScreen("race/{raceId}?stage={stageId}") {
         fun createRoute(root: Screen, raceId: String, stageId: String? = null): String {
             return "${root.route}/race/$raceId" + (stageId?.let { "?stage=$it" } ?: "")
+        }
+    }
+
+    data object RaceParticipations : LeafScreen("race/{raceId}/participations") {
+        fun createRoute(root: Screen, raceId: String): String {
+            return "${root.route}/race/$raceId/participations"
         }
     }
 }
@@ -207,6 +214,37 @@ private fun NavGraphBuilder.addRacesNavigation(
             ),
         ) {
             RaceRoute(
+                onRiderSelected = { rider ->
+                    navController.navigate(
+                        LeafScreen.Rider.createRoute(
+                            Screen.Riders,
+                            rider.id,
+                        ),
+                    )
+                },
+                onTeamSelected = { team ->
+                    navController.navigate(
+                        LeafScreen.Team.createRoute(
+                            Screen.Teams,
+                            team.id,
+                        ),
+                    )
+                },
+                onParticipationsClicked = { race ->
+                    navController.navigate(
+                        LeafScreen.RaceParticipations.createRoute(
+                            Screen.Races,
+                            race.id,
+                        ),
+                    )
+                },
+                onBackPressed = { navController.navigateUp() },
+            )
+        }
+        composable(
+            LeafScreen.RaceParticipations.createRoute(Screen.Races),
+        ) {
+            RaceParticipationsRoute(
                 onRiderSelected = { rider ->
                     navController.navigate(
                         LeafScreen.Rider.createRoute(
