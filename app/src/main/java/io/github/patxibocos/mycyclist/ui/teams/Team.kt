@@ -34,7 +34,7 @@ internal fun TeamScreen(
     onBackPressed: () -> Unit,
 ) {
     Column {
-        SmallTopAppBar(title = teamViewState.team?.name.toString(), onBackPressed)
+        SmallTopAppBar(title = { Text(text = teamViewState.team?.name.toString()) }, onBackPressed)
         if (teamViewState.team != null) {
             Text(text = teamViewState.team.name)
             teamViewState.riders.forEach {
