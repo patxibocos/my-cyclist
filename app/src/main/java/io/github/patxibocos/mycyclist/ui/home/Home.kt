@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -33,9 +34,11 @@ import androidx.navigation.compose.rememberNavController
 fun Home() {
     val navController by rememberUpdatedState(newValue = rememberNavController())
     val reselectedScreen: MutableState<Screen?> = remember { mutableStateOf(null) }
+    var topBar by remember { mutableStateOf<@Composable () -> Unit>({}) }
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = topBar,
         bottomBar = {
             BottomBar(navController) { screen ->
                 reselectedScreen.value = screen
@@ -51,6 +54,9 @@ fun Home() {
             modifier = Modifier
                 .consumeWindowInsets(it)
                 .padding(it),
+            topBarProvider = { topBarContent ->
+                topBar = topBarContent
+            },
         )
     }
 }

@@ -17,6 +17,7 @@ import io.github.patxibocos.mycyclist.ui.util.SmallTopAppBar
 internal fun TeamRoute(
     onRiderSelected: (Rider) -> Unit,
     onBackPressed: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: TeamViewModel = hiltViewModel(),
 ) {
     val teamViewState by viewModel.teamViewState.collectAsState()
@@ -24,6 +25,7 @@ internal fun TeamRoute(
         teamViewState = teamViewState,
         onRiderSelected = onRiderSelected,
         onBackPressed = onBackPressed,
+        topBarProvider = topBarProvider,
     )
 }
 
@@ -32,9 +34,12 @@ internal fun TeamScreen(
     teamViewState: TeamViewState,
     onRiderSelected: (Rider) -> Unit,
     onBackPressed: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    Column {
+    topBarProvider {
         SmallTopAppBar(title = { Text(text = teamViewState.team?.name.toString()) }, onBackPressed)
+    }
+    Column {
         if (teamViewState.team != null) {
             Text(text = teamViewState.team.name)
             teamViewState.riders.forEach {

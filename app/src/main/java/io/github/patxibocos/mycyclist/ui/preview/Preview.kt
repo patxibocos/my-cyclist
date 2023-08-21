@@ -46,6 +46,7 @@ fun RiderPreview() {
             onRaceSelected = {},
             onStageSelected = { _, _ -> },
             onBackPressed = {},
+            topBarProvider = {},
         )
     }
 }
@@ -61,6 +62,7 @@ fun TeamPreview() {
             ),
             onRiderSelected = {},
             onBackPressed = {},
+            topBarProvider = {},
         )
     }
 }
@@ -88,6 +90,7 @@ fun RacePreview() {
             onStageSelected = {},
             onParticipationsClicked = {},
             onBackPressed = {},
+            topBarProvider = {},
         )
     }
 }
