@@ -1,10 +1,8 @@
 package io.github.patxibocos.mycyclist.ui.home
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -23,40 +21,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Home() {
-    val showBottomBar = remember { mutableStateOf(true) }
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override suspend fun onPreFling(available: Velocity): Velocity {
-                if (available.y > 0) {
-                    showBottomBar.value = true
-                } else if (available.y < 0) {
-                    showBottomBar.value = false
-                }
-                return super.onPreFling(available)
-            }
-        }
-    }
     val navController by rememberUpdatedState(newValue = rememberNavController())
     val reselectedScreen: MutableState<Screen?> = remember { mutableStateOf(null) }
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-            .nestedScroll(nestedScrollConnection),
         bottomBar = {
-            BottomBar(navController, showBottomBar) { screen ->
+            BottomBar(navController) { screen ->
                 reselectedScreen.value = screen
             }
         },
@@ -67,6 +48,9 @@ fun Home() {
             onReselectedScreenConsumed = {
                 reselectedScreen.value = null
             },
+            modifier = Modifier
+                .consumeWindowInsets(it)
+                .padding(it),
         )
     }
 }
@@ -74,55 +58,45 @@ fun Home() {
 @Composable
 private fun BottomBar(
     navController: NavController,
-    showBottomBar: MutableState<Boolean>,
     screenReselected: (Screen) -> Unit,
 ) {
-    val currentScreen by navController.currentScreenAsState(onNavigatedToRootScreen = {
-        showBottomBar.value = true
-    })
-    AnimatedVisibility(
-        visible = showBottomBar.value && currentScreen != null,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it }),
+    val currentScreen by navController.currentScreenAsState()
+    Surface(
+        color = Color.Transparent,
     ) {
-        Surface(
-            modifier = Modifier.navigationBarsPadding(),
-            color = Color.Transparent,
+        NavigationBar(
+            tonalElevation = 2.dp,
+            containerColor = MaterialTheme.colorScheme.surface,
         ) {
-            NavigationBar(
-                tonalElevation = 2.dp,
-                containerColor = MaterialTheme.colorScheme.surface,
-            ) {
-                val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
-                screens.forEach { screen ->
-                    val selected = currentScreen == screen
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                if (selected) {
-                                    screen.selectedIcon
-                                } else {
-                                    screen.unselectedIcon
-                                },
-                                contentDescription = null,
-                            )
-                        },
-                        label = { Text(stringResource(screen.label)) },
-                        selected = currentScreen == screen,
-                        onClick = {
+            val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
+            screens.forEach { screen ->
+                val selected = currentScreen == screen
+                NavigationBarItem(
+                    icon = {
+                        Icon(
                             if (selected) {
-                                screenReselected(screen)
+                                screen.selectedIcon
+                            } else {
+                                screen.unselectedIcon
+                            },
+                            contentDescription = null,
+                        )
+                    },
+                    label = { Text(stringResource(screen.label)) },
+                    selected = currentScreen == screen,
+                    onClick = {
+                        if (selected) {
+                            screenReselected(screen)
+                        }
+                        navController.navigate(screen.route) {
+                            launchSingleTop = true
+                            restoreState = false
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = false
                             }
-                            navController.navigate(screen.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                            }
-                        },
-                    )
-                }
+                        }
+                    },
+                )
             }
         }
     }
@@ -130,19 +104,22 @@ private fun BottomBar(
 
 @Stable
 @Composable
-private fun NavController.currentScreenAsState(onNavigatedToRootScreen: () -> Unit): State<Screen?> {
+private fun NavController.currentScreenAsState(): State<Screen?> {
     val selectedItem = remember { mutableStateOf<Screen?>(Screen.Teams) }
+
+    fun findRootDestinationRoute(destination: NavDestination): String? {
+        return destination.parent?.let { parent ->
+            findRootDestinationRoute(parent)
+        } ?: destination.route
+    }
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            selectedItem.value = when (destination.route) {
-                LeafScreen.Teams.createRoute(Screen.Teams) -> Screen.Teams
-                LeafScreen.Riders.createRoute(Screen.Riders) -> Screen.Riders
-                LeafScreen.Races.createRoute(Screen.Races) -> Screen.Races
+            selectedItem.value = when (findRootDestinationRoute(destination)) {
+                Screen.Teams.route -> Screen.Teams
+                Screen.Riders.route -> Screen.Riders
+                Screen.Races.route -> Screen.Races
                 else -> null
-            }
-            if (selectedItem.value != null) {
-                onNavigatedToRootScreen()
             }
         }
         addOnDestinationChangedListener(listener)

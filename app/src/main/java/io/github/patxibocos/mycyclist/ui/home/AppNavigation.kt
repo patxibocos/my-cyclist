@@ -1,7 +1,6 @@
 package io.github.patxibocos.mycyclist.ui.home
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Flag
@@ -35,9 +34,10 @@ internal fun AppNavigation(
     navController: NavHostController,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
+    modifier: Modifier,
 ) {
     NavHost(
-        modifier = Modifier.systemBarsPadding(),
+        modifier = modifier,
         navController = navController,
         startDestination = Screen.Races.route,
     ) {
