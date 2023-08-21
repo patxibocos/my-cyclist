@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.patxibocos.mycyclist.R
@@ -48,6 +48,7 @@ internal fun RaceParticipationsRoute(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onBackPressed: () -> Unit = {},
+    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RaceParticipationsViewModel = hiltViewModel(),
 ) {
     val raceParticipationsViewState by viewModel.raceParticipationsViewState.collectAsState()
@@ -60,6 +61,7 @@ internal fun RaceParticipationsRoute(
         onBackPressed = onBackPressed,
         onSearched = viewModel::onSearched,
         onToggled = viewModel::onToggled,
+        topBarProvider = topBarProvider,
     )
 }
 
@@ -74,14 +76,16 @@ private fun TopAppBar(
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf(TextFieldValue(topBarState.search)) }
     SmallTopAppBar(
         title = {
             AnimatedContent(topBarState.searching, label = "RidersTopAppBarAnimatedContent") {
                 if (it) {
                     TextField(
-                        value = topBarState.search,
+                        value = searchText,
                         onValueChange = { search ->
-                            onSearched(search)
+                            searchText = search
+                            onSearched(search.text)
                         },
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
@@ -121,6 +125,8 @@ private fun TopAppBar(
             IconButton(onClick = {
                 if (!topBarState.searching) {
                     showKeyboard = true
+                } else {
+                    searchText = TextFieldValue("")
                 }
                 onToggled()
             }) {
@@ -140,9 +146,10 @@ private fun RaceParticipationsScreen(
     onBackPressed: () -> Unit = {},
     onSearched: (String) -> Unit,
     onToggled: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    Column {
-        val focusManager = LocalFocusManager.current
+    val focusManager = LocalFocusManager.current
+    topBarProvider {
         TopAppBar(
             topBarState = topBarState,
             focusManager = focusManager,
@@ -150,28 +157,28 @@ private fun RaceParticipationsScreen(
             onSearched = onSearched,
             onToggled = onToggled,
         )
-        val lazyListState = rememberLazyListState()
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            state = lazyListState,
-        ) {
-            raceParticipationsViewState.ridersByTeam.forEach { (team, riderParticipations) ->
-                stickyHeader {
-                    Text(text = team.name, modifier = Modifier.clickable { onTeamSelected(team) })
+    }
+    val lazyListState = rememberLazyListState()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        state = lazyListState,
+    ) {
+        raceParticipationsViewState.ridersByTeam.forEach { (team, riderParticipations) ->
+            stickyHeader {
+                Text(text = team.name, modifier = Modifier.clickable { onTeamSelected(team) })
+            }
+            items(
+                items = riderParticipations,
+                key = { it.rider.id },
+            ) { (rider, number) ->
+                val riderText = if (number != 0) {
+                    "${rider.fullName()} - $number"
+                } else {
+                    rider.fullName()
                 }
-                items(
-                    items = riderParticipations,
-                    key = { it.rider.id },
-                ) { (rider, number) ->
-                    val riderText = if (number != 0) {
-                        "${rider.fullName()} - $number"
-                    } else {
-                        rider.fullName()
-                    }
-                    Text(text = riderText, modifier = Modifier.clickable { onRiderSelected(rider) })
-                }
+                Text(text = riderText, modifier = Modifier.clickable { onRiderSelected(rider) })
             }
         }
     }

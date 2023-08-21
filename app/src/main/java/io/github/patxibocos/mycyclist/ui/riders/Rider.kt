@@ -21,6 +21,7 @@ internal fun RiderRoute(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     onBackPressed: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RiderViewModel = hiltViewModel(),
 ) {
     val riderViewState by viewModel.riderViewState.collectAsState()
@@ -30,6 +31,7 @@ internal fun RiderRoute(
         onRaceSelected = onRaceSelected,
         onStageSelected = onStageSelected,
         onBackPressed = onBackPressed,
+        topBarProvider = topBarProvider,
     )
 }
 
@@ -40,12 +42,15 @@ internal fun RiderScreen(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     onBackPressed: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    Column {
+    topBarProvider {
         SmallTopAppBar(
             title = { Text(text = riderViewState.rider?.lastName.toString()) },
             onBackPressed,
         )
+    }
+    Column {
         if (riderViewState.rider != null && riderViewState.team != null) {
             Text(text = riderViewState.rider.lastName)
             if (riderViewState.rider.uciRankingPosition > 0) {

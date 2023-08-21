@@ -59,6 +59,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,6 +76,7 @@ internal fun RidersRoute(
     onRiderSelected: (Rider) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RidersViewModel = hiltViewModel(),
 ) {
     val ridersViewState by viewModel.ridersState.collectAsState()
@@ -89,6 +91,7 @@ internal fun RidersRoute(
         onReselectedScreenConsumed = onReselectedScreenConsumed,
         onToggled = viewModel::onToggled,
         onRefreshed = viewModel::onRefreshed,
+        topBarProvider = topBarProvider,
     )
 }
 
@@ -102,11 +105,12 @@ private fun RidersScreen(
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
     onToggled: () -> Unit,
+    topBarProvider: (@Composable () -> Unit) -> Unit,
     onRefreshed: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    Column {
-        val focusManager = LocalFocusManager.current
+    val focusManager = LocalFocusManager.current
+    topBarProvider {
         TopAppBar(
             topBarState,
             focusManager,
@@ -117,19 +121,19 @@ private fun RidersScreen(
                 lazyListState.scrollToItem(0)
             },
         )
-        Surface {
-            RidersList(
-                ridersState = ridersViewState,
-                onRiderSelected = {
-                    focusManager.clearFocus()
-                    onRiderSelected(it)
-                },
-                screenReselected = reselectedScreen,
-                lazyListState = lazyListState,
-                onReselectedScreenConsumed = onReselectedScreenConsumed,
-                onRefreshed = onRefreshed,
-            )
-        }
+    }
+    Surface {
+        RidersList(
+            ridersState = ridersViewState,
+            onRiderSelected = {
+                focusManager.clearFocus()
+                onRiderSelected(it)
+            },
+            screenReselected = reselectedScreen,
+            lazyListState = lazyListState,
+            onReselectedScreenConsumed = onReselectedScreenConsumed,
+            onRefreshed = onRefreshed,
+        )
     }
 }
 
@@ -145,6 +149,7 @@ private fun TopAppBar(
 ) {
     val focusRequester = remember { FocusRequester() }
     var showKeyboard by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf(TextFieldValue(topBarState.search)) }
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent,
@@ -155,9 +160,10 @@ private fun TopAppBar(
             AnimatedContent(topBarState.searching, label = "RidersTopAppBarAnimatedContent") {
                 if (it) {
                     TextField(
-                        value = topBarState.search,
+                        value = searchText,
                         onValueChange = { search ->
-                            onSearched(search)
+                            searchText = search
+                            onSearched(search.text)
                         },
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
@@ -209,6 +215,8 @@ private fun TopAppBar(
             IconButton(onClick = {
                 if (!topBarState.searching) {
                     showKeyboard = true
+                } else {
+                    searchText = TextFieldValue("")
                 }
                 onToggled()
             }) {
