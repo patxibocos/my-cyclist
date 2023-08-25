@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,7 +49,6 @@ internal fun RaceParticipationsRoute(
     onRiderSelected: (Rider) -> Unit,
     onTeamSelected: (Team) -> Unit,
     onBackPressed: () -> Unit = {},
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RaceParticipationsViewModel = hiltViewModel(),
 ) {
     val raceParticipationsViewState by viewModel.raceParticipationsViewState.collectAsState()
@@ -61,7 +61,6 @@ internal fun RaceParticipationsRoute(
         onBackPressed = onBackPressed,
         onSearched = viewModel::onSearched,
         onToggled = viewModel::onToggled,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -146,10 +145,9 @@ private fun RaceParticipationsScreen(
     onBackPressed: () -> Unit = {},
     onSearched: (String) -> Unit,
     onToggled: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    topBarProvider {
+    Column(modifier = Modifier.fillMaxSize()) {
+        val focusManager = LocalFocusManager.current
         TopAppBar(
             topBarState = topBarState,
             focusManager = focusManager,
@@ -157,28 +155,28 @@ private fun RaceParticipationsScreen(
             onSearched = onSearched,
             onToggled = onToggled,
         )
-    }
-    val lazyListState = rememberLazyListState()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        state = lazyListState,
-    ) {
-        raceParticipationsViewState.ridersByTeam.forEach { (team, riderParticipations) ->
-            stickyHeader {
-                Text(text = team.name, modifier = Modifier.clickable { onTeamSelected(team) })
-            }
-            items(
-                items = riderParticipations,
-                key = { it.rider.id },
-            ) { (rider, number) ->
-                val riderText = if (number != 0) {
-                    "${rider.fullName()} - $number"
-                } else {
-                    rider.fullName()
+        val lazyListState = rememberLazyListState()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            state = lazyListState,
+        ) {
+            raceParticipationsViewState.ridersByTeam.forEach { (team, riderParticipations) ->
+                stickyHeader {
+                    Text(text = team.name, modifier = Modifier.clickable { onTeamSelected(team) })
                 }
-                Text(text = riderText, modifier = Modifier.clickable { onRiderSelected(rider) })
+                items(
+                    items = riderParticipations,
+                    key = { it.rider.id },
+                ) { (rider, number) ->
+                    val riderText = if (number != 0) {
+                        "${rider.fullName()} - $number"
+                    } else {
+                        rider.fullName()
+                    }
+                    Text(text = riderText, modifier = Modifier.clickable { onRiderSelected(rider) })
+                }
             }
         }
     }

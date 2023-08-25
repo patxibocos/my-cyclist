@@ -45,7 +45,6 @@ internal fun RaceRoute(
     onTeamSelected: (Team) -> Unit,
     onParticipationsClicked: (Race) -> Unit,
     onBackPressed: () -> Unit = {},
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RaceViewModel = hiltViewModel(),
 ) {
     val raceViewState by viewModel.raceViewState.collectAsState()
@@ -58,7 +57,6 @@ internal fun RaceRoute(
         onStageSelected = viewModel::onStageSelected,
         onParticipationsClicked = onParticipationsClicked,
         onBackPressed = onBackPressed,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -72,12 +70,9 @@ internal fun RaceScreen(
     onStageSelected: (Int) -> Unit,
     onParticipationsClicked: (Race) -> Unit,
     onBackPressed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    topBarProvider {
+    Column(modifier = Modifier.fillMaxSize()) {
         SmallTopAppBar(title = { Text(text = raceViewState.race?.name.toString()) }, onBackPressed)
-    }
-    Column {
         if (raceViewState.race != null) {
             Button(onClick = { onParticipationsClicked(raceViewState.race) }) {
                 Text(text = "Participants")

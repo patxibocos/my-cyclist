@@ -55,7 +55,6 @@ internal fun TeamsRoute(
     onTeamSelected: (Team) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: TeamsViewModel = hiltViewModel(),
 ) {
     val teamsViewState by viewModel.teamsViewState.collectAsState()
@@ -65,7 +64,6 @@ internal fun TeamsRoute(
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
         onRefreshed = viewModel::onRefreshed,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -77,7 +75,6 @@ private fun TeamsScreen(
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
     onRefreshed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
     val worldTeamsLazyGridState = rememberLazyGridState()
     val proTeamsLazyGridState = rememberLazyGridState()
@@ -93,7 +90,7 @@ private fun TeamsScreen(
             onReselectedScreenConsumed()
         }
     }
-    topBarProvider {
+    Column(modifier = Modifier.fillMaxSize()) {
         CenterAlignedTopAppBar(title = stringResource(R.string.teams_title)) {
             if (pagerState.currentPage == 0) {
                 worldTeamsLazyGridState.scrollToItem(0)
@@ -102,41 +99,41 @@ private fun TeamsScreen(
             }
             onReselectedScreenConsumed()
         }
-    }
-    Surface {
-        RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
-            Column {
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ) {
-                    Tab(
-                        selected = pagerState.currentPage == 0,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
-                        text = { Text(stringResource(R.string.teams_world)) },
-                    )
-                    Tab(
-                        selected = pagerState.currentPage == 1,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
-                        text = { Text(stringResource(R.string.teams_pro)) },
-                    )
-                }
-                HorizontalPager(
-                    state = pagerState,
-                ) { page ->
-                    if (page == 0) {
-                        TeamsList(
-                            teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
-                            onTeamSelected = onTeamSelected,
-                            lazyListState = worldTeamsLazyGridState,
+        Surface {
+            RefreshableContent(teamsViewState.isRefreshing, onRefreshed = onRefreshed) {
+                Column {
+                    TabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ) {
+                        Tab(
+                            selected = pagerState.currentPage == 0,
+                            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
+                            text = { Text(stringResource(R.string.teams_world)) },
                         )
-                    } else {
-                        TeamsList(
-                            teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
-                            onTeamSelected = onTeamSelected,
-                            lazyListState = proTeamsLazyGridState,
+                        Tab(
+                            selected = pagerState.currentPage == 1,
+                            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
+                            text = { Text(stringResource(R.string.teams_pro)) },
                         )
+                    }
+                    HorizontalPager(
+                        state = pagerState,
+                    ) { page ->
+                        if (page == 0) {
+                            TeamsList(
+                                teams = teamsViewState.teams.filter { it.status == TeamStatus.WORLD_TEAM },
+                                onTeamSelected = onTeamSelected,
+                                lazyListState = worldTeamsLazyGridState,
+                            )
+                        } else {
+                            TeamsList(
+                                teams = teamsViewState.teams.filter { it.status == TeamStatus.PRO_TEAM },
+                                onTeamSelected = onTeamSelected,
+                                lazyListState = proTeamsLazyGridState,
+                            )
+                        }
                     }
                 }
             }

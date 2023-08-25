@@ -7,10 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -26,10 +23,8 @@ class MainActivity : ComponentActivity() {
         askNotificationPermission()
         setContent {
             AppTheme {
-                Surface(tonalElevation = 2.dp) {
-                    CompositionLocalProvider(LocalAbsoluteTonalElevation provides 0.dp) {
-                        Home()
-                    }
+                Surface {
+                    Home()
                 }
             }
         }

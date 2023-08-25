@@ -76,7 +76,6 @@ internal fun RidersRoute(
     onRiderSelected: (Rider) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RidersViewModel = hiltViewModel(),
 ) {
     val ridersViewState by viewModel.ridersState.collectAsState()
@@ -91,7 +90,6 @@ internal fun RidersRoute(
         onReselectedScreenConsumed = onReselectedScreenConsumed,
         onToggled = viewModel::onToggled,
         onRefreshed = viewModel::onRefreshed,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -105,12 +103,11 @@ private fun RidersScreen(
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
     onToggled: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     onRefreshed: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
-    topBarProvider {
+    Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             topBarState,
             focusManager,
@@ -121,19 +118,19 @@ private fun RidersScreen(
                 lazyListState.scrollToItem(0)
             },
         )
-    }
-    Surface {
-        RidersList(
-            ridersState = ridersViewState,
-            onRiderSelected = {
-                focusManager.clearFocus()
-                onRiderSelected(it)
-            },
-            screenReselected = reselectedScreen,
-            lazyListState = lazyListState,
-            onReselectedScreenConsumed = onReselectedScreenConsumed,
-            onRefreshed = onRefreshed,
-        )
+        Surface {
+            RidersList(
+                ridersState = ridersViewState,
+                onRiderSelected = {
+                    focusManager.clearFocus()
+                    onRiderSelected(it)
+                },
+                screenReselected = reselectedScreen,
+                lazyListState = lazyListState,
+                onReselectedScreenConsumed = onReselectedScreenConsumed,
+                onRefreshed = onRefreshed,
+            )
+        }
     }
 }
 

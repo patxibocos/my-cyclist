@@ -49,7 +49,6 @@ internal fun RacesRoute(
     onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RacesViewModel = hiltViewModel(),
 ) {
     val racesViewState by viewModel.racesViewState.collectAsState()
@@ -60,7 +59,6 @@ internal fun RacesRoute(
         reselectedScreen = reselectedScreen,
         onReselectedScreenConsumed = onReselectedScreenConsumed,
         onRefreshed = viewModel::onRefreshed,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -71,7 +69,6 @@ private fun RacesScreen(
     onStageSelected: (Race, Stage) -> Unit,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     onRefreshed: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -81,37 +78,37 @@ private fun RacesScreen(
             onReselectedScreenConsumed()
         }
     }
-    topBarProvider {
+    Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.races_title)) {
             lazyListState.scrollToItem(0)
         }
-    }
-    Surface {
-        RefreshableContent(racesViewState.isRefreshing, onRefreshed) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                state = lazyListState,
-            ) {
-                when (racesViewState) {
-                    RacesViewState.EmptyViewState -> {}
-                    is RacesViewState.SeasonEndedViewState -> {
-                        seasonEnded(racesViewState.pastRaces, onRaceSelected)
-                    }
+        Surface {
+            RefreshableContent(racesViewState.isRefreshing, onRefreshed) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    state = lazyListState,
+                ) {
+                    when (racesViewState) {
+                        RacesViewState.EmptyViewState -> {}
+                        is RacesViewState.SeasonEndedViewState -> {
+                            seasonEnded(racesViewState.pastRaces, onRaceSelected)
+                        }
 
-                    is RacesViewState.SeasonInProgressViewState -> {
-                        seasonInProgress(
-                            racesViewState.pastRaces,
-                            racesViewState.todayStages,
-                            racesViewState.futureRaces,
-                            onRaceSelected,
-                            onStageSelected,
-                        )
-                    }
+                        is RacesViewState.SeasonInProgressViewState -> {
+                            seasonInProgress(
+                                racesViewState.pastRaces,
+                                racesViewState.todayStages,
+                                racesViewState.futureRaces,
+                                onRaceSelected,
+                                onStageSelected,
+                            )
+                        }
 
-                    is RacesViewState.SeasonNotStartedViewState -> {
-                        seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
+                        is RacesViewState.SeasonNotStartedViewState -> {
+                            seasonNotStarted(racesViewState.futureRaces, onRaceSelected)
+                        }
                     }
                 }
             }

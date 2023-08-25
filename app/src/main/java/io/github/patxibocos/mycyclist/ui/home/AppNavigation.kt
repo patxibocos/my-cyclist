@@ -35,7 +35,6 @@ internal fun AppNavigation(
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
     modifier: Modifier,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -46,19 +45,16 @@ internal fun AppNavigation(
             navController,
             reselectedScreen,
             onReselectedScreenConsumed,
-            topBarProvider,
         )
         addRidersNavigation(
             navController,
             reselectedScreen,
             onReselectedScreenConsumed,
-            topBarProvider,
         )
         addRacesNavigation(
             navController,
             reselectedScreen,
             onReselectedScreenConsumed,
-            topBarProvider,
         )
     }
 }
@@ -117,7 +113,6 @@ private fun NavGraphBuilder.addTeamsNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Teams.createRoute(Screen.Teams),
@@ -130,7 +125,6 @@ private fun NavGraphBuilder.addTeamsNavigation(
                 },
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
-                topBarProvider = topBarProvider,
             )
         }
         composable(LeafScreen.Team.createRoute(Screen.Teams)) {
@@ -144,7 +138,6 @@ private fun NavGraphBuilder.addTeamsNavigation(
                     )
                 },
                 onBackPressed = { navController.navigateUp() },
-                topBarProvider = topBarProvider,
             )
         }
     }
@@ -154,7 +147,6 @@ private fun NavGraphBuilder.addRidersNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Riders.createRoute(Screen.Riders),
@@ -167,7 +159,6 @@ private fun NavGraphBuilder.addRidersNavigation(
                 },
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
-                topBarProvider = topBarProvider,
             )
         }
         composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
@@ -198,7 +189,6 @@ private fun NavGraphBuilder.addRidersNavigation(
                     )
                 },
                 onBackPressed = { navController.navigateUp() },
-                topBarProvider = topBarProvider,
             )
         }
     }
@@ -208,7 +198,6 @@ private fun NavGraphBuilder.addRacesNavigation(
     navController: NavController,
     reselectedScreen: State<Screen?>,
     onReselectedScreenConsumed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
     navigation(
         startDestination = LeafScreen.Races.createRoute(Screen.Races),
@@ -230,7 +219,6 @@ private fun NavGraphBuilder.addRacesNavigation(
                 },
                 reselectedScreen = reselectedScreen,
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
-                topBarProvider = topBarProvider,
             )
         }
         composable(
@@ -268,7 +256,6 @@ private fun NavGraphBuilder.addRacesNavigation(
                     )
                 },
                 onBackPressed = { navController.navigateUp() },
-                topBarProvider = topBarProvider,
             )
         }
         composable(
@@ -292,7 +279,6 @@ private fun NavGraphBuilder.addRacesNavigation(
                     )
                 },
                 onBackPressed = { navController.navigateUp() },
-                topBarProvider = topBarProvider,
             )
         }
     }

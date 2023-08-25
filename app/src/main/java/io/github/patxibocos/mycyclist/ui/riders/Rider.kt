@@ -3,6 +3,7 @@ package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,7 +22,6 @@ internal fun RiderRoute(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     onBackPressed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
     viewModel: RiderViewModel = hiltViewModel(),
 ) {
     val riderViewState by viewModel.riderViewState.collectAsState()
@@ -31,7 +31,6 @@ internal fun RiderRoute(
         onRaceSelected = onRaceSelected,
         onStageSelected = onStageSelected,
         onBackPressed = onBackPressed,
-        topBarProvider = topBarProvider,
     )
 }
 
@@ -42,15 +41,12 @@ internal fun RiderScreen(
     onRaceSelected: (Race) -> Unit,
     onStageSelected: (Race, Stage) -> Unit,
     onBackPressed: () -> Unit,
-    topBarProvider: (@Composable () -> Unit) -> Unit,
 ) {
-    topBarProvider {
+    Column(modifier = Modifier.fillMaxSize()) {
         SmallTopAppBar(
             title = { Text(text = riderViewState.rider?.lastName.toString()) },
             onBackPressed,
         )
-    }
-    Column {
         if (riderViewState.rider != null && riderViewState.team != null) {
             Text(text = riderViewState.rider.lastName)
             if (riderViewState.rider.uciRankingPosition > 0) {
