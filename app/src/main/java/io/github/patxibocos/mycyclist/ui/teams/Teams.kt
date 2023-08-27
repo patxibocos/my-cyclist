@@ -90,7 +90,7 @@ private fun TeamsScreen(
             onReselectedScreenConsumed()
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         CenterAlignedTopAppBar(title = stringResource(R.string.teams_title)) {
             if (pagerState.currentPage == 0) {
                 worldTeamsLazyGridState.scrollToItem(0)

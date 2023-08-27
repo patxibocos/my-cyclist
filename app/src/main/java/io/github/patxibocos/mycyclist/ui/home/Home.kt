@@ -2,6 +2,7 @@ package io.github.patxibocos.mycyclist.ui.home
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +51,8 @@ fun Home() {
             },
             modifier = Modifier
                 .consumeWindowInsets(it)
-                .padding(it),
+                .padding(it)
+                .fillMaxSize(),
         )
     }
 }
@@ -87,12 +89,13 @@ private fun BottomBar(
                     onClick = {
                         if (selected) {
                             screenReselected(screen)
-                        }
-                        navController.navigate(screen.route) {
-                            launchSingleTop = true
-                            restoreState = false
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = false
+                        } else {
+                            navController.navigate(screen.route) {
+                                launchSingleTop = true
+                                restoreState = false
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = false
+                                }
                             }
                         }
                     },

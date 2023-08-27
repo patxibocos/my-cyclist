@@ -71,7 +71,7 @@ internal fun RaceScreen(
     onParticipationsClicked: (Race) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         SmallTopAppBar(title = { Text(text = raceViewState.race?.name.toString()) }, onBackPressed)
         if (raceViewState.race != null) {
             Button(onClick = { onParticipationsClicked(raceViewState.race) }) {

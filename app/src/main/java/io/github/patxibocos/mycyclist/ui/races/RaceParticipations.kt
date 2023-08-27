@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -146,7 +145,7 @@ private fun RaceParticipationsScreen(
     onSearched: (String) -> Unit,
     onToggled: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         val focusManager = LocalFocusManager.current
         TopAppBar(
             topBarState = topBarState,
@@ -157,8 +156,6 @@ private fun RaceParticipationsScreen(
         )
         val lazyListState = rememberLazyListState()
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(5.dp),
             state = lazyListState,
         ) {

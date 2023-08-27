@@ -3,7 +3,6 @@ package io.github.patxibocos.mycyclist.ui.teams
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +33,7 @@ internal fun TeamScreen(
     onRiderSelected: (Rider) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         SmallTopAppBar(title = { Text(text = teamViewState.team?.name.toString()) }, onBackPressed)
         if (teamViewState.team != null) {
             Text(text = teamViewState.team.name)

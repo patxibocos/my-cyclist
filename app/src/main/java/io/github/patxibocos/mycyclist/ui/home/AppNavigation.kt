@@ -1,6 +1,10 @@
 package io.github.patxibocos.mycyclist.ui.home
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Flag
@@ -12,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,6 +35,9 @@ import io.github.patxibocos.mycyclist.ui.riders.RiderRoute
 import io.github.patxibocos.mycyclist.ui.riders.RidersRoute
 import io.github.patxibocos.mycyclist.ui.teams.TeamRoute
 import io.github.patxibocos.mycyclist.ui.teams.TeamsRoute
+
+private const val ROOT_SCREENS_ANIMATION_SPEED = 100
+private const val LEAF_SCREENS_ANIMATION_SPEED = 300
 
 @Composable
 internal fun AppNavigation(
@@ -118,7 +128,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
         startDestination = LeafScreen.Teams.createRoute(Screen.Teams),
         route = Screen.Teams.route,
     ) {
-        composable(LeafScreen.Teams.createRoute(Screen.Teams)) {
+        composableWithAnimations(LeafScreen.Teams.createRoute(Screen.Teams)) {
             TeamsRoute(
                 onTeamSelected = {
                     navController.navigate(LeafScreen.Team.createRoute(Screen.Teams, it.id))
@@ -127,7 +137,7 @@ private fun NavGraphBuilder.addTeamsNavigation(
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
-        composable(LeafScreen.Team.createRoute(Screen.Teams)) {
+        composableWithAnimations(LeafScreen.Team.createRoute(Screen.Teams)) {
             TeamRoute(
                 onRiderSelected = { rider ->
                     navController.navigate(
@@ -152,7 +162,7 @@ private fun NavGraphBuilder.addRidersNavigation(
         startDestination = LeafScreen.Riders.createRoute(Screen.Riders),
         route = Screen.Riders.route,
     ) {
-        composable(LeafScreen.Riders.createRoute(Screen.Riders)) {
+        composableWithAnimations(LeafScreen.Riders.createRoute(Screen.Riders)) {
             RidersRoute(
                 onRiderSelected = {
                     navController.navigate(LeafScreen.Rider.createRoute(Screen.Riders, it.id))
@@ -161,7 +171,7 @@ private fun NavGraphBuilder.addRidersNavigation(
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
-        composable(LeafScreen.Rider.createRoute(Screen.Riders)) {
+        composableWithAnimations(LeafScreen.Rider.createRoute(Screen.Riders)) {
             RiderRoute(
                 onTeamSelected = { team ->
                     navController.navigate(
@@ -203,7 +213,7 @@ private fun NavGraphBuilder.addRacesNavigation(
         startDestination = LeafScreen.Races.createRoute(Screen.Races),
         route = Screen.Races.route,
     ) {
-        composable(LeafScreen.Races.createRoute(Screen.Races)) {
+        composableWithAnimations(route = LeafScreen.Races.createRoute(Screen.Races)) {
             RacesRoute(
                 onRaceSelected = {
                     navController.navigate(LeafScreen.Race.createRoute(Screen.Races, it.id))
@@ -221,8 +231,8 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onReselectedScreenConsumed = onReselectedScreenConsumed,
             )
         }
-        composable(
-            LeafScreen.Race.createRoute(Screen.Races),
+        composableWithAnimations(
+            route = LeafScreen.Race.createRoute(Screen.Races),
             arguments = listOf(navArgument("stageId") { nullable = true }),
             deepLinks = listOf(
                 navDeepLink {
@@ -258,7 +268,7 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onBackPressed = { navController.navigateUp() },
             )
         }
-        composable(
+        composableWithAnimations(
             LeafScreen.RaceParticipations.createRoute(Screen.Races),
         ) {
             RaceParticipationsRoute(
@@ -281,5 +291,51 @@ private fun NavGraphBuilder.addRacesNavigation(
                 onBackPressed = { navController.navigateUp() },
             )
         }
+    }
+}
+
+private fun NavGraphBuilder.composableWithAnimations(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
+) {
+    composable(
+        route = route,
+        arguments = arguments,
+        deepLinks = deepLinks,
+        enterTransition = {
+            if (areRootDestinations(
+                    this.initialState.destination.route,
+                    this.targetState.destination.route,
+                )
+            ) {
+                fadeIn(animationSpec = tween(ROOT_SCREENS_ANIMATION_SPEED))
+            } else {
+                fadeIn(animationSpec = tween(LEAF_SCREENS_ANIMATION_SPEED))
+            }
+        },
+        exitTransition = {
+            if (areRootDestinations(
+                    this.initialState.destination.route,
+                    this.targetState.destination.route,
+                )
+            ) {
+                fadeOut(animationSpec = tween(ROOT_SCREENS_ANIMATION_SPEED))
+            } else {
+                fadeOut(animationSpec = tween(LEAF_SCREENS_ANIMATION_SPEED))
+            }
+        },
+        content = content,
+    )
+}
+
+private fun areRootDestinations(vararg routes: String?): Boolean {
+    return routes.all {
+        it in listOf(
+            LeafScreen.Races.createRoute(Screen.Races),
+            LeafScreen.Riders.createRoute(Screen.Riders),
+            LeafScreen.Teams.createRoute(Screen.Teams),
+        )
     }
 }

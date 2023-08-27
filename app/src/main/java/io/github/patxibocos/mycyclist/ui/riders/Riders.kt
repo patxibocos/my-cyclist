@@ -107,7 +107,7 @@ private fun RidersScreen(
 ) {
     val lazyListState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         TopAppBar(
             topBarState,
             focusManager,
