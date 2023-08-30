@@ -165,9 +165,7 @@ private fun TopAppBar(
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
                         },
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                        ),
+                        colors = TextFieldDefaults.colors(focusedContainerColor = Color.Transparent),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Words,
                             autoCorrect = false,
