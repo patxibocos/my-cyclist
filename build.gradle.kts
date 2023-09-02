@@ -23,7 +23,7 @@ subprojects {
     configure<SpotlessExtension> {
         kotlin {
             target("**/*.kt")
-            targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "**/protobuf/**/*.kt")
+            targetExclude("${layout.buildDirectory}/**/*.kt", "bin/**/*.kt", "**/protobuf/**/*.kt")
             ktlint(libs.versions.ktlint.get())
         }
 
@@ -31,7 +31,5 @@ subprojects {
             target("*.gradle.kts")
             ktlint(libs.versions.ktlint.get())
         }
-        // https://github.com/diffplug/spotless/issues/1644
-        lineEndings = com.diffplug.spotless.LineEnding.PLATFORM_NATIVE
     }
 }

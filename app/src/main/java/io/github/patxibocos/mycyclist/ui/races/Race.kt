@@ -212,7 +212,7 @@ private fun Stage(
             )
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            ClassificationType.values().forEach {
+            ClassificationType.entries.forEach {
                 ElevatedFilterChip(
                     selected = classificationType == it,
                     onClick = { onClassificationTypeChanged(it) },
