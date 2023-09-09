@@ -9,13 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,10 +19,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -62,75 +58,47 @@ private fun BottomBar(
     navController: NavController,
     screenReselected: (Screen) -> Unit,
 ) {
-    val currentScreen by navController.currentScreenAsState()
-    Surface(
-        color = Color.Transparent,
-    ) {
-        NavigationBar(
-            tonalElevation = 2.dp,
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
-            screens.forEach { screen ->
-                val selected = currentScreen == screen
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            if (selected) {
-                                screen.selectedIcon
-                            } else {
-                                screen.unselectedIcon
-                            },
-                            contentDescription = null,
-                        )
-                    },
-                    label = { Text(stringResource(screen.label)) },
-                    selected = currentScreen == screen,
-                    onClick = {
+    NavigationBar {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+        val screens = remember { listOf(Screen.Races, Screen.Riders, Screen.Teams) }
+        screens.forEach { screen ->
+            val selected =
+                currentDestination?.hierarchy?.any { it.route == screen.route } == true
+            val currentRoute = currentDestination?.route
+            val topScreenRoute = topScreenToLeafScreenRoute(screen)
+            NavigationBarItem(
+                icon = {
+                    Icon(
                         if (selected) {
-                            screenReselected(screen)
+                            screen.selectedIcon
                         } else {
-                            navController.navigate(screen.route) {
-                                launchSingleTop = true
-                                restoreState = false
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = false
-                                }
-                            }
+                            screen.unselectedIcon
+                        },
+                        contentDescription = null,
+                    )
+                },
+                label = { Text(stringResource(screen.label)) },
+                selected = selected,
+                onClick = {
+                    if (currentRoute == topScreenRoute) {
+                        screenReselected(screen)
+                    } else {
+                        navController.navigate(screen.route) {
+                            launchSingleTop = true
+                            popUpTo(navController.graph.findStartDestination().id)
                         }
-                    },
-                )
-            }
+                    }
+                },
+            )
         }
     }
 }
 
-@Stable
-@Composable
-private fun NavController.currentScreenAsState(): State<Screen?> {
-    val selectedItem = remember { mutableStateOf<Screen?>(Screen.Teams) }
-
-    fun findRootDestinationRoute(destination: NavDestination): String? {
-        return destination.parent?.let { parent ->
-            findRootDestinationRoute(parent)
-        } ?: destination.route
+private fun topScreenToLeafScreenRoute(screen: Screen): String {
+    return when (screen) {
+        Screen.Races -> LeafScreen.Races.createRoute(Screen.Races)
+        Screen.Riders -> LeafScreen.Riders.createRoute(Screen.Riders)
+        Screen.Teams -> LeafScreen.Teams.createRoute(Screen.Teams)
     }
-
-    DisposableEffect(this) {
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            selectedItem.value = when (findRootDestinationRoute(destination)) {
-                Screen.Teams.route -> Screen.Teams
-                Screen.Riders.route -> Screen.Riders
-                Screen.Races.route -> Screen.Races
-                else -> null
-            }
-        }
-        addOnDestinationChangedListener(listener)
-
-        onDispose {
-            removeOnDestinationChangedListener(listener)
-        }
-    }
-
-    return selectedItem
 }
