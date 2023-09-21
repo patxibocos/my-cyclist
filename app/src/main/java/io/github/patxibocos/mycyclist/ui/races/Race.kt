@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.races
 
 import androidx.compose.foundation.ExperimentalFoundationApi

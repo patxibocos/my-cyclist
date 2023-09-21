@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.riders
 
 import androidx.compose.animation.AnimatedContent

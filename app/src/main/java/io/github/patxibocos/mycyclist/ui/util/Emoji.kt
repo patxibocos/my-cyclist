@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.util
 
 import java.util.Locale

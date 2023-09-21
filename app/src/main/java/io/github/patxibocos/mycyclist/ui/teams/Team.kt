@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package io.github.patxibocos.mycyclist.ui.teams
 
 import androidx.compose.foundation.clickable
