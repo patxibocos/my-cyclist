@@ -8,7 +8,7 @@ jobs:
   record-snapshots:
     name: Update snapshots
     if: ${{ github.event.issue.pull_request && github.event.comment.body == '/record-snapshots' }}
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - id: get-branch
         run: echo ::set-output name=branch::$(gh pr view $PR_NO --repo $REPO --json headRefName --jq '.headRefName')
@@ -27,10 +27,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-
-      # https://github.com/actions/runner-images/issues/7506
-      - name: Accept Android SDK license
-        run: echo "y" | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0-rc3"
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
