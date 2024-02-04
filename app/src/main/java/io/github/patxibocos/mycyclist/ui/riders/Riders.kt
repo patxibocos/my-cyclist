@@ -21,9 +21,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -223,7 +223,7 @@ private fun TopAppBar(
             Box {
                 var sortingOptionsVisible by remember { mutableStateOf(false) }
                 IconButton(onClick = { sortingOptionsVisible = true }) {
-                    Icon(imageVector = Icons.Outlined.Sort, contentDescription = null)
+                    Icon(imageVector = Icons.AutoMirrored.Outlined.Sort, contentDescription = null)
                 }
                 SortingMenu(
                     expanded = sortingOptionsVisible,

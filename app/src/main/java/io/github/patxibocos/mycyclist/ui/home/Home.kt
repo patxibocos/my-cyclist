@@ -1,6 +1,5 @@
 package io.github.patxibocos.mycyclist.ui.home
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,7 +24,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Home() {
     val navController by rememberUpdatedState(rememberNavController())
