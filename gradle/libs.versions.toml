@@ -42,7 +42,7 @@ androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.5.1"
 junit = "junit:junit:4.13.2"
 
 android-plugin-gradle = "com.android.tools.build:gradle:8.4.0-alpha09"
-google-services = "com.google.gms:google-services:4.4.0"
+google-services = "com.google.gms:google-services:4.4.1"
 kotlin-plugin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 hilt-plugin-gradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 paparazzi-plugin-gradle = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref = "paparazzi" }
