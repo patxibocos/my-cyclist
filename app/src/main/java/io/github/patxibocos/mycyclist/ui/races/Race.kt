@@ -13,9 +13,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedFilterChip
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -180,7 +179,6 @@ private fun StageData(stage: Stage) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Stage(
     stage: Stage,
@@ -279,7 +277,7 @@ private fun RidersPointsPerPlaceResult(
                     .clickable { onRiderSelected(rider) },
             )
         }
-        Divider(thickness = 8.dp)
+        HorizontalDivider(thickness = 8.dp)
     }
 }
 

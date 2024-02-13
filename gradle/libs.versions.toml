@@ -1,5 +1,5 @@
 [versions]
-compose-compiler = "1.5.8"
+compose-compiler = "1.5.9"
 compose-bom = "2024.02.00"
 firebase-bom = "32.7.2"
 hilt = "2.50"
