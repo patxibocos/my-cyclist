@@ -35,7 +35,7 @@ hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.re
 kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0"
 material3 = "com.google.android.material:material:1.11.0"
 protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.0.0-rc-2"
-protobuf-protoc = "com.google.protobuf:protoc:3.25.2"
+protobuf-protoc = "com.google.protobuf:protoc:3.25.3"
 
 androidx-test-junit = "androidx.test.ext:junit:1.1.5"
 androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.5.1"
