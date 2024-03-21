@@ -1,7 +1,7 @@
 [versions]
 compose-compiler = "1.5.9"
 compose-bom = "2024.03.00"
-firebase-bom = "32.7.4"
+firebase-bom = "32.8.0"
 hilt = "2.51"
 kotlin = "1.9.22"
 ktlint = "0.50.0"
