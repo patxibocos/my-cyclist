@@ -8,6 +8,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.protobuf") version "0.9.4"
     id(libs.plugins.paparazzi.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
 }
 
 protobuf {
