@@ -38,7 +38,7 @@ protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.27.1"
 protobuf-protoc = "com.google.protobuf:protoc:4.27.1"
 
 androidx-test-junit = "androidx.test.ext:junit:1.1.5"
-androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.5.1"
+androidx-test-espresso-core = "androidx.test.espresso:espresso-core:3.6.0"
 junit = "junit:junit:4.13.2"
 
 android-plugin-gradle = "com.android.tools.build:gradle:8.5.0"
