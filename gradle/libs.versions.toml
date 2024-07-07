@@ -24,7 +24,7 @@ androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-
 androidx-core = "androidx.core:core-ktx:1.13.1"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.2.0"
 androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.3"
-androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2"
+androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3"
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.7.7"
 coil-compose = "io.coil-kt:coil-compose:2.6.0"
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
