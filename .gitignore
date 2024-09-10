@@ -18,3 +18,6 @@ build/
 
 # Gradle
 local.properties
+
+# Kotlin
+.kotlin

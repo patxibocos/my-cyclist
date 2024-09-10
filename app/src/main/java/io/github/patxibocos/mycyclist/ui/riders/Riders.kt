@@ -34,7 +34,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -164,10 +163,9 @@ private fun TopAppBar(
                         placeholder = {
                             Text(stringResource(R.string.riders_search))
                         },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = Color.Transparent),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Words,
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Search,
                         ),
