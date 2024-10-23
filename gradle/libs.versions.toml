@@ -1,6 +1,6 @@
 [versions]
 compose-bom = "2024.10.00"
-firebase-bom = "33.5.0"
+firebase-bom = "33.5.1"
 hilt = "2.52"
 kotlin = "2.0.21"
 ktlint = "0.50.0"
