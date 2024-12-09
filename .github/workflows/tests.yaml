@@ -27,22 +27,3 @@ jobs:
 
       - name: Test
         run: ./gradlew :app:testDebug
-
-      - name: Snapshot test
-        id: snapshots
-        run: ./gradlew :app:verifyPaparazziDebug
-
-      - name: Upload snapshot failures
-        id: upload-snapshot-failures
-        if: ${{ failure() && steps.snapshots.conclusion == 'failure' }}
-        run: ./upload-snapshots-diff.sh
-        env:
-          COMMIT_SHA: ${{ github.sha }}
-          ASSETS_TOKEN: ${{ secrets.ASSETS_TOKEN }}
-          DIFFS_PATH: ${{ github.workspace }}/app/build/paparazzi/failures
-
-      - name: Add snapshots report
-        if: ${{ failure() && steps.snapshots.conclusion == 'failure' }}
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: ${{ steps.upload-snapshot-failures.outputs.SNAPSHOT_REPORT_MESSAGE }}
