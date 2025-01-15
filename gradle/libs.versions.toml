@@ -1,5 +1,5 @@
 [versions]
-compose-bom = "2024.12.01"
+compose-bom = "2025.01.00"
 firebase-bom = "33.7.0"
 hilt = "2.55"
 kotlin = "2.1.0"
