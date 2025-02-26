@@ -20,7 +20,7 @@ androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-ui-text = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-compose:1.1.0"
+androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-compose:1.1.1"
 androidx-core = "androidx.core:core-ktx:1.15.0"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.2.0"
 androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
