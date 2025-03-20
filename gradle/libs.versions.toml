@@ -1,7 +1,7 @@
 [versions]
 compose-bom = "2025.03.00"
 firebase-bom = "33.10.0"
-hilt = "2.55"
+hilt = "2.56"
 kotlin = "2.1.10"
 ktlint = "0.50.0"
 paparazzi = "1.3.5"
