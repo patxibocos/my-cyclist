@@ -6,7 +6,7 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
-    id("com.google.protobuf") version "0.9.4"
+    id("com.google.protobuf") version "0.9.5"
     id(libs.plugins.paparazzi.get().pluginId)
     alias(libs.plugins.compose.compiler)
 }
