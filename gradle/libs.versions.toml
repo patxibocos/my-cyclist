@@ -32,7 +32,7 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" 
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.1"
+kotlin-coroutines-play-services = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2"
 material3 = "com.google.android.material:material:1.12.0"
 protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.30.2"
 protobuf-protoc = "com.google.protobuf:protoc:4.30.2"
